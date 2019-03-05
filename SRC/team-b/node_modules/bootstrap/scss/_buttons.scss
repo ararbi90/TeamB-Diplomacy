@@ -1,4 +1,4 @@
-// stylelint-disable selector-no-qualifying-type
+// scss-lint:disable QualifyingElement
 
 //
 // Base styles
@@ -6,22 +6,19 @@
 
 .btn {
   display: inline-block;
-  font-family: $btn-font-family;
   font-weight: $btn-font-weight;
-  color: $body-color;
   text-align: center;
+  white-space: nowrap;
   vertical-align: middle;
   user-select: none;
-  background-color: transparent;
-  border: $btn-border-width solid transparent;
-  @include button-size($btn-padding-y, $btn-padding-x, $btn-font-size, $btn-line-height, $btn-border-radius);
+  border: $input-btn-border-width solid transparent;
+  @include button-size($input-btn-padding-y, $input-btn-padding-x, $font-size-base, $input-btn-line-height, $btn-border-radius);
   @include transition($btn-transition);
 
-  @include hover {
-    color: $body-color;
+  // Share hover and focus styles
+  @include hover-focus {
     text-decoration: none;
   }
-
   &:focus,
   &.focus {
     outline: 0;
@@ -31,23 +28,20 @@
   // Disabled comes first so active can properly restyle
   &.disabled,
   &:disabled {
-    opacity: $btn-disabled-opacity;
+    opacity: .65;
     @include box-shadow(none);
   }
 
-  &:not(:disabled):not(.disabled):active,
-  &:not(:disabled):not(.disabled).active {
-    @include box-shadow($btn-active-box-shadow);
-
-    &:focus {
-      @include box-shadow($btn-focus-box-shadow, $btn-active-box-shadow);
-    }
+  &:active,
+  &.active {
+    background-image: none;
+    @include box-shadow($btn-focus-box-shadow, $btn-active-box-shadow);
   }
 }
 
 // Future-proof disabling of clicks on `<a>` elements
 a.btn.disabled,
-fieldset:disabled a.btn {
+fieldset[disabled] a.btn {
   pointer-events: none;
 }
 
@@ -64,7 +58,7 @@ fieldset:disabled a.btn {
 
 @each $color, $value in $theme-colors {
   .btn-outline-#{$color} {
-    @include button-outline-variant($value);
+    @include button-outline-variant($value, #fff);
   }
 }
 
@@ -77,26 +71,36 @@ fieldset:disabled a.btn {
 .btn-link {
   font-weight: $font-weight-normal;
   color: $link-color;
-  text-decoration: $link-decoration;
+  border-radius: 0;
 
-  @include hover {
-    color: $link-hover-color;
-    text-decoration: $link-hover-decoration;
+  &,
+  &:active,
+  &.active,
+  &:disabled {
+    background-color: transparent;
+    @include box-shadow(none);
   }
-
+  &,
   &:focus,
-  &.focus {
-    text-decoration: $link-hover-decoration;
+  &:active {
+    border-color: transparent;
     box-shadow: none;
   }
-
-  &:disabled,
-  &.disabled {
-    color: $btn-link-disabled-color;
-    pointer-events: none;
+  @include hover {
+    border-color: transparent;
   }
+  @include hover-focus {
+    color: $link-hover-color;
+    text-decoration: $link-hover-decoration;
+    background-color: transparent;
+  }
+  &:disabled {
+    color: $btn-link-disabled-color;
 
-  // No need for an active state here
+    @include hover-focus {
+      text-decoration: none;
+    }
+  }
 }
 
 
@@ -105,11 +109,11 @@ fieldset:disabled a.btn {
 //
 
 .btn-lg {
-  @include button-size($btn-padding-y-lg, $btn-padding-x-lg, $btn-font-size-lg, $btn-line-height-lg, $btn-border-radius-lg);
+  @include button-size($input-btn-padding-y-lg, $input-btn-padding-x-lg, $font-size-lg, $line-height-lg, $btn-border-radius-lg);
 }
 
 .btn-sm {
-  @include button-size($btn-padding-y-sm, $btn-padding-x-sm, $btn-font-size-sm, $btn-line-height-sm, $btn-border-radius-sm);
+  @include button-size($input-btn-padding-y-sm, $input-btn-padding-x-sm, $font-size-sm, $line-height-sm, $btn-border-radius-sm);
 }
 
 
@@ -120,11 +124,11 @@ fieldset:disabled a.btn {
 .btn-block {
   display: block;
   width: 100%;
+}
 
-  // Vertically space out multiple block buttons
-  + .btn-block {
-    margin-top: $btn-block-spacing-y;
-  }
+// Vertically space out multiple block buttons
+.btn-block + .btn-block {
+  margin-top: $btn-block-spacing-y;
 }
 
 // Specificity overrides

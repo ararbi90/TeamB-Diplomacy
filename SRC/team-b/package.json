@@ -6,9 +6,11 @@
     "start": "electron ."
   },
   "dependencies": {
-    "bootstrap": "^4.3.1",
+    "bootstrap": "^4.0.0-beta",
     "firebase": "^5.8.0",
     "firebase-tools": "^6.3.1",
-    "g": "^2.0.1"
+    "g": "^2.0.1",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.7"
   }
 }
