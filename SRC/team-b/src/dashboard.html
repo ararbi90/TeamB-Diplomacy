@@ -1,22 +1,131 @@
 <html>
 
 <head>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <!-- <script src="../node_modules/jquery/dist/jquery.js"></script> -->
+
 
 </head>
 
 <body>
-    <h1>Welcome to the dashboard</h1>
-    <h2 id="welcome"></h2>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Diplomacy</a>
+
+        <div class="collapse navbar-collapse" id="navbarNavDropdown" style="float: right;">
+            <ul class="navbar-nav ml-auto">
+
+                <li class="nav-item dropdown ">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Dropdown link
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Game Statistics</a>
+                        <a class="dropdown-item" href="#">New Game</a>
+                        <a class="dropdown-item" href="#">Log Out</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <!--Greetings and news for the user-->
+    <div class="container">
+        <div class="row">
+            <main>
+                <h1>Welcome to the dashboard, <span id="welcome"></span></h1>
+                <h2>News</h2>
+
+            </main>
+        </div>
+
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3>Games You've Been Invite To</h3>
+                <table class="table">
+                    <thead class="thead-light" style = "background-color: gray;">
+                        <tr>
+                            <td>Name</td>
+                            <td>Turn Time Limit</td>
+                            <td>Game Created</td>
+                            <td>Join</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+
+                            <td>Game C</td>
+                            <td>5 Days</td>
+                            <td>03/11/2017</td>
+                            <td><button type="button" class="btn btn-primary">Join</button></td>
+                        </tr>
+                        <tr>
+
+                            <td>Game D</td>
+                            <td>5 Days</td>
+                            <td>04/05/2019</td>
+                            <td><button type="button" class="btn btn-primary">Join</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+
+            </div>
+            <div class="col">
+                <h3>Games In Progress</h3>
+                <table class="table">
+                    <thead class="thead-light" style = "background-color: gray;">
+                        <tr>
+                            <td>Name</td>
+                            <td>Turn Time Limit</td>
+                            <td>Game Created</td>
+                            <td>Re-Join</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+
+                            <td>Game A</td>
+                            <td>3 Days</td>
+                            <td>02/02/2018</td>
+                            <td><button type="button" class="btn btn-primary">Re-Join</button></td>
+                        </tr>
+                        <tr>
+
+                            <td>Game B</td>
+                            <td>1 Day</td>
+                            <td>02/03/2018</td>
+                            <td><button type="button" class="btn btn-primary">Re-Join</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+    </div>
+
     <script>
-        
-
-
         var urlParams = new URLSearchParams(location.search);
         console.log(urlParams.get("username"));
-        document.getElementById("welcome").innerHTML = "User: " + urlParams.get("username") + "<br>Key: " + urlParams.get(
-            "userID");
+        document.getElementById("welcome").innerHTML = urlParams.get("username");
+        document.getElementById("navbarDropdownMenuLink").innerHTML = urlParams.get("username");
+
         console.log(global.db);
     </script>
+
+    <script>
+        window.jQuery = window.$ = require('jquery');
+    </script>
+    <script src="../node_modules/popper.js/dist/umd/popper.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
 </body>
 
 </html>

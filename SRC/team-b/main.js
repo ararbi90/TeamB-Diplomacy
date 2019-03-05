@@ -19,7 +19,7 @@ function createWindow() {
     })
 
     // and load the index.html of the app.
-    win.loadFile('src/game.html')
+    win.loadFile('src/index.html')
 
 
     // Open the DevTools.
