@@ -1,0 +1,22 @@
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <h1>Welcome to the dashboard</h1>
+    <h2 id="welcome"></h2>
+    <script>
+        
+
+
+        var urlParams = new URLSearchParams(location.search);
+        console.log(urlParams.get("username"));
+        document.getElementById("welcome").innerHTML = "User: " + urlParams.get("username") + "<br>Key: " + urlParams.get(
+            "userID");
+        console.log(global.db);
+    </script>
+</body>
+
+</html>
