@@ -1,43 +1,28 @@
 <html>
 
 <head>
-    <title>Game Play</title>
-
-
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
-
-
+    <!-- <script src="../node_modules/jquery/dist/jquery.js"></script> -->
 
 
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
-            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
-                </li>
-                <li class="nav-item dropdown">
+        <a class="navbar-brand" href="#">Diplomacy</a>
+
+        <div class="collapse navbar-collapse" id="navbarNavDropdown" ;">
+            <ul class="navbar-nav ml-auto p-3">
+
+                <li class="nav-item dropdown ">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         Dropdown link
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        <a class="dropdown-item" href="#">Game Statistics</a>
+                        <a class="dropdown-item" href="#">New Game</a>
+                        <a class="dropdown-item" href="#">Log Out</a>
                     </div>
                 </li>
             </ul>
@@ -45,17 +30,458 @@
     </nav>
 
 
+
+    <h2 style="text-align: center; margin: 1%;">Current Game</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col" style="text-align: center; border:1px solid #ccc">
+                <div class="container">
+                    <div class="row">
+                        <h3>Current Player Positions</h3>
+                        <img src="game.gif" class="img-fluid">
+
+                    </div>
+                    <div class="row p-3">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="Main-tab" data-toggle="tab" href="#main" role="tab"
+                                    aria-controls="Main" aria-selected="true">Main</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="France-tab" data-toggle="tab" href="#France" role="tab"
+                                    aria-controls="France" aria-selected="false">France</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="Russia-tab" data-toggle="tab" href="#Russia" role="tab"
+                                    aria-controls="Russia" aria-selected="false">Russia</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="Austria-Hungry-tab" data-toggle="tab" href="#Austria-Hungry"
+                                    role="tab" aria-controls="contact" aria-selected="false">Austria-Hungry</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="England-tab" data-toggle="tab" href="#contact" role="tab"
+                                    aria-controls="contact" aria-selected="false">England</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="Turkey-tab" data-toggle="tab" href="#contact" role="tab"
+                                    aria-controls="contact" aria-selected="false">Turkey</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="Germany-tab" data-toggle="tab" href="#contact" role="tab"
+                                    aria-controls="contact" aria-selected="false">Germany</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="Main-tab">
+                                <div style="height:300px;width:auto;border:1px solid #ccc;overflow:auto;">
+                                    Lorem ipsum dolor sit amet, movet facilis oportere est te, ut est scripta integre
+                                    adipisci. Ei inani commodo qui, duo et summo quaestio corrumpit, eos no
+                                    intellegebat reprehendunt. In usu malorum atomorum, eu his erant offendit. Elit
+                                    duis id quo, ius homero aliquando ut. Est sint urbanitas te, tempor rationibus at
+                                    sea.
+
+                                    Ei cum quaestio sensibus. Lobortis gloriatur ne nec, eos posse invenire torquatos
+                                    id, duo at appetere philosophia definitionem. Solum harum persequeris per ad. Te
+                                    quodsi insolens per, velit utroque quo at, ad nonumy fabulas ancillae duo. Eripuit
+                                    salutandi eu nec, vix idque dicam ne, conceptam vituperata ne sed. Et tale
+                                    prodesset nec, epicurei consectetuer per et.
+
+                                    Eam at malorum scribentur dissentiet, id sit ubique quodsi aliquip, stet nostrum
+                                    mnesarchum in nam. Dolore nullam everti eu ius, nam cu homero propriae. Ea quodsi
+                                    assentior vix, option convenire sea ei. Dignissim concludaturque no has, quo an
+                                    veniam definiebas, in illud dicat conceptam pro. Alienum omittantur duo ea, nec in
+                                    falli inciderint complectitur. Ut vim enim dolorum, cum electram evertitur et.
+
+                                    Vero euismod pro ut. Nec reque omittam verterem in. At cum adhuc solet, ius minim
+                                    essent no, illud molestie mea ut. Feugiat mandamus ad his, mei et facilis propriae
+                                    adolescens. Te nec integre tractatos repudiare, has in volutpat reformidans. Ei pri
+                                    probo iusto sonet, in eos eius urbanitas, quodsi iudicabit cum ei.
+
+                                    Ea altera deseruisse mnesarchum vis. Debet oratio vivendo an vis, solet mucius
+                                    integre qui an, has nihil decore hendrerit ut. In putent scripserit nam, mei
+                                    quaerendum instructior ei. Ne eam modo meliore hendrerit, in eirmod platonem
+                                    definitiones mea. Te his ipsum dignissim.
+
+                                    Vix audire maiestatis ut, copiosae tacimates eam te. Nec electram gloriatur in,
+                                    prompta dolorum ut quo. Vis no impetus conceptam, ad consul percipit nam, usu in
+                                    falli nulla feugait. Vis et consul mucius. Eos eu habemus persecuti delicatissimi,
+                                    vim ne alii tation copiosae, qui graeco mandamus periculis et. Atqui feugiat
+                                    urbanitas eu vis, possit epicurei incorrupte ea per.
+
+                                    Mea consul inermis ne, sea vocent equidem no, an sit assum oportere. Eam ad timeam
+                                    insolens, detraxit aliquando et eam, equidem assentior ut sit. Ad minim minimum
+                                    splendide ius, quem ornatus volutpat usu ad. Vim ex illum aperiam adolescens, ei
+                                    sit quaerendum contentiones voluptatibus.
+
+                                    No aliquid prodesset ius, duo id singulis atomorum aliquando. Ius eruditi
+                                    accommodare necessitatibus ea, at eum saepe instructior. Ius eu graeci deleniti
+                                    voluptatibus, id brute mentitum splendide usu, commodo intellegat delicatissimi at
+                                    nam. Nam suas liberavisse id.
+
+                                    Nisl iuvaret assentior eu sea, pri affert vivendo volutpat no. Nostrum scriptorem
+                                    ei est. His cu postea impedit appellantur, cu prima modus definitionem vis. Ad
+                                    debet inermis accusata sed, falli iudico vocibus at pro. Eripuit numquam id nec.
+
+                                    Nisl tota aliquando cu mea, iuvaret disputando id sea. Labore putant eloquentiam no
+                                    his. Mutat posidonium usu ea, ad vis mediocrem scriptorem neglegentur. Vide
+                                    appellantur mel ad. Liber errem commune ad vel, cum semper ponderum no, eos an
+                                    neglegentur reprehendunt.
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="France" role="tabpanel" aria-labelledby="France-tab">
+                                <div style="height:300px;width:auto;border:1px solid #ccc;overflow:auto;">
+                                    Ei cum quaestio sensibus. Lobortis gloriatur ne nec, eos posse invenire torquatos
+                                    id, duo at appetere philosophia definitionem. Solum harum persequeris per ad. Te
+                                    quodsi insolens per, velit utroque quo at, ad nonumy fabulas ancillae duo. Eripuit
+                                    salutandi eu nec, vix idque dicam ne, conceptam vituperata ne sed. Et tale
+                                    prodesset nec, epicurei consectetuer per et.
+
+                                    Eam at malorum scribentur dissentiet, id sit ubique quodsi aliquip, stet nostrum
+                                    mnesarchum in nam. Dolore nullam everti eu ius, nam cu homero propriae. Ea quodsi
+                                    assentior vix, option convenire sea ei. Dignissim concludaturque no has, quo an
+                                    veniam definiebas, in illud dicat conceptam pro. Alienum omittantur duo ea, nec in
+                                    falli inciderint complectitur. Ut vim enim dolorum, cum electram evertitur et.
+
+                                    Vero euismod pro ut. Nec reque omittam verterem in. At cum adhuc solet, ius minim
+                                    essent no, illud molestie mea ut. Feugiat mandamus ad his, mei et facilis propriae
+                                    adolescens. Te nec integre tractatos repudiare, has in volutpat reformidans. Ei pri
+                                    probo iusto sonet, in eos eius urbanitas, quodsi iudicabit cum ei.
+
+                                    Ea altera deseruisse mnesarchum vis. Debet oratio vivendo an vis, solet mucius
+                                    integre qui an, has nihil decore hendrerit ut. In putent scripserit nam, mei
+                                    quaerendum instructior ei. Ne eam modo meliore hendrerit, in eirmod platonem
+                                    definitiones mea. Te his ipsum dignissim.
+
+                                    Vix audire maiestatis ut, copiosae tacimates eam te. Nec electram gloriatur in,
+                                    prompta dolorum ut quo. Vis no impetus conceptam, ad consul percipit nam, usu in
+                                    falli nulla feugait. Vis et consul mucius. Eos eu habemus persecuti delicatissimi,
+                                    vim ne alii tation copiosae, qui graeco mandamus periculis et. Atqui feugiat
+                                    urbanitas eu vis, possit epicurei incorrupte ea per.
+
+                                    Mea consul inermis ne, sea vocent equidem no, an sit assum oportere. Eam ad timeam
+                                    insolens, detraxit aliquando et eam, equidem assentior ut sit. Ad minim minimum
+                                    splendide ius, quem ornatus volutpat usu ad. Vim ex illum aperiam adolescens, ei
+                                    sit quaerendum contentiones voluptatibus.
+
+                                    No aliquid prodesset ius, duo id singulis atomorum aliquando. Ius eruditi
+                                    accommodare necessitatibus ea, at eum saepe instructior. Ius eu graeci deleniti
+                                    voluptatibus, id brute mentitum splendide usu, commodo intellegat delicatissimi at
+                                    nam. Nam suas liberavisse id.
+
+                                    Nisl iuvaret assentior eu sea, pri affert vivendo volutpat no. Nostrum scriptorem
+                                    ei est. His cu postea impedit appellantur, cu prima modus definitionem vis. Ad
+                                    debet inermis accusata sed, falli iudico vocibus at pro. Eripuit numquam id nec.
+
+                                    Nisl tota aliquando cu mea, iuvaret disputando id sea. Labore putant eloquentiam no
+                                    his. Mutat posidonium usu ea, ad vis mediocrem scriptorem neglegentur. Vide
+                                    appellantur mel ad. Liber errem commune ad vel, cum semper ponderum no, eos an
+                                    neglegentur reprehendunt.
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="Russia" role="tabpanel" aria-labelledby="Russia-tab">
+                                <div style="height:300px;width:auto;border:1px solid #ccc;overflow:auto;">
+
+
+                                    Eam at malorum scribentur dissentiet, id sit ubique quodsi aliquip, stet nostrum
+                                    mnesarchum in nam. Dolore nullam everti eu ius, nam cu homero propriae. Ea quodsi
+                                    assentior vix, option convenire sea ei. Dignissim concludaturque no has, quo an
+                                    veniam definiebas, in illud dicat conceptam pro. Alienum omittantur duo ea, nec in
+                                    falli inciderint complectitur. Ut vim enim dolorum, cum electram evertitur et.
+
+                                    Vero euismod pro ut. Nec reque omittam verterem in. At cum adhuc solet, ius minim
+                                    essent no, illud molestie mea ut. Feugiat mandamus ad his, mei et facilis propriae
+                                    adolescens. Te nec integre tractatos repudiare, has in volutpat reformidans. Ei pri
+                                    probo iusto sonet, in eos eius urbanitas, quodsi iudicabit cum ei.
+
+                                    Ea altera deseruisse mnesarchum vis. Debet oratio vivendo an vis, solet mucius
+                                    integre qui an, has nihil decore hendrerit ut. In putent scripserit nam, mei
+                                    quaerendum instructior ei. Ne eam modo meliore hendrerit, in eirmod platonem
+                                    definitiones mea. Te his ipsum dignissim.
+
+                                    Vix audire maiestatis ut, copiosae tacimates eam te. Nec electram gloriatur in,
+                                    prompta dolorum ut quo. Vis no impetus conceptam, ad consul percipit nam, usu in
+                                    falli nulla feugait. Vis et consul mucius. Eos eu habemus persecuti delicatissimi,
+                                    vim ne alii tation copiosae, qui graeco mandamus periculis et. Atqui feugiat
+                                    urbanitas eu vis, possit epicurei incorrupte ea per.
+
+                                    Mea consul inermis ne, sea vocent equidem no, an sit assum oportere. Eam ad timeam
+                                    insolens, detraxit aliquando et eam, equidem assentior ut sit. Ad minim minimum
+                                    splendide ius, quem ornatus volutpat usu ad. Vim ex illum aperiam adolescens, ei
+                                    sit quaerendum contentiones voluptatibus.
+
+                                    No aliquid prodesset ius, duo id singulis atomorum aliquando. Ius eruditi
+                                    accommodare necessitatibus ea, at eum saepe instructior. Ius eu graeci deleniti
+                                    voluptatibus, id brute mentitum splendide usu, commodo intellegat delicatissimi at
+                                    nam. Nam suas liberavisse id.
+
+                                    Nisl iuvaret assentior eu sea, pri affert vivendo volutpat no. Nostrum scriptorem
+                                    ei est. His cu postea impedit appellantur, cu prima modus definitionem vis. Ad
+                                    debet inermis accusata sed, falli iudico vocibus at pro. Eripuit numquam id nec.
+
+                                    Nisl tota aliquando cu mea, iuvaret disputando id sea. Labore putant eloquentiam no
+                                    his. Mutat posidonium usu ea, ad vis mediocrem scriptorem neglegentur. Vide
+                                    appellantur mel ad. Liber errem commune ad vel, cum semper ponderum no, eos an
+                                    neglegentur reprehendunt.
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="Austria-Hungry" role="tabpanel" aria-labelledby="Austria-Hungry-tab">
+                                <div style="height:300px;width:auto;border:1px solid #ccc;overflow:auto;">
+
+                                    Vero euismod pro ut. Nec reque omittam verterem in. At cum adhuc solet, ius minim
+                                    essent no, illud molestie mea ut. Feugiat mandamus ad his, mei et facilis propriae
+                                    adolescens. Te nec integre tractatos repudiare, has in volutpat reformidans. Ei pri
+                                    probo iusto sonet, in eos eius urbanitas, quodsi iudicabit cum ei.
+
+                                    Ea altera deseruisse mnesarchum vis. Debet oratio vivendo an vis, solet mucius
+                                    integre qui an, has nihil decore hendrerit ut. In putent scripserit nam, mei
+                                    quaerendum instructior ei. Ne eam modo meliore hendrerit, in eirmod platonem
+                                    definitiones mea. Te his ipsum dignissim.
+
+                                    Vix audire maiestatis ut, copiosae tacimates eam te. Nec electram gloriatur in,
+                                    prompta dolorum ut quo. Vis no impetus conceptam, ad consul percipit nam, usu in
+                                    falli nulla feugait. Vis et consul mucius. Eos eu habemus persecuti delicatissimi,
+                                    vim ne alii tation copiosae, qui graeco mandamus periculis et. Atqui feugiat
+                                    urbanitas eu vis, possit epicurei incorrupte ea per.
+
+                                    Mea consul inermis ne, sea vocent equidem no, an sit assum oportere. Eam ad timeam
+                                    insolens, detraxit aliquando et eam, equidem assentior ut sit. Ad minim minimum
+                                    splendide ius, quem ornatus volutpat usu ad. Vim ex illum aperiam adolescens, ei
+                                    sit quaerendum contentiones voluptatibus.
+
+                                    No aliquid prodesset ius, duo id singulis atomorum aliquando. Ius eruditi
+                                    accommodare necessitatibus ea, at eum saepe instructior. Ius eu graeci deleniti
+                                    voluptatibus, id brute mentitum splendide usu, commodo intellegat delicatissimi at
+                                    nam. Nam suas liberavisse id.
+
+                                    Nisl iuvaret assentior eu sea, pri affert vivendo volutpat no. Nostrum scriptorem
+                                    ei est. His cu postea impedit appellantur, cu prima modus definitionem vis. Ad
+                                    debet inermis accusata sed, falli iudico vocibus at pro. Eripuit numquam id nec.
+
+                                    Nisl tota aliquando cu mea, iuvaret disputando id sea. Labore putant eloquentiam no
+                                    his. Mutat posidonium usu ea, ad vis mediocrem scriptorem neglegentur. Vide
+                                    appellantur mel ad. Liber errem commune ad vel, cum semper ponderum no, eos an
+                                    neglegentur reprehendunt.
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="England" role="tabpanel" aria-labelledby="England-tab">
+                                <div style="height:300px;width:auto;border:1px solid #ccc;overflow:auto;">
+
+                                    Ea altera deseruisse mnesarchum vis. Debet oratio vivendo an vis, solet mucius
+                                    integre qui an, has nihil decore hendrerit ut. In putent scripserit nam, mei
+                                    quaerendum instructior ei. Ne eam modo meliore hendrerit, in eirmod platonem
+                                    definitiones mea. Te his ipsum dignissim.
+
+                                    Vix audire maiestatis ut, copiosae tacimates eam te. Nec electram gloriatur in,
+                                    prompta dolorum ut quo. Vis no impetus conceptam, ad consul percipit nam, usu in
+                                    falli nulla feugait. Vis et consul mucius. Eos eu habemus persecuti delicatissimi,
+                                    vim ne alii tation copiosae, qui graeco mandamus periculis et. Atqui feugiat
+                                    urbanitas eu vis, possit epicurei incorrupte ea per.
+
+                                    Mea consul inermis ne, sea vocent equidem no, an sit assum oportere. Eam ad timeam
+                                    insolens, detraxit aliquando et eam, equidem assentior ut sit. Ad minim minimum
+                                    splendide ius, quem ornatus volutpat usu ad. Vim ex illum aperiam adolescens, ei
+                                    sit quaerendum contentiones voluptatibus.
+
+                                    No aliquid prodesset ius, duo id singulis atomorum aliquando. Ius eruditi
+                                    accommodare necessitatibus ea, at eum saepe instructior. Ius eu graeci deleniti
+                                    voluptatibus, id brute mentitum splendide usu, commodo intellegat delicatissimi at
+                                    nam. Nam suas liberavisse id.
+
+                                    Nisl iuvaret assentior eu sea, pri affert vivendo volutpat no. Nostrum scriptorem
+                                    ei est. His cu postea impedit appellantur, cu prima modus definitionem vis. Ad
+                                    debet inermis accusata sed, falli iudico vocibus at pro. Eripuit numquam id nec.
+
+                                    Nisl tota aliquando cu mea, iuvaret disputando id sea. Labore putant eloquentiam no
+                                    his. Mutat posidonium usu ea, ad vis mediocrem scriptorem neglegentur. Vide
+                                    appellantur mel ad. Liber errem commune ad vel, cum semper ponderum no, eos an
+                                    neglegentur reprehendunt.
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="Turkey" role="tabpanel" aria-labelledby="Turkey-tab">
+                                <div style="height:300px;width:auto;border:1px solid #ccc;overflow:auto;">
+
+                                    Vix audire maiestatis ut, copiosae tacimates eam te. Nec electram gloriatur in,
+                                    prompta dolorum ut quo. Vis no impetus conceptam, ad consul percipit nam, usu in
+                                    falli nulla feugait. Vis et consul mucius. Eos eu habemus persecuti delicatissimi,
+                                    vim ne alii tation copiosae, qui graeco mandamus periculis et. Atqui feugiat
+                                    urbanitas eu vis, possit epicurei incorrupte ea per.
+
+                                    Mea consul inermis ne, sea vocent equidem no, an sit assum oportere. Eam ad timeam
+                                    insolens, detraxit aliquando et eam, equidem assentior ut sit. Ad minim minimum
+                                    splendide ius, quem ornatus volutpat usu ad. Vim ex illum aperiam adolescens, ei
+                                    sit quaerendum contentiones voluptatibus.
+
+                                    No aliquid prodesset ius, duo id singulis atomorum aliquando. Ius eruditi
+                                    accommodare necessitatibus ea, at eum saepe instructior. Ius eu graeci deleniti
+                                    voluptatibus, id brute mentitum splendide usu, commodo intellegat delicatissimi at
+                                    nam. Nam suas liberavisse id.
+
+                                    Nisl iuvaret assentior eu sea, pri affert vivendo volutpat no. Nostrum scriptorem
+                                    ei est. His cu postea impedit appellantur, cu prima modus definitionem vis. Ad
+                                    debet inermis accusata sed, falli iudico vocibus at pro. Eripuit numquam id nec.
+
+                                    Nisl tota aliquando cu mea, iuvaret disputando id sea. Labore putant eloquentiam no
+                                    his. Mutat posidonium usu ea, ad vis mediocrem scriptorem neglegentur. Vide
+                                    appellantur mel ad. Liber errem commune ad vel, cum semper ponderum no, eos an
+                                    neglegentur reprehendunt.
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="Germany" role="tabpanel" aria-labelledby="Germany-tab">
+                                <div style="height:300px;width:auto;border:1px solid #ccc;overflow:auto;">
+
+                                    Mea consul inermis ne, sea vocent equidem no, an sit assum oportere. Eam ad timeam
+                                    insolens, detraxit aliquando et eam, equidem assentior ut sit. Ad minim minimum
+                                    splendide ius, quem ornatus volutpat usu ad. Vim ex illum aperiam adolescens, ei
+                                    sit quaerendum contentiones voluptatibus.
+
+                                    No aliquid prodesset ius, duo id singulis atomorum aliquando. Ius eruditi
+                                    accommodare necessitatibus ea, at eum saepe instructior. Ius eu graeci deleniti
+                                    voluptatibus, id brute mentitum splendide usu, commodo intellegat delicatissimi at
+                                    nam. Nam suas liberavisse id.
+
+                                    Nisl iuvaret assentior eu sea, pri affert vivendo volutpat no. Nostrum scriptorem
+                                    ei est. His cu postea impedit appellantur, cu prima modus definitionem vis. Ad
+                                    debet inermis accusata sed, falli iudico vocibus at pro. Eripuit numquam id nec.
+
+                                    Nisl tota aliquando cu mea, iuvaret disputando id sea. Labore putant eloquentiam no
+                                    his. Mutat posidonium usu ea, ad vis mediocrem scriptorem neglegentur. Vide
+                                    appellantur mel ad. Liber errem commune ad vel, cum semper ponderum no, eos an
+                                    neglegentur reprehendunt.
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div>
+                    <input type="text" class="form-control">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+
+            </div>
+            <div class="col" style="text-align: center; border:1px solid #ccc">
+                <h3 style="text-align: center;">Current Moves</h3>
+                <form style="text-align: justify;">
+                    <div class="p-3">
+                        <lablel class="p-1">
+                            A PAR
+                        </lablel>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option selected>Choose...</option>
+                            <option value="1">Hold</option>
+                            <option value="2">Move</option>
+                            <option value="3">Con</option>
+                            <option value="4">Support</option>
+                        </select>
+                    </div>
+
+                    <div class="p-3">
+                        <lablel class="p-1">
+                            A BUR
+                        </lablel>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option selected>Choose...</option>
+                            <option value="1">Hold</option>
+                            <option value="2">Move</option>
+                            <option value="3">Con</option>
+                            <option value="4">Support</option>
+                        </select>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option selected>BUR</option>
+                        </select>
+                    </div>
+
+                    <div class="p-3">
+                        <lablel class="p-1">
+                            A PIC
+                        </lablel>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option selected>Choose...</option>
+                            <option value="1">Hold</option>
+                            <option value="2">Move</option>
+                            <option value="3">Con</option>
+                            <option value="4">Support</option>
+                        </select>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option selected>A BUR</option>
+                        </select>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option selected>Choose...</option>
+                            <option value="1">Hold</option>
+                            <option value="2">Move</option>
+                            <option value="3">Con</option>
+                            <option value="4">Support</option>
+                        </select>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option selected>LON</option>
+                        </select>
+                    </div>
+
+                    <div class="p-3">
+                        <lablel class="p-1">
+                            F ENG
+                        </lablel>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option selected>Choose...</option>
+                            <option value="1">Hold</option>
+                            <option value="2">Move</option>
+                            <option value="3">Con</option>
+                            <option value="4">Support</option>
+                        </select>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option selected>A BRE</option>
+                        </select>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option selected>Choose...</option>
+                            <option value="1">Hold</option>
+                            <option value="2">Move</option>
+                            <option value="3">Con</option>
+                            <option value="4">Support</option>
+                        </select>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option selected>LON</option>
+                        </select>
+                    </div>
+
+                    <div class="p-3">
+                        <lablel class="p-1">
+                            A BRE
+                        </lablel>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option selected>Choose...</option>
+                            <option value="1">Hold</option>
+                            <option value="2">Move</option>
+                            <option value="3">Con</option>
+                            <option value="4">Support</option>
+                        </select>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option selected>LON</option>
+                        </select>
+                    </div>
+                    <div style="text-align: center;">
+                        <h1 class="p-5" >10:23</h1>
+                        <button type="submit" class="btn btn-primary" >Submit</button>
+                    </div>
+                </form>
+
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
     <script>
         window.jQuery = window.$ = require('jquery');
     </script>
-    <script src="../node_modules/jquery/dist/jquery.js"></script>
     <script src="../node_modules/popper.js/dist/umd/popper.js"></script>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
-
-
-
-
-
 </body>
 
 </html>
