@@ -17,12 +17,12 @@
                 <li class="nav-item dropdown ">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        Dropdown link
+                        Menu
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Game Statistics</a>
-                        <a class="dropdown-item" href="#">New Game</a>
-                        <a class="dropdown-item" href="#">Log Out</a>
+                        <a class="dropdown-item" href="#" id="startStats">Game Statistics</a>
+                        <a class="dropdown-item" href="#" id="newGame">New Game</a>
+                        <a class="dropdown-item" href="#" id="logOut">Log Out</a>
                     </div>
                 </li>
             </ul>
@@ -73,14 +73,14 @@
                             <td>Game C</td>
                             <td>5 Days</td>
                             <td>03/11/2017</td>
-                            <td><button type="button" class="btn btn-primary">Join</button></td>
+                            <td><button type="button" class="btn btn-primary" id="join1"> Join</button></td>
                         </tr>
                         <tr>
 
                             <td>Game D</td>
                             <td>5 Days</td>
                             <td>04/05/2019</td>
-                            <td><button type="button" class="btn btn-primary">Join</button></td>
+                            <td><button type="button" class="btn btn-primary" id="join2">Join</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -105,14 +105,14 @@
                             <td>Game A</td>
                             <td>3 Days</td>
                             <td>02/02/2018</td>
-                            <td><button type="button" class="btn btn-primary">Re-Join</button></td>
+                            <td><button type="button" class="btn btn-primary" id = "join3">Re-Join</button></td>
                         </tr>
                         <tr>
 
                             <td>Game B</td>
                             <td>1 Day</td>
                             <td>02/03/2018</td>
-                            <td><button type="button" class="btn btn-primary">Re-Join</button></td>
+                            <td><button type="button" class="btn btn-primary" id = "join4">Re-Join</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -126,10 +126,28 @@
     <script>
         var urlParams = new URLSearchParams(location.search);
         console.log(urlParams.get("username"));
-        document.getElementById("welcome").innerHTML = urlParams.get("username");
-        document.getElementById("navbarDropdownMenuLink").innerHTML = urlParams.get("username");
+        let username = urlParams.get("username");
+        document.getElementById("welcome").innerHTML = username;
+        document.getElementById("navbarDropdownMenuLink").innerHTML = username;
 
-        console.log(global.db);
+        document.getElementById("newGame").addEventListener("click", function () {
+            let link = "invite.html?username=" + username;
+            window.location.href = link;
+        });
+
+        for (var i = 1; i <= 4; i++) {
+            var join = "join" + i;
+            document.getElementById(join).addEventListener("click", function () {
+                let link = "game.html?username=" + username;
+                window.location.href = link;
+            });
+
+        }
+
+        document.getElementById("logOut").addEventListener("click", function () {
+            let link = "index.html";
+            window.location.href = link;
+        });
     </script>
 
     <script>

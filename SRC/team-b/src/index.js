@@ -12,7 +12,6 @@ firebase.initializeApp(config);
 
 var db = firebase.database();
 
-global.db = db;
 
 var playersRef = db.ref("player");
 

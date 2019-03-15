@@ -17,12 +17,12 @@
                 <li class="nav-item dropdown ">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        Dropdown link
+                        Menu
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Game Statistics</a>
-                        <a class="dropdown-item" href="#">New Game</a>
-                        <a class="dropdown-item" href="#">Log Out</a>
+                        <a class="dropdown-item" href="#" id = "startStats">Game Statistics</a>
+                        <a class="dropdown-item" href="#" id = "Dashboard">Dashboard</a>
+                        <a class="dropdown-item" href="#" id = "logOut">Log Out</a>
                     </div>
                 </li>
             </ul>
@@ -35,30 +35,30 @@
         <div class="row">
             <div class="col">
                 <h3>New Game Options</h3>
-                <form>
+                <form id = "gameInfo"> 
                     <div class="form-group">
-                        <label for="inputsm">Game Name</label>
-                        <input class="form-control input" id="inputsm" type="text">
+                        <label for="gameName">Game Name</label>
+                        <input class="form-control input" id="gameName" name = "gameName" type="text">
                     </div>
                     <div class="form-group">
-                        <label for="inputdefault">Game Description (Optional)</label>
-                        <input class="form-control" id="inputdefault" type="text">
+                        <label for="gameOption">Game Description (Optional)</label>
+                        <input class="form-control" id="gameOption" name = "gameOption" type="text">
                     </div>
 
 
                     <div>
                         <label class="input-group-text" for="inputGroupSelect01">Turn Timer Limit</label>
                     </div>
-                    <label class="input-group-text" for="inputGroupSelect01">Days</label>
-                    <select class="custom-select" id="inputGroupSelect01">
+                    <label class="input-group-text" for="days">Days</label>
+                    <select class="custom-select" id="days">
                         <option selected>Choose...</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
                     </select>
 
-                    <label class="input-group-text" for="inputGroupSelect01">Hours</label>
-                    <select class="custom-select" id="inputGroupSelect01">
+                    <label class="input-group-text" for="hours">Hours</label>
+                    <select class="custom-select" id="hours">
                         <option selected>Choose...</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -70,35 +70,35 @@
 
             </div>
             <div class="col">
-                <form>
+                <form id = "allUsers">
                     <div class="form-group">
-                        <label for="inputsm">Invite User 1</label>
-                        <input class="form-control input" id="inputsm" type="text">
+                        <label for="user1">Invite User 1</label>
+                        <input class="form-control input" id="user1" name = "user1" type="text">
                     </div>
                     <div class="form-group">
-                        <label for="inputdefault">Invite User 2</label>
-                        <input class="form-control" id="inputdefault" type="text">
+                        <label for="user2">Invite User 2</label>
+                        <input class="form-control" id="user2" name = "user2" type="text">
                     </div>
                     <div class="form-group">
-                        <label for="inputsm">Invite User 3</label>
-                        <input class="form-control input" id="inputsm" type="text">
+                        <label for="user3">Invite User 3</label>
+                        <input class="form-control input" id="user3" name = "user3"type="text">
                     </div>
                     <div class="form-group">
-                        <label for="inputdefault">Invite User 4</label>
-                        <input class="form-control" id="inputdefault" type="text">
+                        <label for="user4">Invite User 4</label>
+                        <input class="form-control" id="user4" name = "user4" type="text">
                     </div>
                     <div class="form-group">
-                        <label for="inputsm">Invite User 5</label>
-                        <input class="form-control input" id="inputsm" type="text">
+                        <label for="user5">Invite User 5</label>
+                        <input class="form-control input" id="user5" name = "user5" type="text">
                     </div>
                     <div class="form-group">
-                        <label for="inputdefault">Invite User 6</label>
-                        <input class="form-control" id="inputdefault" type="text">
+                        <label for="user6">Invite User 6</label>
+                        <input class="form-control" id="user6" name = "user6" type="text">
                     </div>
-                    <div class="form-group">
-                        <label for="inputdefault">Invite User 7</label>
-                        <input class="form-control" id="inputdefault" type="text">
-                    </div>
+                    <!-- <div class="form-group">
+                        <label for="user7">Invite User 7</label>
+                        <input class="form-control" id="user7" name = "user7" type="text">
+                    </div> -->
                     <div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
@@ -113,12 +113,12 @@
 
 
     <script>
-        var urlParams = new URLSearchParams(location.search);
-        console.log(urlParams.get("username"));
-        document.getElementById("welcome").innerHTML = urlParams.get("username");
-        document.getElementById("navbarDropdownMenuLink").innerHTML = urlParams.get("username");
+        // var urlParams = new URLSearchParams(location.search);
+        // console.log(urlParams.get("username"));
+        // document.getElementById("welcome").innerHTML = urlParams.get("username");
+        // document.getElementById("navbarDropdownMenuLink").innerHTML = urlParams.get("username");
 
-        console.log(global.db);
+        // console.log(global.db);
     </script>
 
     <script>
@@ -126,6 +126,9 @@
     </script>
     <script src="../node_modules/popper.js/dist/umd/popper.js"></script>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="firebase.js"></script>
+    <script src="systemFirebase.js"></script>
+    <script src="invite.js"></script>
 </body>
 
 </html>

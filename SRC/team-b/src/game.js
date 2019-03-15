@@ -1,14 +1,20 @@
-<html>
+var urlParams = new URLSearchParams(location.search);
+console.log(urlParams.get("username"));
+let username = urlParams.get("username");
 
-    <head>
-        <title>Game Play</title>
+document.getElementById("navbarDropdownMenuLink").innerHTML = username;
 
-    </head>
+document.getElementById("Dashboard").addEventListener("click", function () {
+    let link = "dashboard.html?username=" + username;
+    window.location.href = link;
+});
 
-    <body>
+document.getElementById("logOut").addEventListener("click", function () {
+    let link = "index.html";
+    window.location.href = link;
+});
 
-
-
-    </body>
-
-</html>
+document.getElementById("newGame").addEventListener("click", function(){
+    let link = "invite.html?username=" + username;
+    window.location.href = link;
+});

@@ -6,7 +6,7 @@ const {
 
 const shell = require("electron").shell
 global.sharedObj = {prop1: null};
-
+require('electron-reload')("src");
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -17,7 +17,7 @@ function createWindow() {
     })
 
     // and load the index.html of the app.
-    win.loadFile('src/game.html')
+    win.loadFile('src/index.html')
 
 
     // Open the DevTools.
