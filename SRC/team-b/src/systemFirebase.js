@@ -11,7 +11,8 @@ var config = {
 firebase.initializeApp(config);
 
 let db = firebase.database();
-let ref = db.ref("player");
+let playersRef = db.ref("player");
+let gameRef = db.ref("games");
 let x = 1;
 
 
@@ -29,33 +30,16 @@ let PlayerFireBaseClass = class {
 
     }
 
-
     getPlayers(userName) {
 
-        var x = ref;
+        var x = playersRef;
         return x
 
     }
 
-    validatePlayer(userName) {
-
-        ref.once("value").then(function (data) {
-            if (data.child(userName).val() != null) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-    }
-
-    test() {
-        return ref;
-    }
-
-    printX() {
-        console.log(x);
-    }
 }
+
+
 
 
 let PlayerFireBase = new PlayerFireBaseClass();

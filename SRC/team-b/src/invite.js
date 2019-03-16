@@ -107,9 +107,23 @@ $(document).ready(function () {
                 console.log("Some Players Not found!!! Cannot Create Game!!!");
                 return false;
             }
+
             console.log("Found All Create Game!!!");
+            // Create Game
+            // Create all game params
+            let gameOwner = username;
+            let invites = Object.assign({}, names);
+            gameRef.push().set({
+                    name: game[0]["value"],
+                    owner: gameOwner,
+                    invites: invites,
+                    TimeLimitDays: game.days,
+                    TimeLimitHours: game.hours
+                }
+            );
+
         })
-        
+
 
         return false;
     })
