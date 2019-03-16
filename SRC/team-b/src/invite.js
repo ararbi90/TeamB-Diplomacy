@@ -66,7 +66,7 @@ $(document).ready(function () {
         let userList = getUserLists(users);
         let repeat = userList.repeat;
         userList = userList.userNames;
-        console.log(userList)
+        //console.log(userList)
 
         // If there are repeated values the submit dies her
         if (repeat) {
@@ -84,7 +84,7 @@ $(document).ready(function () {
             // Verifies all usernames exist
             let notFound = false;
             let names = Object.keys(userList);
-            console.log(names)
+            //console.log(names)
             for (let i = 0; i < names.length; i++) {
                 //console.log(n);
                 if (allPlayers[names[i]] == undefined) {
@@ -109,18 +109,47 @@ $(document).ready(function () {
             }
 
             console.log("Found All Create Game!!!");
-            // Create Game
+            // Create Gamea
             // Create all game params
             let gameOwner = username;
             let invites = Object.assign({}, names);
-            gameRef.push().set({
-                    name: game[0]["value"],
-                    owner: gameOwner,
-                    invites: invites,
-                    TimeLimitDays: game.days,
-                    TimeLimitHours: game.hours
+            let gameID = gameRef.push().key // This key is the most important part of creating the game
+            console.log(gameID)
+            gameRef.child(gameID).set({
+                name: game[0]["value"],
+                owner: gameOwner,
+                invites: invites,
+                TimeLimitDays: game.days,
+                TimeLimitHours: game.hours
+            }, function (error) {
+                if (error) {
+
+                } else {
+                    // This section of the code sends all the invites to the a game and creates the owner of the game
+                    console.log("Fucking set");
+                    playersRef.child(username).child("game").child(gameID).set({
+                        name: game[0]["value"],
+                        days: game.days,
+                        hours: game.hours,
+                        dateCreated: new Date().toJSON().slice(0,10).replace(/-/g,'/')
+                    })
+                    for (let i = 0; i < names.length; i++) {
+                        playersRef.child(names[i]).child("gameInvite").child(gameID).set({
+                            name: game[0]["value"],
+                            owner: username,
+                            dateCreated: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+                            days: game.days,
+                            hours: game.hours,
+
+                        })
+
+                    }
+
                 }
-            );
+            });
+            console.log();
+            let setGameOwner = username;
+
 
         })
 

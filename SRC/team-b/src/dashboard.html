@@ -58,7 +58,7 @@
         <div class="row">
             <div class="col">
                 <h3>Games You've Been Invite To</h3>
-                <table class="table">
+                <table class="table" i>
                     <thead class="thead-light" style="background-color: gray;">
                         <tr>
                             <td>Name</td>
@@ -67,21 +67,8 @@
                             <td>Join</td>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-
-                            <td>Game C</td>
-                            <td>5 Days</td>
-                            <td>03/11/2017</td>
-                            <td><button type="button" class="btn btn-primary" id="join1"> Join</button></td>
-                        </tr>
-                        <tr>
-
-                            <td>Game D</td>
-                            <td>5 Days</td>
-                            <td>04/05/2019</td>
-                            <td><button type="button" class="btn btn-primary" id="join2">Join</button></td>
-                        </tr>
+                    <tbody id = "gameInviteAppend">
+                        
                     </tbody>
                 </table>
 
@@ -99,21 +86,8 @@
                             <td>Re-Join</td>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-
-                            <td>Game A</td>
-                            <td>3 Days</td>
-                            <td>02/02/2018</td>
-                            <td><button type="button" class="btn btn-primary" id = "join3">Re-Join</button></td>
-                        </tr>
-                        <tr>
-
-                            <td>Game B</td>
-                            <td>1 Day</td>
-                            <td>02/03/2018</td>
-                            <td><button type="button" class="btn btn-primary" id = "join4">Re-Join</button></td>
-                        </tr>
+                    <tbody id = "currentGames">
+                        
                     </tbody>
                 </table>
 
@@ -124,30 +98,7 @@
     </div>
 
     <script>
-        var urlParams = new URLSearchParams(location.search);
-        console.log(urlParams.get("username"));
-        let username = urlParams.get("username");
-        document.getElementById("welcome").innerHTML = username;
-        document.getElementById("navbarDropdownMenuLink").innerHTML = username;
-
-        document.getElementById("newGame").addEventListener("click", function () {
-            let link = "invite.html?username=" + username;
-            window.location.href = link;
-        });
-
-        for (var i = 1; i <= 4; i++) {
-            var join = "join" + i;
-            document.getElementById(join).addEventListener("click", function () {
-                let link = "game.html?username=" + username;
-                window.location.href = link;
-            });
-
-        }
-
-        document.getElementById("logOut").addEventListener("click", function () {
-            let link = "index.html";
-            window.location.href = link;
-        });
+        
     </script>
 
     <script>
@@ -155,6 +106,9 @@
     </script>
     <script src="../node_modules/popper.js/dist/umd/popper.js"></script>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="firebase.js"></script>
+    <script src="systemFirebase.js"></script>
+    <script src="dashboard.js"></script>
 </body>
 
 </html>
