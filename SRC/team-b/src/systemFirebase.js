@@ -25,24 +25,14 @@ let playerData = null;
 let PlayerFireBaseClass = class {
 
     constructor() {
-        this.test = 0;
+
 
     }
 
-    getPlayer(userName) {
-        let ik= this.getPlayerStub(userName);
-        let count = 0
 
-        return ik;
-        
-        
-    }
+    getPlayers(userName) {
 
-    getPlayerStub(userName) {
-
-
-        var x = ref.child(userName).child("username").toString();
-
+        var x = ref;
         return x
 
     }
@@ -69,5 +59,5 @@ let PlayerFireBaseClass = class {
 
 
 let PlayerFireBase = new PlayerFireBaseClass();
-console.log(PlayerFireBase.getPlayer("abc"));
+//console.log(PlayerFireBase.getPlayers());
 
