@@ -25,13 +25,21 @@ document.getElementById("logOut").addEventListener("click", function () {
 });
 
 function joinGame(event) {
+    // Need to make updates here
+    let link = "game.html?gameID=" + this.id + "&username=" + username;
+    console.log(link);
+    window.location.href = link;
+}
+
+function reJoinGame(event) {
+    // Need to make updates here
     let link = "game.html?gameID=" + this.id + "&username=" + username;
     console.log(link);
     window.location.href = link;
 }
 
 function setAllInvites() {
-    // This fucntion creates all the invites tabs
+    // This fucntion creates all the invites tables
     var count = 0
     var tableInvite = $("#gameInviteAppend");
     playersRef.child(username).child("gameInvite").on("child_added", function (data) {
@@ -45,44 +53,21 @@ function setAllInvites() {
             "<td><button type='button' class='btn btn-primary' id=" + data.key + ">Join</button></td></tr>");
         $("#" + data.key + "").click(joinGame);
 
-        // let username = urlParams.get("username");
-        // let userInfo = data.child(username).val();
-        // console.log(userInfo.gameInvite);
-        // console.log(typeof (userInfo.gameInvite));
-        // var tableInvite = $("#gameInviteAppend");
-
-        // for (let game in userInfo.gameInvite) {
-        //     console.log((game));
-        //     tableInvite.append("<tr>" +
-        //         "<td>" + userInfo.gameInvite[game].name + "</td>" +
-        //         "<td>" + userInfo.gameInvite[game].days + " </td>" +
-        //         "<td>" + userInfo.gameInvite[game].dateCreated + "</td>" +
-        //         "<td><button type='button' class='btn btn-primary' id=" + game + ">Join</button></td></tr>");
-        //     $("#" + game + "").click(function (event) {
-        //         let link = "game.html?gameID=" + this.id + "&username=" + username;
-        //         console.log(link);
-        //         window.location.href = link;
-        //     });
-        // }
-
-
-
-
     });
 
 }
 
 function setAllGamesInProgress() {
+    // This fucntion creates all the game tables
     var gameTable = $("#currentGames")
-    playersRef.child(username).child("gameInvite").on("child_added", function (data) {
+    playersRef.child(username).child("game").on("child_added", function (data) {
         console.log(data.val());
-
         gameTable.append("<tr>" +
             "<td>" + data.val().name + "</td>" +
             "<td>" + data.val().days + " </td>" +
             "<td>" + data.val().dateCreated + "</td>" +
             "<td><button type='button' class='btn btn-primary' id=" + data.key + ">Re-Join</button></td></tr>");
-        $("#" + data.key + "").click(joinGame);
+        $("#" + data.key + "").click(reJoinGame);
 
     });
 
