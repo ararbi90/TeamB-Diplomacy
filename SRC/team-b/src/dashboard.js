@@ -1,24 +1,15 @@
 $ = require('jquery');
+// Username information from the link
 var urlParams = new URLSearchParams(location.search);
-//console.log(urlParams.get("username"));
 let username = urlParams.get("username");
 document.getElementById("welcome").innerHTML = username;
 document.getElementById("navbarDropdownMenuLink").innerHTML = username;
 
+// Dashboard changes
 document.getElementById("newGame").addEventListener("click", function () {
     let link = "invite.html?username=" + username;
     window.location.href = link;
 });
-
-// for (var i = 1; i <= 4; i++) {
-//     var join = "join" + i;
-//     document.getElementById(join).addEventListener("click", function () {
-//         let link = "game.html?username=" + username;
-//         window.location.href = link;
-//     });
-
-// }
-
 document.getElementById("logOut").addEventListener("click", function () {
     let link = "index.html";
     window.location.href = link;
@@ -26,6 +17,7 @@ document.getElementById("logOut").addEventListener("click", function () {
 
 function joinGame(event) {
     // Need to make updates here
+    // Create on value promises
     let link = "game.html?gameID=" + this.id + "&username=" + username;
     console.log(link);
     window.location.href = link;
@@ -33,6 +25,7 @@ function joinGame(event) {
 
 function reJoinGame(event) {
     // Need to make updates here
+    // Create on value promises
     let link = "game.html?gameID=" + this.id + "&username=" + username;
     console.log(link);
     window.location.href = link;

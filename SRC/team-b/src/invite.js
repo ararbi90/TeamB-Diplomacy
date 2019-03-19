@@ -1,16 +1,13 @@
 $ = require('jquery');
 
+// Get username from URL
 var urlParams = new URLSearchParams(location.search);
-// console.log(urlParams.get("username"));
 let username = urlParams.get("username");
-
 document.getElementById("navbarDropdownMenuLink").innerHTML = username;
-
 document.getElementById("Dashboard").addEventListener("click", function () {
     let link = "dashboard.html?username=" + username;
     window.location.href = link;
 });
-
 document.getElementById("logOut").addEventListener("click", function () {
     let link = "index.html";
     window.location.href = link;
@@ -29,7 +26,7 @@ function getUserLists(users) {
                 let messageID = "#user" + (i + 1) + "-Message";
                 let messageVar = $(messageID);
                 messageVar.css("display", "none");
-                //console.log(usersList[users[i].value]);
+
 
             } else {
                 let messageID = "#user" + (i + 1) + "-Message";
@@ -45,7 +42,7 @@ function getUserLists(users) {
             messageVar.css("display", "none");
         }
     }
-    //console.log(repeatList);
+
     return {
         userNames: usersList,
         repeat: repeatList
@@ -57,16 +54,16 @@ $(document).ready(function () {
     $("#allUsers").submit(function (event) {
         var users = $(this).serializeArray();
         var game = $("#gameInfo").serializeArray();
-
-        let allPlayers = null;
-
+        // Add attribites to the objects
         game.days = $("#days").val();
         game.hours = $("#hours").val();
+        
 
+        // Creates a hashtable for users
         let userList = getUserLists(users);
         let repeat = userList.repeat;
         userList = userList.userNames;
-        //console.log(userList)
+
 
         // If there are repeated values the submit dies her
         if (repeat) {
@@ -74,9 +71,10 @@ $(document).ready(function () {
         }
 
         //This section verifies players and creates the game
-        allPlayers = {};
+        // This is promise
         PlayerFireBase.getPlayers().once("value").then(function (snapshot) {
             // Get all usernames
+            let allPlayers = {};
             snapshot.forEach(function (data) {
                 allPlayers[data.key] = data;
             });
@@ -84,10 +82,10 @@ $(document).ready(function () {
             // Verifies all usernames exist
             let notFound = false;
             let names = Object.keys(userList);
-            //console.log(names)
             for (let i = 0; i < names.length; i++) {
-                //console.log(n);
+
                 if (allPlayers[names[i]] == undefined) {
+                    // This is where the red 'x' go.
                     notFound = true;
                     let messageID = "#user" + (userList[names[i]] + 1) + "-Message";
                     let messageVar = $(messageID);
@@ -95,6 +93,7 @@ $(document).ready(function () {
                     messageVar.html("Not Found");
                     messageVar.css("display", "block");
                 } else {
+                    // This is where check marks are placed
                     let messageID = "#user" + (userList[names[i]] + 1) + "-Message";
                     let messageVar = $(messageID);
                     console.log(messageID);
@@ -126,7 +125,7 @@ $(document).ready(function () {
 
                 } else {
                     // This section of the code sends all the invites to the a game and creates the owner of the game
-                    console.log("Fucking set");
+                    console.log("Updating users");
                     playersRef.child(username).child("game").child(gameID).set({
                         name: game[0]["value"],
                         days: game.days,
@@ -147,8 +146,8 @@ $(document).ready(function () {
 
                 }
             });
-            console.log();
-            let setGameOwner = username;
+
+
 
 
         })

@@ -32,7 +32,7 @@ ipcRenderer.send('show-prop1');
 // show changed value in renderer process (in dev console)
 console.log(remote.getGlobal('sharedObj').prop1);
 
-
+// This is to change between login and create user
 document.getElementById("createNew").addEventListener("click", function () {
     document.getElementById("login-form").style.display = "none";
     document.getElementById("register-form").style.display = "block";
@@ -43,6 +43,7 @@ document.getElementById("backSign").addEventListener("click", function () {
     document.getElementById("register-form").style.display = "none";
 });
 
+// This is the submit option for creating an account
 $("#register-form").submit(function (event) {
     var data = $(this).serializeArray();
     var password = data[1]["value"];
@@ -50,14 +51,15 @@ $("#register-form").submit(function (event) {
     if (password != passwordRe) {
         document.getElementById("passwordDo").innerHTML = "Passwords dont match";
     } else {
-        let ref = firebase.database().ref("player");
-        var name;
+        // Test to see if user name exits
+        let ref = firebase.database().ref("player"); // Firebase referece 
         var usernameIn = data[0]["value"];
         var passwordIn = data[1]["value"];
         var gameIn = "";
         var invitationIn = "";
         ref.once("value").then(function (data) {
-            if (data.child(usernameIn).val() == null) {
+
+            if (data.child(usernameIn).val() == null) { // This if statement verifies if username does not exist
                 console.log("Created");
                 document.getElementById("passwordDo").innerHTML = "Created";
                 ref.child(usernameIn).set({
@@ -66,6 +68,9 @@ $("#register-form").submit(function (event) {
                     game: gameIn,
                     invitation: invitationIn
                 });
+                // Return to login
+                document.getElementById("login-form").style.display = "block";
+                document.getElementById("register-form").style.display = "none";
             } else {
                 document.getElementById("passwordDo").innerHTML = "User name already exists";
                 console.log("Not created");
@@ -78,18 +83,18 @@ $("#register-form").submit(function (event) {
 
 
 $("#login-form").submit(function (event) {
+    // Login fucntionality
     var data = $(this).serializeArray();
     console.log(data);
     var usernameIn = data[0]["value"];
     var passwordIn = data[1]["value"];
-    var userID;
 
-    let ref = firebase.database().ref("player");
+    let ref = firebase.database().ref("player"); // Referece for firebase
     let found = false;
     ref.once("value").then(function (data) {
 
-        if (data.child(usernameIn).val() != null) {
-            if (data.child(usernameIn).val().password == passwordIn) {
+        if (data.child(usernameIn).val() != null) { // Cheaks if user exists
+            if (data.child(usernameIn).val().password == passwordIn) { // Test Password
                 document.getElementById("found").innerHTML = "Found";
                 var link = "dashboard.html?username=" + usernameIn + "&userID=" + data.child(usernameIn).key;
                 window.location.href = link;
@@ -106,45 +111,3 @@ $("#login-form").submit(function (event) {
     return false;
 });
 
-function setCookie(cookieName, cookieValue, maxDays) {
-    var date = new Date();
-    date.setTime(date.getTime() + (maxDays * 24 * 60 * 60 * 1000));
-    var expires = "expires=" + date.toUTCString();
-    document.cookie = cookieName + "=" + cookieValue + "; " + expires + ";domain=;path=/";
-}
-
-
-function getCookie(cookieName) {
-    var name = cookieName + "=";
-    var ca = document.cookie.split('; ');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == '  ')
-            c = c.substring(1);
-        console.log("here");
-        if (c.indexOf(name) == 0)
-            return c.substring(name.length, c.length);
-    }
-
-    return "";
-}
-
-function deleteCookies() {
-    // create a list of all the cookies
-    var cookies = document.cookie.split("; ");
-
-    // loop through each cookie
-    for (var c = 0; c < cookies.length; c++) {
-        var d = window.location.hostname.split(".");
-        while (d.length > 0) {
-            var cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + "=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=" + d.join(".") + " ;path";
-            var p = location.pathname.split("/");
-            document.cookie = cookieBase + "/";
-            while (p.length > 0) {
-                document.cookie = cookieBase + p.join("/");
-                p.pop()
-            };
-            d.shift();
-        }
-    }
-}
