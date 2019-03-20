@@ -34,13 +34,16 @@ console.log(remote.getGlobal('sharedObj').prop1);
 
 // This is to change between login and create user
 document.getElementById("createNew").addEventListener("click", function () {
-    document.getElementById("login-form").style.display = "none";
-    document.getElementById("register-form").style.display = "block";
+    $("#login-form").hide("fast");
+    $("#register-form").show("slow");
+    $("#passwordDo").html = "";
 });
 
 document.getElementById("backSign").addEventListener("click", function () {
-    document.getElementById("login-form").style.display = "block";
-    document.getElementById("register-form").style.display = "none";
+    $("#register-form").hide("fast");
+    $("#login-form").show("slow");
+    //document.getElementById("login-form").style.display = "block";
+    //document.getElementById("register-form").style.display = "none";
 });
 
 // This is the submit option for creating an account
@@ -69,8 +72,10 @@ $("#register-form").submit(function (event) {
                     invitation: invitationIn
                 });
                 // Return to login
-                document.getElementById("login-form").style.display = "block";
-                document.getElementById("register-form").style.display = "none";
+                $("#register-form").hide("slow");
+                $("#login-form").show("slow");
+                //document.getElementById("login-form").style.display = "block";
+                //document.getElementById("register-form").style.display = "none";
             } else {
                 document.getElementById("passwordDo").innerHTML = "User name already exists";
                 console.log("Not created");
@@ -110,4 +115,3 @@ $("#login-form").submit(function (event) {
 
     return false;
 });
-
