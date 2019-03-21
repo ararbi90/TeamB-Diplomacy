@@ -121,5 +121,5 @@ function sendMessage()
         document.getElementById("Main").appendChild(node1);
         setTimeout(function (){document.getElementById("Main").appendChild(node2)}, 5000);
     }
-    $('#messageinput').val("")
+    $('#messageinput').val("");
 }
