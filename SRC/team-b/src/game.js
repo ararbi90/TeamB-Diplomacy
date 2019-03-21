@@ -30,6 +30,7 @@ var locations = new Array("ADR","AEG","ALB","ANK","APU","ARM","BAL","BAR","BEL",
 
 // Get first move dropdown element from DOM
 var firstMoveDropdowns = document.getElementsByClassName("firstMoveSelect");
+var secondMoveDropdowns = document.getElementsByClassName("secondMoveSelect");
 
 // Loop through each first move dropdown
 for (var i = 0; i < firstMoveDropdowns.length; ++i) {
@@ -62,89 +63,70 @@ function removeOptions(selectbox)
     }
 }
 
-function addUnitsToDropdown(move)
+function addUnitsToDropdown(move, index)
 {
-    // Get dropdown element from DOM
-    var unitDropdowns = document.getElementsByClassName("unitSelect");
+    // Get dropdown by index
+    var unitDropdown = document.getElementById("unitSelect" + index);
 
     if (move == "Convoy")
     {
-        for (var i = 0; i < unitDropdowns.length; i++)
+        for (var i = 0; i < units.length; ++i)
         {
-            var dropdown = unitDropdowns[i];
-            for (var j = 0; j < units.length; ++j)
+            // Add only army units (can't convoy fleet)
+            if (units[i].charAt(0) === "A")
             {
-                // Add only army units (can't convoy fleet)
-                if (units[j].charAt(0) === "A")
-                {
-                    // Append the element to the end of the Array list
-                    dropdown[dropdown.length] = new Option(units[j], units[j]);
-                }
+                // Append the element to the end of the Array list
+                unitDropdown[unitDropdown.length] = new Option(units[i], units[i]);
             }
         }
     }
     else
     {
         // Otherwise add all units
-        for (var i = 0; i < unitDropdowns.length; i++)
+        for (var j = 0; j < units.length; ++j)
         {
-            var dropdown = unitDropdowns[i];
-            for (var j = 0; j < units.length; ++j)
-            {
-                // Append the element to the end of the Array list
-                dropdown[dropdown.length] = new Option(units[j], units[j]);
-            }
+            // Append the element to the end of the Array list
+            unitDropdown[unitDropdown.length] = new Option(units[j], units[j]);
         }
     }
 }
 
-function addSecondMovesToDropdown(move)
+function addSecondMovesToDropdown(move, index)
 {
-    var moveDropdowns2 = document.getElementsByClassName("secondMoveSelect");
+    // Get dropdown by index
+    var secondMoveDropdown = document.getElementById("secondMoveSelect" + index);
 
     if (move == "Convoy")
     {
-        for (var i = 0; i < moveDropdowns2.length; ++i)
+        for (var i = 0; i < moves.length; ++i)
         {
-            var dropdown = moveDropdowns2[i];
-            for (var j = 0; j < moves.length; ++j)
+            // Only valid second move for "Convoy" is "Move"
+            if (moves[i] === "Move")
             {
-                // Only valid second move for "Convoy" is "Move"
-                if (moves[j] === "Move")
-                {
-                    // Append the element to the end of Array list for the second move
-                    dropdown[dropdown.length] = new Option(moves[j], moves[j]);
-                }
+                // Append the element to the end of Array list for the second move
+                secondMoveDropdown[secondMoveDropdown.length] = new Option(moves[i], moves[i]);
             }
         }
     }
     else if (move == "Support")
     {
-        for (var i = 0; i < moveDropdowns2.length; ++i)
+        for (var i = 0; i < moves.length; ++i)
         {
-            var dropdown = moveDropdowns2[i];
-            for (var j = 0; j < moves.length; ++j)
+            // Only valid second moves for "Support" is {"Move", "Hold"}
+            if (moves[i] === "Move" || moves[i] === "Hold")
             {
-                // Only valid second moves for "Support" is {"Move", "Hold"}
-                if (moves[j] === "Move" || moves[j] === "Hold")
-                {
-                    // Append the element to the end of Array list for the second move
-                    dropdown[dropdown.length] = new Option(moves[j], moves[j]);
-                }
+                // Append the element to the end of Array list for the second move
+                secondMoveDropdown[secondMoveDropdown.length] = new Option(moves[i], moves[i]);
             }
         }
     }
     else
     {
         // Otherwise add all options (it will be hidden)
-        for (var i = 0; i < moveDropdowns2.length; ++i)
+        for (var i = 0; i < moves.length; ++i)
         {
-            var dropdown = moveDropdowns2[i];
-            for (var j = 0; j < moves.length; ++j)
-            {
-                // Append the element to the end of Array list for the second move
-                dropdown[dropdown.length] = new Option(moves[j], moves[j]);
-            }
+            // Append the element to the end of Array list for the second move
+            secondMoveDropdown[secondMoveDropdown.length] = new Option(moves[i], moves[i]);
         }
     }
 }
@@ -178,8 +160,8 @@ function firstMoveChoice(move, index) {
 
     removeOptions(unitDropdown);
     removeOptions(secondMoveSelect);
-    addUnitsToDropdown(move);
-    addSecondMovesToDropdown(move);
+    addUnitsToDropdown(move, index);
+    addSecondMovesToDropdown(move, index);
 }
 
 function secondMoveChoice(move, index)
