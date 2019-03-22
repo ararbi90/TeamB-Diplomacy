@@ -111,13 +111,17 @@ $(document).ready(function () {
             // Create Gamea
             // Create all game params
             let gameOwner = username;
-            let invites = Object.assign({}, names);
+            let intvite = {};
+            for(let i = 0; i < names.length; i++){
+                intvite[names[i]] = names[i];
+            }
+            console.log(intvite);
             let gameID = gameRef.push().key // This key is the most important part of creating the game
             console.log(gameID)
             gameRef.child(gameID).set({
                 name: game[0]["value"],
                 owner: gameOwner,
-                invites: invites,
+                invites: intvite,
                 TimeLimitDays: game.days,
                 TimeLimitHours: game.hours
             }, function (error) {
