@@ -24,10 +24,42 @@ function openTab(evt, tabName) {
     tabs.push(tabName);
 }
 
+function createValidMessage(input)
+{
+    var result = "";
+    count = 0;
+
+    for (var i = 0; i < input.length; i++)
+    {
+        var character = input.charAt(i);
+
+        if (count > 30)
+        {
+            count = 0;
+            result += "\n";
+            result += character;
+        }
+
+        if (character === " " || character === "\n"|| character === "\t")
+        {
+            count = 0;
+            result += character;
+        }
+        else
+        {
+            count++;
+            result += character;
+        }
+    }
+
+    return result;
+}
+
 function createUserMessage(color) {
     var node = document.createElement("LI");
     node.id = "chat-" + chatCount;
-    var textnode = document.createTextNode(document.getElementById("messageinput").value);
+    message = createValidMessage(document.getElementById("messageinput").value);
+    var textnode = document.createTextNode(message);
     node.appendChild(textnode);
     node.style.textAlign = "left";
     node.style.padding = "3px";
@@ -48,7 +80,8 @@ function createUserMessage(color) {
 
 function createIncomingMessage(color) {
     var node = document.createElement("LI");
-    var textnode = document.createTextNode(document.getElementById("messageinput").value);
+    message = createValidMessage(document.getElementById("messageinput").value);
+    var textnode = document.createTextNode(message);
     node.appendChild(textnode);
     node.style.textAlign = "left";
     node.style.padding = "3px";
@@ -67,7 +100,7 @@ function createIncomingMessage(color) {
 }
 
 function sendMessage() {
-    if (document.getElementById("messageinput").value === "")
+    if (!document.getElementById("messageinput").value.trim())
     {
         return;
     }
