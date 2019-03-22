@@ -182,3 +182,31 @@ function secondMoveChoice(move, index)
     removeOptions(locationDropdown);
     addLocationsToDropdown(locationDropdown);
 }
+
+function controllerTimer(){
+    let t = $("#timer").html();
+    let hr = parseInt(t.substring(0, t.indexOf(":")));
+    let min = parseInt(t.substring(t.indexOf(":") + 1));
+    let newMin = min - 1;
+    let newHr = hr;
+    if(newMin < 0){
+        newHr = hr - 1;
+        newMin = 59;
+    }
+    if(newMin >= 10 && newHr >= 10){
+        $("#timer").html(newHr + ":" + newMin);
+    }
+    else if(newMin >= 10){
+        $("#timer").html("0" + newHr + ":" + newMin);
+    }
+    else if(newHr >= 10){
+        $("#timer").html(newHr + ":0" + newMin);
+    }
+    else{
+        $("#timer").html("0" + newHr + ":0" + newMin);
+    }
+}
+
+$("document").ready(function(){
+    let timerController = setInterval(controllerTimer, 1000);
+})
