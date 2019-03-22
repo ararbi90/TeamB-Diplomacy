@@ -31,7 +31,7 @@ function createUserMessage(color) {
     node.appendChild(textnode);
     node.style.textAlign = "left";
     node.style.padding = "3px";
-    node.style.margin = "0px";
+    node.style.margin = "0 0 5px 0";
     node.style.cssFloat = "right";
     node.style.borderBottom = "8px solid " + color
     node.style.borderRadius = "5px";
@@ -52,7 +52,7 @@ function createIncomingMessage(color) {
     node.appendChild(textnode);
     node.style.textAlign = "left";
     node.style.padding = "3px";
-    node.style.margin = "0px";
+    node.style.margin = "0 0 5px 0";
     node.style.cssFloat = "left";
     node.style.borderBottom = "8px solid " + color
     node.style.borderRadius = "5px";
@@ -67,6 +67,11 @@ function createIncomingMessage(color) {
 }
 
 function sendMessage() {
+    if (document.getElementById("messageinput").value === "")
+    {
+        return;
+    }
+
     node1 = createUserMessage("black");
 
     if (tabs[tabs.length - 1] === "France") {
@@ -159,3 +164,9 @@ function sendMessage() {
     }
     $('#messageinput').val("");
 }
+
+$("#messageinput").keyup(function(event) {
+    if (event.keyCode === 13) {
+        $("#subitMSG").click();
+    }
+});
