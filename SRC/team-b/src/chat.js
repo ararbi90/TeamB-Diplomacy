@@ -29,15 +29,14 @@ function createUserMessage(color) {
     node.id = "chat-" + chatCount;
     var textnode = document.createTextNode(document.getElementById("messageinput").value);
     node.appendChild(textnode);
-    node.style.textAlign = "right";
-    node.style.margin = 0;
-    node.style.padding = 3;
+    node.style.textAlign = "left";
+    node.style.padding = "3px";
+    node.style.margin = "0px";
     node.style.cssFloat = "right";
-    node.style.display = "inline-block";
     node.style.borderBottom = "8px solid " + color
     node.style.borderRadius = "5px";
     node.style.listStyleType = "none";
-    node.style.backgroundColor = "#E9E7EB";
+    node.style.backgroundColor = "#F3F3F3";
     node.style.color = "black";
     node.style.clear = "both";
     node.style.wordWrap = "break-word";
@@ -51,14 +50,14 @@ function createIncomingMessage(color) {
     var node = document.createElement("LI");
     var textnode = document.createTextNode(document.getElementById("messageinput").value);
     node.appendChild(textnode);
-    node.style.margin = 0;
-    node.style.padding = 3;
+    node.style.textAlign = "left";
+    node.style.padding = "3px";
+    node.style.margin = "0px";
     node.style.cssFloat = "left";
-    node.style.display = "inline-block";
     node.style.borderBottom = "8px solid " + color
     node.style.borderRadius = "5px";
     node.style.listStyleType = "none";
-    node.style.backgroundColor = "#E9E7EB";
+    node.style.backgroundColor = "#F3F3F3";
     node.style.color = "black";
     node.style.clear = "both";
     node.style.wordWrap = "break-word";
@@ -71,13 +70,13 @@ function sendMessage() {
     node1 = createUserMessage("black");
 
     if (tabs[tabs.length - 1] === "France") {
-        node2 = createIncomingMessage("cyan");
+        node2 = createIncomingMessage("#8FD8D8");
         document.getElementById("France").appendChild(node1);
         setTimeout(function () {
             document.getElementById("France").appendChild(node2);
             var objDiv = document.getElementById("France");
             objDiv.scrollTop = objDiv.scrollHeight;
-        }, 5000);
+        }, 2000);
         var objDiv = document.getElementById("France");
         objDiv.scrollTop = objDiv.scrollHeight;
     } 
@@ -88,73 +87,73 @@ function sendMessage() {
             document.getElementById("Russia").appendChild(node2);
             var objDiv = document.getElementById("Russia");
             objDiv.scrollTop = objDiv.scrollHeight;
-        }, 5000);
+        }, 2000);
         var objDiv = document.getElementById("Russia");
         objDiv.scrollTop = objDiv.scrollHeight;
     } 
     else if (tabs[tabs.length - 1] === "Austria-Hungary") {
-        node2 = createIncomingMessage("red");
+        node2 = createIncomingMessage("#F48182");
         document.getElementById("Austria-Hungary").appendChild(node1);
         setTimeout(function () {
             document.getElementById("Austria-Hungary").appendChild(node2)
             var objDiv = document.getElementById("Austria-Hungary");
             objDiv.scrollTop = objDiv.scrollHeight;
-        }, 5000);
+        }, 2000);
         var objDiv = document.getElementById("Austria-Hungary");
         objDiv.scrollTop = objDiv.scrollHeight;
     } 
     else if (tabs[tabs.length - 1] === "England") {
-        node2 = createIncomingMessage("blue");
+        node2 = createIncomingMessage("#4888C8");
         document.getElementById("England").appendChild(node1);
         setTimeout(function () {
             document.getElementById("England").appendChild(node2);
             var objDiv = document.getElementById("England");
             objDiv.scrollTop = objDiv.scrollHeight;
-        }, 5000);
+        }, 2000);
         var objDiv = document.getElementById("England");
         objDiv.scrollTop = objDiv.scrollHeight;
     } 
     else if (tabs[tabs.length - 1] === "Turkey") {
-        node2 = createIncomingMessage("yellow");
+        node2 = createIncomingMessage("#D9D739");
         document.getElementById("Turkey").appendChild(node1);
         setTimeout(function () {
             document.getElementById("Turkey").appendChild(node2);
             var objDiv = document.getElementById("Turkey");
             objDiv.scrollTop = objDiv.scrollHeight;
-        }, 5000);
+        }, 2000);
         var objDiv = document.getElementById("Turkey");
         objDiv.scrollTop = objDiv.scrollHeight;
     } 
     else if (tabs[tabs.length - 1] === "Germany") {
-        node2 = createIncomingMessage("#797280");
+        node2 = createIncomingMessage("#989898");
         document.getElementById("Germany").appendChild(node1);
         setTimeout(function () {
             document.getElementById("Germany").appendChild(node2);
             var objDiv = document.getElementById("Germany");
             objDiv.scrollTop = objDiv.scrollHeight;
-        }, 5000);
+        }, 2000);
         var objDiv = document.getElementById("Germany");
         objDiv.scrollTop = objDiv.scrollHeight;
     } 
     else if (tabs[tabs.length - 1] === "Italy") {
-        node2 = createIncomingMessage("green");
+        node2 = createIncomingMessage("#76B47C");
         document.getElementById("Italy").appendChild(node1);
         setTimeout(function () {
             document.getElementById("Italy").appendChild(node2);
             var objDiv = document.getElementById("Italy");
             objDiv.scrollTop = objDiv.scrollHeight;
-        }, 5000);
+        }, 2000);
         var objDiv = document.getElementById("Italy");
         objDiv.scrollTop = objDiv.scrollHeight;
     } 
     else {
-        node2 = createIncomingMessage("orange");
+        node2 = createIncomingMessage("darkred");
         document.getElementById("Main").appendChild(node1);
         setTimeout(function () {
             document.getElementById("Main").appendChild(node2);
             var objDiv = document.getElementById("Main");
             objDiv.scrollTop = objDiv.scrollHeight;
-        }, 5000);
+        }, 2000);
         var objDiv = document.getElementById("Main");
         objDiv.scrollTop = objDiv.scrollHeight;
     }
