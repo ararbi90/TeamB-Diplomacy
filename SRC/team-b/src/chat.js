@@ -39,7 +39,7 @@ function createUserMessage(color)
     node.style.borderBottom = "8px solid " + color
     node.style.borderRadius = "5px";
     node.style.listStyleType = "none";
-    node.style.backgroundColor = "#E9E7EB";
+    node.style.backgroundColor = "#F3F3F3";
     node.style.color = "black";
     node.style.clear = "both";
     node.style.wordWrap = "break-word";
@@ -60,7 +60,7 @@ function createIncomingMessage(color)
     node.style.borderBottom = "8px solid " + color
     node.style.borderRadius = "5px";
     node.style.listStyleType = "none";
-    node.style.backgroundColor = "#E9E7EB";
+    node.style.backgroundColor = "#F3F3F3";
     node.style.color = "black";
     node.style.clear = "both";
     node.style.wordWrap = "break-word";
@@ -75,7 +75,7 @@ function sendMessage()
 
     if (tabs[tabs.length - 1] === "France")
     {
-        node2 = createIncomingMessage("cyan");
+        node2 = createIncomingMessage("#8FD8D8");
         document.getElementById("France").appendChild(node1);
         setTimeout(function (){document.getElementById("France").appendChild(node2)}, 5000);
     }
@@ -87,37 +87,37 @@ function sendMessage()
     }
     else if (tabs[tabs.length - 1] === "Austria-Hungary")
     {
-        node2 = createIncomingMessage("red");
+        node2 = createIncomingMessage("#F48182");
         document.getElementById("Austria-Hungary").appendChild(node1);
         setTimeout(function (){document.getElementById("Austria-Hungary").appendChild(node2)}, 5000);
     }
     else if (tabs[tabs.length - 1] === "England")
     {
-        node2 = createIncomingMessage("blue");
+        node2 = createIncomingMessage("#4888C8");
         document.getElementById("England").appendChild(node1);
         setTimeout(function (){document.getElementById("England").appendChild(node2)}, 5000);
     }
     else if (tabs[tabs.length - 1] === "Turkey")
     {
-        node2 = createIncomingMessage("yellow");
+        node2 = createIncomingMessage("#D9D739");
         document.getElementById("Turkey").appendChild(node1);
         setTimeout(function (){document.getElementById("Turkey").appendChild(node2)}, 5000);
     }
     else if (tabs[tabs.length - 1] === "Germany")
     {
-        node2 = createIncomingMessage("#797280");
+        node2 = createIncomingMessage("#989898");
         document.getElementById("Germany").appendChild(node1);
         setTimeout(function (){document.getElementById("Germany").appendChild(node2)}, 5000);
     }
     else if (tabs[tabs.length - 1] === "Italy")
     {
-        node2 = createIncomingMessage("green");
+        node2 = createIncomingMessage("#76B47C");
         document.getElementById("Italy").appendChild(node1);
         setTimeout(function (){document.getElementById("Italy").appendChild(node2)}, 5000);
     }
     else
     {
-        node2 = createIncomingMessage("orange");
+        node2 = createIncomingMessage("darkred");
         document.getElementById("Main").appendChild(node1);
         setTimeout(function (){document.getElementById("Main").appendChild(node2)}, 5000);
     }
