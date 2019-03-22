@@ -1,20 +1,18 @@
 $ = require("jquery");
 
 var tabs = []
+let chatCount = 0;
 
-function openTab(evt, tabName)
-{
+function openTab(evt, tabName) {
     // Get all elements with class="tabcontent" and hide them
     var tabcontent = document.getElementsByClassName("tabcontent");
-    for (var i = 0; i < tabcontent.length; i++)
-    {
+    for (var i = 0; i < tabcontent.length; i++) {
         tabcontent[i].hidden = true;
     }
 
     // Get all elements with class="tablinks" and remove the class "active"
     var tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++)
-    {
+    for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
 
@@ -26,9 +24,9 @@ function openTab(evt, tabName)
     tabs.push(tabName);
 }
 
-function createUserMessage(color)
-{
+function createUserMessage(color) {
     var node = document.createElement("LI");
+    node.id = "chat-" + chatCount;
     var textnode = document.createTextNode(document.getElementById("messageinput").value);
     node.appendChild(textnode);
     node.style.textAlign = "right";
@@ -44,12 +42,12 @@ function createUserMessage(color)
     node.style.clear = "both";
     node.style.wordWrap = "break-word";
     node.style.maxWidth = "66%";
+    chatCount++;
 
     return node;
 }
 
-function createIncomingMessage(color)
-{
+function createIncomingMessage(color) {
     var node = document.createElement("LI");
     var textnode = document.createTextNode(document.getElementById("messageinput").value);
     node.appendChild(textnode);
@@ -69,57 +67,96 @@ function createIncomingMessage(color)
     return node;
 }
 
-function sendMessage()
-{
+function sendMessage() {
     node1 = createUserMessage("black");
 
-    if (tabs[tabs.length - 1] === "France")
-    {
+    if (tabs[tabs.length - 1] === "France") {
         node2 = createIncomingMessage("cyan");
         document.getElementById("France").appendChild(node1);
-        setTimeout(function (){document.getElementById("France").appendChild(node2)}, 5000);
-    }
-    else if (tabs[tabs.length - 1] === "Russia")
-    {
+        setTimeout(function () {
+            document.getElementById("France").appendChild(node2);
+            var objDiv = document.getElementById("France");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }, 5000);
+        var objDiv = document.getElementById("France");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    } 
+    else if (tabs[tabs.length - 1] === "Russia") {
         node2 = createIncomingMessage("white");
         document.getElementById("Russia").appendChild(node1);
-        setTimeout(function (){document.getElementById("Russia").appendChild(node2)}, 5000);
-    }
-    else if (tabs[tabs.length - 1] === "Austria-Hungary")
-    {
+        setTimeout(function () {
+            document.getElementById("Russia").appendChild(node2);
+            var objDiv = document.getElementById("Russia");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }, 5000);
+        var objDiv = document.getElementById("Russia");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    } 
+    else if (tabs[tabs.length - 1] === "Austria-Hungary") {
         node2 = createIncomingMessage("red");
         document.getElementById("Austria-Hungary").appendChild(node1);
-        setTimeout(function (){document.getElementById("Austria-Hungary").appendChild(node2)}, 5000);
-    }
-    else if (tabs[tabs.length - 1] === "England")
-    {
+        setTimeout(function () {
+            document.getElementById("Austria-Hungary").appendChild(node2)
+            var objDiv = document.getElementById("Austria-Hungary");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }, 5000);
+        var objDiv = document.getElementById("Austria-Hungary");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    } 
+    else if (tabs[tabs.length - 1] === "England") {
         node2 = createIncomingMessage("blue");
         document.getElementById("England").appendChild(node1);
-        setTimeout(function (){document.getElementById("England").appendChild(node2)}, 5000);
-    }
-    else if (tabs[tabs.length - 1] === "Turkey")
-    {
+        setTimeout(function () {
+            document.getElementById("England").appendChild(node2);
+            var objDiv = document.getElementById("England");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }, 5000);
+        var objDiv = document.getElementById("England");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    } 
+    else if (tabs[tabs.length - 1] === "Turkey") {
         node2 = createIncomingMessage("yellow");
         document.getElementById("Turkey").appendChild(node1);
-        setTimeout(function (){document.getElementById("Turkey").appendChild(node2)}, 5000);
-    }
-    else if (tabs[tabs.length - 1] === "Germany")
-    {
+        setTimeout(function () {
+            document.getElementById("Turkey").appendChild(node2);
+            var objDiv = document.getElementById("Turkey");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }, 5000);
+        var objDiv = document.getElementById("Turkey");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    } 
+    else if (tabs[tabs.length - 1] === "Germany") {
         node2 = createIncomingMessage("#797280");
         document.getElementById("Germany").appendChild(node1);
-        setTimeout(function (){document.getElementById("Germany").appendChild(node2)}, 5000);
-    }
-    else if (tabs[tabs.length - 1] === "Italy")
-    {
+        setTimeout(function () {
+            document.getElementById("Germany").appendChild(node2);
+            var objDiv = document.getElementById("Germany");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }, 5000);
+        var objDiv = document.getElementById("Germany");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    } 
+    else if (tabs[tabs.length - 1] === "Italy") {
         node2 = createIncomingMessage("green");
         document.getElementById("Italy").appendChild(node1);
-        setTimeout(function (){document.getElementById("Italy").appendChild(node2)}, 5000);
-    }
-    else
-    {
+        setTimeout(function () {
+            document.getElementById("Italy").appendChild(node2);
+            var objDiv = document.getElementById("Italy");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }, 5000);
+        var objDiv = document.getElementById("Italy");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    } 
+    else {
         node2 = createIncomingMessage("orange");
         document.getElementById("Main").appendChild(node1);
-        setTimeout(function (){document.getElementById("Main").appendChild(node2)}, 5000);
+        setTimeout(function () {
+            document.getElementById("Main").appendChild(node2);
+            var objDiv = document.getElementById("Main");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }, 5000);
+        var objDiv = document.getElementById("Main");
+        objDiv.scrollTop = objDiv.scrollHeight;
     }
     $('#messageinput').val("");
 }
