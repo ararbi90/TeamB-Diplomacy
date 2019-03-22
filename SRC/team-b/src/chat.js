@@ -31,11 +31,10 @@ function createUserMessage(color)
     var node = document.createElement("LI");
     var textnode = document.createTextNode(document.getElementById("messageinput").value);
     node.appendChild(textnode);
-    node.style.textAlign = "right";
-    node.style.margin = 0;
-    node.style.padding = 3;
+    node.style.textAlign = "left";
+    node.style.padding = "3px";
+    node.style.margin = "0px";
     node.style.cssFloat = "right";
-    node.style.display = "inline-block";
     node.style.borderBottom = "8px solid " + color
     node.style.borderRadius = "5px";
     node.style.listStyleType = "none";
@@ -53,10 +52,10 @@ function createIncomingMessage(color)
     var node = document.createElement("LI");
     var textnode = document.createTextNode(document.getElementById("messageinput").value);
     node.appendChild(textnode);
-    node.style.margin = 0;
-    node.style.padding = 3;
+    node.style.textAlign = "left";
+    node.style.padding = "3px";
+    node.style.margin = "0px";
     node.style.cssFloat = "left";
-    node.style.display = "inline-block";
     node.style.borderBottom = "8px solid " + color
     node.style.borderRadius = "5px";
     node.style.listStyleType = "none";
@@ -77,49 +76,49 @@ function sendMessage()
     {
         node2 = createIncomingMessage("#8FD8D8");
         document.getElementById("France").appendChild(node1);
-        setTimeout(function (){document.getElementById("France").appendChild(node2)}, 5000);
+        setTimeout(function (){document.getElementById("France").appendChild(node2)}, 2000);
     }
     else if (tabs[tabs.length - 1] === "Russia")
     {
         node2 = createIncomingMessage("white");
         document.getElementById("Russia").appendChild(node1);
-        setTimeout(function (){document.getElementById("Russia").appendChild(node2)}, 5000);
+        setTimeout(function (){document.getElementById("Russia").appendChild(node2)}, 2000);
     }
     else if (tabs[tabs.length - 1] === "Austria-Hungary")
     {
         node2 = createIncomingMessage("#F48182");
         document.getElementById("Austria-Hungary").appendChild(node1);
-        setTimeout(function (){document.getElementById("Austria-Hungary").appendChild(node2)}, 5000);
+        setTimeout(function (){document.getElementById("Austria-Hungary").appendChild(node2)}, 2000);
     }
     else if (tabs[tabs.length - 1] === "England")
     {
         node2 = createIncomingMessage("#4888C8");
         document.getElementById("England").appendChild(node1);
-        setTimeout(function (){document.getElementById("England").appendChild(node2)}, 5000);
+        setTimeout(function (){document.getElementById("England").appendChild(node2)}, 2000);
     }
     else if (tabs[tabs.length - 1] === "Turkey")
     {
         node2 = createIncomingMessage("#D9D739");
         document.getElementById("Turkey").appendChild(node1);
-        setTimeout(function (){document.getElementById("Turkey").appendChild(node2)}, 5000);
+        setTimeout(function (){document.getElementById("Turkey").appendChild(node2)}, 2000);
     }
     else if (tabs[tabs.length - 1] === "Germany")
     {
         node2 = createIncomingMessage("#989898");
         document.getElementById("Germany").appendChild(node1);
-        setTimeout(function (){document.getElementById("Germany").appendChild(node2)}, 5000);
+        setTimeout(function (){document.getElementById("Germany").appendChild(node2)}, 2000);
     }
     else if (tabs[tabs.length - 1] === "Italy")
     {
         node2 = createIncomingMessage("#76B47C");
         document.getElementById("Italy").appendChild(node1);
-        setTimeout(function (){document.getElementById("Italy").appendChild(node2)}, 5000);
+        setTimeout(function (){document.getElementById("Italy").appendChild(node2)}, 2000);
     }
     else
     {
         node2 = createIncomingMessage("darkred");
         document.getElementById("Main").appendChild(node1);
-        setTimeout(function (){document.getElementById("Main").appendChild(node2)}, 5000);
+        setTimeout(function (){document.getElementById("Main").appendChild(node2)}, 2000);
     }
     $('#messageinput').val("");
 }
