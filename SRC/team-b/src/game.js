@@ -10,16 +10,15 @@ document.getElementById("Dashboard").addEventListener("click", function () {
     let link = "dashboard.html?username=" + username;
     window.location.href = link;
 });
-
+document.getElementById("gameRules").addEventListener("click", function () {
+    let link = "gameRules.html?username=" + username;
+    window.location.href = link;
+});
 document.getElementById("logOut").addEventListener("click", function () {
     let link = "index.html";
     window.location.href = link;
 });
 
-document.getElementById("newGame").addEventListener("click", function(){
-    let link = "invite.html?username=" + username;
-    window.location.href = link;
-});
 
 // Array of moves
 var moves = new Array("Choose...","Hold", "Move", "Convoy", "Support");

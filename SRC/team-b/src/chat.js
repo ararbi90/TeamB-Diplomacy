@@ -68,7 +68,7 @@ function createUserMessage(color) {
     node.style.borderBottom = "8px solid " + color
     node.style.borderRadius = "5px";
     node.style.listStyleType = "none";
-    node.style.backgroundColor = "#F3F3F3";
+    node.style.backgroundColor = "#EAEAEA";
     node.style.color = "black";
     node.style.clear = "both";
     node.style.wordWrap = "break-word";
@@ -90,7 +90,7 @@ function createIncomingMessage(color) {
     node.style.borderBottom = "8px solid " + color
     node.style.borderRadius = "5px";
     node.style.listStyleType = "none";
-    node.style.backgroundColor = "#F3F3F3";
+    node.style.backgroundColor = "#EAEAEA";
     node.style.color = "black";
     node.style.clear = "both";
     node.style.wordWrap = "break-word";
@@ -163,7 +163,7 @@ function sendMessage() {
         objDiv.scrollTop = objDiv.scrollHeight;
     } 
     else if (tabs[tabs.length - 1] === "Germany") {
-        node2 = createIncomingMessage("#989898");
+        node2 = createIncomingMessage("#7A7A7A");
         document.getElementById("Germany").appendChild(node1);
         setTimeout(function () {
             document.getElementById("Germany").appendChild(node2);

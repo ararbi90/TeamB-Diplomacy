@@ -10,6 +10,10 @@ document.getElementById("newGame").addEventListener("click", function () {
     let link = "invite.html?username=" + username;
     window.location.href = link;
 });
+document.getElementById("gameRules").addEventListener("click", function () {
+    let link = "gameRules.html?username=" + username;
+    window.location.href = link;
+});
 document.getElementById("logOut").addEventListener("click", function () {
     let link = "index.html";
     window.location.href = link;
