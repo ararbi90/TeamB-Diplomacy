@@ -115,3 +115,24 @@ $("#login-form").submit(function (event) {
 
     return false;
 });
+
+
+$("document").ready(function(){
+    // let t = db.ref("testPage");
+    // t.on("child_added", function(snapshot){
+    //     let count = 0;
+    //     console.log(count);
+    //     console.log(snapshot.val());
+    //     t.child(snapshot.key).remove();
+    // })
+    // setInterval(function(){
+    //     t.child("added4").set({
+            
+    //             test: 1,
+    //             test2: 2
+    //         }
+    //     );
+    //     console.log("written");
+    // }, 10000);
+
+})
