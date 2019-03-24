@@ -46,3 +46,17 @@
   overflow: auto;
 }
 
+/* Style img to work with map hilight */
+div.row > img.map {
+  height: 50%;
+}
+
+img.map {
+  height: 100%;
+  width: 100%;
+}
+
+div.map {
+  height: 100%;
+  width: 100%;
+}
