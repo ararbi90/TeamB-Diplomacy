@@ -11,7 +11,7 @@ document.getElementById("newGame").addEventListener("click", function () {
     window.location.href = link;
 });
 document.getElementById("gameRules").addEventListener("click", function () {
-    let link = "gameRules.html?username=" + username;
+    let link = "rules.html?username=" + username;
     window.location.href = link;
 });
 document.getElementById("logOut").addEventListener("click", function () {
