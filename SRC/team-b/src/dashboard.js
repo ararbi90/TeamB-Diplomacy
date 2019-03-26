@@ -19,12 +19,21 @@ document.getElementById("logOut").addEventListener("click", function () {
     window.location.href = link;
 });
 
-function joinGame(event) {
+function accpetGame(event) {
     // Need to make updates here
     // Create on value promises
     let link = "game.html?gameID=" + this.id + "&username=" + username;
     console.log(link);
     window.location.href = link;
+}
+
+function declineGame(event) {
+    // Need to make updates here
+    // Create on value promises
+    // let link = "game.html?gameID=" + this.id + "&username=" + username;
+    // console.log(link);
+    // window.location.href = link;
+    alert("Delince" + this.id )
 }
 
 function reJoinGame(event) {
@@ -33,6 +42,7 @@ function reJoinGame(event) {
     let link = "game.html?gameID=" + this.id + "&username=" + username;
     console.log(link);
     window.location.href = link;
+    
 }
 
 function setAllInvites() {
@@ -47,8 +57,12 @@ function setAllInvites() {
             "<td>" + data.val().name + "</td>" +
             "<td>" + data.val().days + " </td>" +
             "<td>" + data.val().dateCreated + "</td>" +
-            "<td><button type='button' class='btn btn-primary' id=" + data.key + ">Join</button></td></tr>");
-        $("#" + data.key + "").click(joinGame);
+            "<td><button type='button' class='btn btn-primary' id=" + (data.key + "-accept") + ">Accpet</button></td>" +
+            "<td><button type='button' class='btn btn-primary' id=" + (data.key + "-decline") + ">Decline</button></td></tr>");
+
+        $("#" + (data.key + "-accept") + "").click(accpetGame);
+        $("#" + (data.key + "-decline") + "").click(declineGame);
+
 
     });
 
