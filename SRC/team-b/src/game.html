@@ -145,7 +145,12 @@
                 <div class="container">
 
                     <div class="tab">
-                        <button class="tablinks" onclick="openTab(event, 'Main')">Main</button>
+                        <button id="1" class="tablinks" onclick="openTab(event, 'Main')">Main</button>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function(event) { 
+                            document.getElementById('1').click();
+                        });
+                        </script>
                         <button class="tablinks" onclick="openTab(event, 'France')">France</button>
                         <button class="tablinks" onclick="openTab(event, 'Russia')">Russia</button>
                         <button class="tablinks" onclick="openTab(event, 'Austria-Hungary')">Austria-Hungary</button>
