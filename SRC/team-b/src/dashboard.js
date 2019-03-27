@@ -22,9 +22,10 @@ document.getElementById("logOut").addEventListener("click", function () {
 function accpetGame(event) {
     // Need to make updates here
     // Create on value promises
-    let link = "game.html?gameID=" + this.id + "&username=" + username;
+    let gameId = this.id.substring(0,this.id.search("-accept"));
+    let link = "game.html?gameID=" + gameId + "&username=" + username;
     console.log(link);
-    window.location.href = link;
+    //window.location.href = link;
 }
 
 function declineGame(event) {
@@ -33,7 +34,15 @@ function declineGame(event) {
     // let link = "game.html?gameID=" + this.id + "&username=" + username;
     // console.log(link);
     // window.location.href = link;
-    alert("Delince" + this.id )
+    let gameId = this.id.substring(0,this.id.search("-decline"));
+    playersRef.child(username).child("gameInvite").child(gameId).remove();
+    gameRef.child(gameId).child("invites").child(username).remove();
+    console.log("Deline" + gameId )
+    $("#" +gameId +"-table").hide()
+    // let link = "dashboard.html?gameID=" + gameId + "&username=" + username;
+    // console.log(link);
+    // window.location.href = link;
+    return;
 }
 
 function reJoinGame(event) {
@@ -53,7 +62,7 @@ function setAllInvites() {
         console.log(data.val());
         console.log(++count);
 
-        tableInvite.append("<tr>" +
+        tableInvite.append("<tr id= " + data.key +"-table>" +
             "<td>" + data.val().name + "</td>" +
             "<td>" + data.val().days + " </td>" +
             "<td>" + data.val().dateCreated + "</td>" +
