@@ -7,15 +7,15 @@ document.getElementById("navbarDropdownMenuLink").innerHTML = username;
 
 // Dashboard changes
 document.getElementById("newGame").addEventListener("click", function () {
-    let link = "invite.html?username=" + username;
+    let link = "../html/invite.html?username=" + username;
     window.location.href = link;
 });
 document.getElementById("gameRules").addEventListener("click", function () {
-    let link = "rules.html?username=" + username;
+    let link = "../html/rules.html?username=" + username;
     window.location.href = link;
 });
 document.getElementById("logOut").addEventListener("click", function () {
-    let link = "index.html";
+    let link = "../html/index.html";
     window.location.href = link;
 });
 

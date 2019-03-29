@@ -6,11 +6,11 @@ document.getElementById("navbarDropdownMenuLink").innerHTML = username;
 
 // Dashboard changes
 document.getElementById("Dashboard").addEventListener("click", function () {
-    let link = "dashboard.html?username=" + username;
+    let link = "../html/dashboard.html?username=" + username;
     window.location.href = link;
 });
 document.getElementById("logOut").addEventListener("click", function () {
-    let link = "index.html";
+    let link = "../html/index.html";
     window.location.href = link;
 });
 
