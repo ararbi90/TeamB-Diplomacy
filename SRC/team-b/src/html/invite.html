@@ -6,12 +6,37 @@
     <style>
         body {
             background-color: #7f8fa6;
+            
+        }
+
+        #selfInvite {
+        visibility: hidden; /* Hidden by default. Visible on click */
+        width: auto; /* Set tne width */
+        background-color: #333; /* Black background color */
+        color: #fff; /* White text color */
+        text-align: center; /* Centered text */
+        border-radius: 2px; /* Rounded borders */
+        padding: 16px; /* Padding */
+        position: fixed; /* Sit on top of the screen */
+        z-index: 1; /* Add a z-index if needed */
+        left: 45%; /* Center the snackbar */
+        bottom: 30px; /* 30px from the bottom */
+        }
+
+        /* Show the snackbar when clicking on a territory (class added with JavaScript) */
+        #selfInvite.show {
+        visibility: visible; /* Show the snackbar */
+        /* Add animation: Take 0.5 seconds to fade in and out the snackbar. 
+        However, delay the fade out process for 1.0 seconds */
+        -webkit-animation: fadein 0.5s, fadeout 0.5s 1.0s;
+        animation: fadein 0.5s, fadeout 0.5s 1.0s;
         }
     </style>
 
 </head>
 
 <body>
+    <div id="selfInvite"></div>
     <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #273c75;">
         <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
         <img height="100" src="../../images/diplomacy_logo.png" />

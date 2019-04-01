@@ -49,6 +49,20 @@ function getUserLists(users) {
     };
 }
 
+function getArrayOfRandomNumbers(){
+    let numberDic = {};
+    let numberArray = [];
+    while(numberArray.length < 7){
+        let temp = Math.floor(Math.random() * 7);
+        console.log(numberArray.length);
+        if(numberDic[temp] == null){
+            numberArray.push(temp);
+            numberDic.temp = temp;
+        }
+    }
+    return numberArray;
+}
+
 
 $(document).ready(function () {
     $("#allUsers").submit(function (event) {
@@ -57,7 +71,7 @@ $(document).ready(function () {
         // Add attribites to the objects
         game.days = $("#days").val();
         game.hours = $("#hours").val();
-        
+
 
         // Creates a hashtable for users
         let userList = getUserLists(users);
@@ -67,6 +81,20 @@ $(document).ready(function () {
 
         // If there are repeated values the submit dies her
         if (repeat) {
+            return false;
+        }
+        // Cannot invite self to the game
+        if (userList[username] != null) {
+            
+            var x = document.getElementById("selfInvite");
+
+            x.className = "show";
+            x.innerHTML = "Cannot Invite yourself to the game";
+
+            // After 1.5 seconds, remove the show class
+            setTimeout(function () {
+                x.className = x.className.replace("show", "");
+            }, 1500);
             return false;
         }
 
@@ -110,10 +138,13 @@ $(document).ready(function () {
             console.log("Found All Create Game!!!");
             // Create Gamea
             // Create all game params
+            let countryOrder = getArrayOfRandomNumbers();
+            let countries = ["Austria", "England", "France", "Turkey", "Russia", "Germany", "Italy"];
             let gameOwner = username;
             let intvite = {};
-            for(let i = 0; i < names.length; i++){
-                intvite[names[i]] = names[i];
+
+            for (let i = 0; i < names.length; i++) {
+                intvite[names[i]] = {username: names[i], country: countries[countryOrder[i]]};
             }
             console.log(intvite);
             let gameID = gameRef.push().key // This key is the most important part of creating the game
@@ -134,13 +165,13 @@ $(document).ready(function () {
                         name: game[0]["value"],
                         days: game.days,
                         hours: game.hours,
-                        dateCreated: new Date().toJSON().slice(0,10).replace(/-/g,'/')
+                        dateCreated: new Date().toJSON().slice(0, 10).replace(/-/g, '/')
                     })
                     for (let i = 0; i < names.length; i++) {
                         playersRef.child(names[i]).child("gameInvite").child(gameID).set({
                             name: game[0]["value"],
                             owner: username,
-                            dateCreated: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+                            dateCreated: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
                             days: game.days,
                             hours: game.hours,
 
