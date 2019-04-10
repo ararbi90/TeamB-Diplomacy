@@ -40,7 +40,7 @@ var territoryCodes = new Map([
     ["Skaggerak", "SKA"], ["Tyrrhenian Sea", "TYN"], ["Western Mediterranean", "WES"]
   ]);
 
-// Map of territories and their indicies in the adjacency list
+// Array of territories and their indicies in the adjacency list
 var territoryIndicies = new Array(
     "Bohemia", // 0 
     "Budapest", // 1
@@ -402,6 +402,15 @@ function makeToast(territory)
   
     // After 1.5 seconds, remove the show class
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 1500);
+
+    var index = territoryIndicies.indexOf(territory);
+
+    console.log("===============");
+
+    for (var i = 0; i < adjacencyList[index].length; ++i)
+    {
+        console.log(territoryIndicies[adjacencyList[index][i]]);
+    }
 }
 
 $("document").ready(function(){
