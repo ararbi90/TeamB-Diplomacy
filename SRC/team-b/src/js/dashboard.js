@@ -1,4 +1,7 @@
 $ = require('jquery');
+
+
+console.log(msg);
 // Username information from the link
 var urlParams = new URLSearchParams(location.search);
 let username = urlParams.get("username");
