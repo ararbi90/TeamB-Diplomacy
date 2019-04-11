@@ -1,0 +1,75 @@
+Bohemia
+Budapest
+Galicia
+Trieste
+Tyrolia
+Vienna
+Clyde
+Edinburgh
+Liverpool
+London
+Wales
+York
+Brest
+Burgundy
+Gascony
+Marseilles
+Paris
+Picardy
+Berlin
+Kiel
+Munich
+Prussia
+Ruhr
+Silesia
+Apulia
+Naples
+Piedmont
+Rome
+Tuscany
+Venice
+Livonia
+Moscow
+Sevastopol
+St. Petersburg
+Ukraine
+Warsaw
+Ankara
+Armenia
+Constantinople
+Smyrna
+Syria
+Albania
+Belgium
+Bulgaria
+Denmark
+Finland
+Greece
+Holland
+Norway
+North Africa
+Portugal
+Romania
+Serbia
+Spain
+Sweden
+Tunisia
+Adriatic Sea
+Aegean Sea
+Baltic Sea
+Barents Sea
+Black Sea
+Eastern Mediterranean
+English Channel
+Gulf of Bothnia
+Gulf of Lyon
+Helgoland Bight
+Ionian Sea
+Irish Sea
+Mid - Atlantic Ocean
+North Atlantic Ocean
+North Sea
+Norwegian Sea
+Skaggerak
+Tyrrhenian Sea
+Western Mediterranean
