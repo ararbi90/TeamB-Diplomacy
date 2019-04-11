@@ -140,7 +140,7 @@ var adjacencyList = new Array(
     [12, 13, 14, 17], // Paris - 16
     [12, 13, 16, 42, 62], // Picardy - 17
     [19, 20, 21, 23, 58], // Berlin - 18
-    [18, 20, 22, 44, 47, 58, 65], // Kiel - 19
+    [18, 20, 22, 44, 47, 58, 65], // Kiel - 19 (See Notes...)
     [0, 4, 13, 18, 19, 22, 23], // Munich - 20
     [18, 23, 30, 35, 58], // Prussia - 21
     [13, 19, 20, 42, 47], // Ruhr - 22
@@ -178,10 +178,10 @@ var adjacencyList = new Array(
     [44, 45, 48, 58, 63, 72], // Sweden - 54 (See Notes...)
     [49, 66, 73, 74], // Tunisia - 55
     [3, 24, 29, 41, 66], // Adriatic Sea - 56
-    [38, 39, 43, 46, 60, 61, 66], // Aegean Sea - 57
+    [38, 39, 43, 46, 61, 66], // Aegean Sea - 57 (See Notes...)
     [18, 19, 21, 30, 44, 54, 63], // Baltic Sea - 58 (See Notes...)
     [33, 48, 71], // Barents Sea - 59
-    [32, 36, 37, 38, 43, 51, 57], // Black Sea - 60
+    [32, 36, 37, 38, 43, 51], // Black Sea - 60 (See Notes...)
     [39, 40, 57, 66], // Eastern Mediterranean - 61
     [9, 10, 12, 17, 42, 67, 68, 70], // English Channel - 62
     [30, 33, 45, 54, 58], // Gulf of Bothnia - 63
@@ -199,9 +199,11 @@ var adjacencyList = new Array(
 );
 
 // NOTES:
+//     - Denmark is adjacent to Kiel.
 //     - Sweden adjacent to Denmark not Helgoland Bight.
 //     - Baltic Sea not adjacent to Helgoland Bight.
 //     - Skaggerak not adjacent to Helgoland Bight.
+//     - Aegean Sea is not adjacent to Black Sea.
 
 // Array of moves
 var moves = new Array("Choose...","Hold", "Move", "Convoy", "Support");
