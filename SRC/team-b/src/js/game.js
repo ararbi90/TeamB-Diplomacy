@@ -406,6 +406,8 @@ function makeToast(territory)
     var index = territoryIndicies.indexOf(territory);
 
     console.log("===============");
+    console.log(territory.toUpperCase() + ":");
+    console.log("===============");
 
     for (var i = 0; i < adjacencyList[index].length; ++i)
     {
