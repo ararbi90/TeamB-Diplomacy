@@ -49,13 +49,13 @@ function getUserLists(users) {
     };
 }
 
-function getArrayOfRandomNumbers(){
+function getArrayOfRandomNumbers() {
     let numberDic = {};
     let numberArray = [];
-    while(numberArray.length < 7){
+    while (numberArray.length < 7) {
         let temp = Math.floor(Math.random() * 7);
         console.log(numberArray.length);
-        if(numberDic[temp] == null){
+        if (numberDic[temp] == null) {
             numberArray.push(temp);
             numberDic.temp = temp;
         }
@@ -85,7 +85,7 @@ $(document).ready(function () {
         }
         // Cannot invite self to the game
         if (userList[username] != null) {
-            
+
             var x = document.getElementById("selfInvite");
 
             x.className = "show";
@@ -140,13 +140,31 @@ $(document).ready(function () {
             // Create all game params
             let countryOrder = getArrayOfRandomNumbers();
             let countries = ["Austria", "England", "France", "Turkey", "Russia", "Germany", "Italy"];
+            let countryStarters = {
+                Austria: [{ VIE: { forceType: "A" } }, { BUD: { forceType: "A" } }, { TRI: { forceType: "F" } }],
+                England: [{ LON: { forceType: "F" } }, { EDI: { forceType: "F" } }, { LVP: { forceType: "A" } }],
+                France: [{ PAR: { forceType: "A" } }, { MAR: { forceType: "A" } }, { BRE: { forceType: "F" } }],
+                Germany: [{ BER: { forceType: "A" } }, { MUN: { forceType: "A" } }, { KIE: { forceType: "F" } }],
+                Italy: [{ ROM: { forceType: "A" } }, { VEN: { forceType: "A" } }, { NAP: { forceType: "F" } }],
+                Russia: [{ MOS: { forceType: "A" } }, { SEV: { forceType: "F" } }, { WAR: { forceType: "A" } }, { STP: { forceType: "F" }}],
+                Turkey: [{ ANK: { forceType: "F" } }, { CON: { forceType: "A" } }, { SMY: { forceType: "A" } }],
+            }
             let gameOwner = username;
             let intvite = {};
 
             for (let i = 0; i < names.length; i++) {
-                intvite[names[i]] = {username: names[i], country: countries[countryOrder[i]]};
+                intvite[names[i]] = { username: names[i], country: countries[countryOrder[i]] };
+                let temp = countryStarters[countries[countryOrder[i]]];
+
+                for(ter in temp){
+                    let key = Object.keys(temp[ter]).toString();
+                    intvite[names[i]][key] =  temp[ter][key];
+                }
             }
+            
             console.log(intvite);
+
+
             let gameID = gameRef.push().key // This key is the most important part of creating the game
             console.log(gameID)
             gameRef.child(gameID).set({

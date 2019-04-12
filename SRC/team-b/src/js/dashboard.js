@@ -25,7 +25,43 @@ document.getElementById("logOut").addEventListener("click", function () {
 function accpetGame(event) {
     // Need to make updates here
     // Create on value promises
-    let gameId = this.id.substring(0,this.id.search("-accept"));
+    let gameId = this.id.substring(0, this.id.search("-accept"));
+    gameRef.child(gameId).child("invites").once("value").then(function (snapshot) {
+        let userInformation = 0;
+        snapshot.forEach(function (data) {
+            if (data.key == username) {
+                userInformation = data.val();
+
+            }
+        });
+        gameRef.child(gameId).child("players").child(username).set(
+            userInformation
+            , function (error) {
+                if (error) {
+
+                }
+                else {
+                    playersRef.child(username).child("gameInvite").once("value").then(function (snapshot) {
+                        snapshot.forEach(function (data) {
+                            if (data.key == gameId) {
+                                playersRef.child(username).child("game").child(gameId).set(data.val(), function (err) {
+                                    gameRef.child(gameId).child("invites").child(username).remove();
+                                    playersRef.child(username).child("gameInvite").child(gameId).remove();
+                                });
+                            }
+                        })
+                    });
+
+                    
+
+                    $("#" + gameId + "-table").hide()
+
+                }
+
+
+            });
+
+    });
     let link = "game.html?gameID=" + gameId + "&username=" + username;
     console.log(link);
     //window.location.href = link;
@@ -37,11 +73,11 @@ function declineGame(event) {
     // let link = "game.html?gameID=" + this.id + "&username=" + username;
     // console.log(link);
     // window.location.href = link;
-    let gameId = this.id.substring(0,this.id.search("-decline"));
+    let gameId = this.id.substring(0, this.id.search("-decline"));
     playersRef.child(username).child("gameInvite").child(gameId).remove();
     gameRef.child(gameId).child("invites").child(username).remove();
-    console.log("Deline" + gameId )
-    $("#" +gameId +"-table").hide()
+    console.log("Deline" + gameId)
+    $("#" + gameId + "-table").hide()
     // let link = "dashboard.html?gameID=" + gameId + "&username=" + username;
     // console.log(link);
     // window.location.href = link;
@@ -54,7 +90,7 @@ function reJoinGame(event) {
     let link = "game.html?gameID=" + this.id + "&username=" + username;
     console.log(link);
     window.location.href = link;
-    
+
 }
 
 function setAllInvites() {
@@ -65,7 +101,7 @@ function setAllInvites() {
         console.log(data.val());
         console.log(++count);
 
-        tableInvite.append("<tr id= " + data.key +"-table>" +
+        tableInvite.append("<tr id= " + data.key + "-table>" +
             "<td>" + data.val().name + "</td>" +
             "<td>" + data.val().days + " </td>" +
             "<td>" + data.val().dateCreated + "</td>" +
