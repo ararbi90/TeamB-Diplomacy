@@ -19,25 +19,120 @@ document.getElementById("logOut").addEventListener("click", function () {
     window.location.href = link;
 });
 
-
+/*
 // Map of territories and their abbreviations
 var territoryCodes = new Map([
-    ["Bohemia", "BOH"], ["Budapest", "BUD"], ["Galicia", "GAL"], ["Trieste", "TRI"], ["Tyrolia", "TYR"],
-    ["Vienna", "VIE"], ["Clyde", "CLY"], ["Edinburgh", "EDI"], ["Liverpool", "LVP"], ["London", "LON"],
-    ["Wales", "WAL"], ["York", "YOR"], ["Brest", "BRE"], ["Burgundy", "BUR"], ["Gascony", "GAS"],
-    ["Marseilles", "MAR"], ["Paris", "PAR"], ["Picardy", "PIC"], ["Berlin", "BER"], ["Kiel", "KIE"],
-    ["Munich", "MUN"], ["Prussia", "PRU"], ["Ruhr", "RUH"], ["Silesia", "SIL"], ["Apulia", "APU"],
-    ["Naples", "NAP"], ["Piedmont", "PIE"], ["Rome", "ROM"], ["Tuscany", "TUS"], ["Venice", "VEN"],
-    ["Livonia", "LVN"], ["Moscow", "MOS"], ["Sevastopol", "SEV"], ["St. Petersburg", "STP"], ["Ukraine", "UKR"],
-    ["Warsaw", "WAR"], ["Ankara", "ANK"], ["Armenia", "ARM"], ["Constantinople", "CON"], ["Smyrna", "SMY"],
-    ["Syria", "SYR"], ["Albania", "ALB"], ["Belgium", "BEL"], ["Bulgaria", "BUL"], ["Denmark", "DEN"],
-    ["Finland", "FIN"], ["Greece", "GRE"], ["Holland", "Hol"], ["Norway", "NWY"], ["North Africa", "NAF"],
-    ["Portugal", "POR"], ["Romania", "RUM"], ["Serbia", "SER"], ["Spain", "SPA"], ["Sweden", "SWE"], ["Tunisia", "TUN"],
-    ["Adriatic Sea", "ADR"], ["Aegean Sea", "AEG"], ["Baltic Sea", "BAL"], ["Barents Sea", "BAR"],
-    ["Black Sea", " BLA"], ["Eastern Mediterranean", "EAS"], ["English Channel", "ENG"], ["Gulf of Bothnia", "BOT"],
-    ["Gulf of Lyon", "GOL"], ["Helgoland Bight", "HEL"], ["Ionian Sea", "ION"], ["Irish Sea", "IRI"],
-    ["Mid - Atlantic Ocean", "MID"], ["North Atlantic Ocean", "NAT"], ["North Sea", "NTH"], ["Norwegian Sea", "NRG"],
-    ["Skaggerak", "SKA"], ["Tyrrhenian Sea", "TYN"], ["Western Mediterranean", "WES"]
+    ["Bohemia", "BOH"], ["Budapest", "BUD"], ["Galicia", "GAL"], 
+    ["Trieste", "TRI"], ["Tyrolia", "TYR"],
+    ["Vienna", "VIE"], ["Clyde", "CLY"], ["Edinburgh", "EDI"], 
+    ["Liverpool", "LVP"], ["London", "LON"],
+    ["Wales", "WAL"], ["York", "YOR"], ["Brest", "BRE"], 
+    ["Burgundy", "BUR"], ["Gascony", "GAS"],
+    ["Marseilles", "MAR"], ["Paris", "PAR"], ["Picardy", "PIC"], 
+    ["Berlin", "BER"], ["Kiel", "KIE"],
+    ["Munich", "MUN"], ["Prussia", "PRU"], ["Ruhr", "RUH"], 
+    ["Silesia", "SIL"], ["Apulia", "APU"],
+    ["Naples", "NAP"], ["Piedmont", "PIE"], ["Rome", "ROM"], 
+    ["Tuscany", "TUS"], ["Venice", "VEN"],
+    ["Livonia", "LVN"], ["Moscow", "MOS"], ["Sevastopol", "SEV"], 
+    ["St. Petersburg", "STP"], ["Ukraine", "UKR"],
+    ["Warsaw", "WAR"], ["Ankara", "ANK"], ["Armenia", "ARM"],
+    ["Constantinople", "CON"], ["Smyrna", "SMY"],
+    ["Syria", "SYR"], ["Albania", "ALB"], ["Belgium", "BEL"], 
+    ["Bulgaria", "BUL"], ["Denmark", "DEN"],
+    ["Finland", "FIN"], ["Greece", "GRE"], ["Holland", "HOL"], 
+    ["Norway", "NWY"], ["North Africa", "NAF"],
+    ["Portugal", "POR"], ["Romania", "RUM"], ["Serbia", "SER"], 
+    ["Spain", "SPA"], ["Sweden", "SWE"], ["Tunisia", "TUN"],
+    ["Adriatic Sea", "ADR"], ["Aegean Sea", "AEG"], 
+    ["Baltic Sea", "BAL"], ["Barents Sea", "BAR"],
+    ["Black Sea", "BLA"], ["Eastern Mediterranean", "EAS"], 
+    ["English Channel", "ENG"], ["Gulf of Bothnia", "BOT"],
+    ["Gulf of Lyon", "GOL"], ["Helgoland Bight", "HEL"], 
+    ["Ionian Sea", "ION"], ["Irish Sea", "IRI"],
+    ["Mid - Atlantic Ocean", "MID"], ["North Atlantic Ocean", "NAT"], 
+    ["North Sea", "NTH"], ["Norwegian Sea", "NRG"],
+    ["Skaggerak", "SKA"], ["Tyrrhenian Sea", "TYN"], 
+    ["Western Mediterranean", "WES"]
+  ]);
+
+  // Map of territories and their types
+var territoryTypes = new Map([
+    ["Bohemia", "INLAND"],
+    ["Budapest", "INLAND"],
+    ["Galicia", "INLAND"],
+    ["Trieste", "COASTAL"],
+    ["Tyrolia", "INLAND"],
+    ["Vienna", "INLAND"], 
+    ["Clyde", "COASTAL"], 
+    ["Edinburgh", "COASTAL"], 
+    ["Liverpool", "COASTAL"], 
+    ["London", "COASTAL"],
+    ["Wales", "COASTAL"], 
+    ["York", "COASTAL"], 
+    ["Brest", "COASTAL"], 
+    ["Burgundy", "INLAND"], 
+    ["Gascony", "COASTAL"],
+    ["Marseilles", "COASTAL"], 
+    ["Paris", "INLAND"], 
+    ["Picardy", "COASTAL"], 
+    ["Berlin", "COASTAL"], 
+    ["Kiel", "COASTAL"],
+    ["Munich", "INLAND"], 
+    ["Prussia", "COASTAL"], 
+    ["Ruhr", "INLAND"], 
+    ["Silesia", "INLAND"], 
+    ["Apulia", "COASTAL"],
+    ["Naples", "COASTAL"], 
+    ["Piedmont", "COASTAL"], 
+    ["Rome", "COASTAL"], 
+    ["Tuscany", "COASTAL"], 
+    ["Venice", "COASTAL"],
+    ["Livonia", "COASTAL"], 
+    ["Moscow", "INLAND"], 
+    ["Sevastopol", "COASTAL"], 
+    ["St. Petersburg", "COASTAL"], 
+    ["Ukraine", "INLAND"],
+    ["Warsaw", "INLAND"], 
+    ["Ankara", "COASTAL"], 
+    ["Armenia", "COASTAL"], 
+    ["Constantinople", "COASTAL"], 
+    ["Smyrna", "COASTAL"],
+    ["Syria", "COASTAL"], 
+    ["Albania", "COASTAL"], 
+    ["Belgium", "COASTAL"], 
+    ["Bulgaria", "COASTAL"], 
+    ["Denmark", "COASTAL"],
+    ["Finland", "COASTAL"], 
+    ["Greece", "COASTAL"], 
+    ["Holland", "COASTAL"], 
+    ["Norway", "COASTAL"], 
+    ["North Africa", "COASTAL"],
+    ["Portugal", "COASTAL"], 
+    ["Romania", "COASTAL"], 
+    ["Serbia", "INLAND"], 
+    ["Spain", "COASTAL"], 
+    ["Sweden", "COASTAL"], 
+    ["Tunisia", "COASTAL"],
+    ["Adriatic Sea", "SEA"],
+    ["Aegean Sea", "SEA"], 
+    ["Baltic Sea", "SEA"], 
+    ["Barents Sea", "SEA"],
+    ["Black Sea", "SEA"],
+    ["Eastern Mediterranean", "SEA"],
+    ["English Channel", "SEA"],
+    ["Gulf of Bothnia", "SEA"],
+    ["Gulf of Lyon", "SEA"], 
+    ["Helgoland Bight", "SEA"],
+    ["Ionian Sea", "SEA"], 
+    ["Irish Sea", "SEA"],
+    ["Mid - Atlantic Ocean", "SEA"], 
+    ["North Atlantic Ocean", "SEA"], 
+    ["North Sea", "SEA"], 
+    ["Norwegian Sea", "SEA"],
+    ["Skaggerak", "SEA"], 
+    ["Tyrrhenian Sea", "SEA"], 
+    ["Western Mediterranean", "SEA"]
   ]);
 
 // Array of territories and their indicies in the adjacency list
@@ -204,6 +299,7 @@ var adjacencyList = new Array(
 //     - Baltic Sea not adjacent to Helgoland Bight.
 //     - Skaggerak not adjacent to Helgoland Bight.
 //     - Aegean Sea is not adjacent to Black Sea.
+*/
 
 // Array of moves
 var moves = new Array("Choose...","Hold", "Move", "Convoy", "Support");
@@ -400,21 +496,54 @@ function makeToast(territory)
     var x = document.getElementById("snackbar");
   
     x.className = "show";
-    x.innerHTML = territory + " (" + territoryCodes.get(territory) + ")";
+    x.innerHTML = territory;
   
     // After 1.5 seconds, remove the show class
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 1500);
 
-    var index = territoryIndicies.indexOf(territory);
+    // Get data from JSON
+    $.getJSON("map.json", function(json) {
+        console.log(json[territory]);
 
-    console.log("===============");
-    console.log(territory.toUpperCase() + ":");
-    console.log("===============");
+        // Outputs name of territory
+        console.log("==============");
+        console.log(json[territory]["name"].toUpperCase());
+        console.log("==============");
 
-    for (var i = 0; i < adjacencyList[index].length; ++i)
-    {
-        console.log(territoryIndicies[adjacencyList[index][i]]);
-    }
+        // Outputs names of adjacencies
+        json[territory]["adjacencies"].forEach(function(element) {
+            console.log(json[element]["name"]);
+        });
+
+        // Outputs adjacencies of coasts if they exist
+        if (json[territory]["southCoast"] != undefined)
+        {
+            console.log("............");
+            console.log("SOUTH COAST");
+            console.log("............");
+            json[territory]["southCoast"].forEach(function(element) {
+                console.log(json[element]["name"]);
+            })
+        }
+        if (json[territory]["eastCoast"] != undefined)
+        {
+            console.log("............");
+            console.log("EAST COAST");
+            console.log("............");
+            json[territory]["eastCoast"].forEach(function(element) {
+                console.log(json[element]["name"]);
+            })
+        }
+        if (json[territory]["northCoast"] != undefined)
+        {
+            console.log("............");
+            console.log("NORTH COAST");
+            console.log("............");
+            json[territory]["northCoast"].forEach(function(element) {
+                console.log(json[element]["name"]);
+            })
+        }
+    });
 }
 
 $("document").ready(function(){
