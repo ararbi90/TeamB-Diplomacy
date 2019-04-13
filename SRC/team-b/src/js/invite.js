@@ -206,7 +206,6 @@ $(document).ready(function () {
                                 $("#invitePage").hide();
                                 $("#gemeCreated").show();
 
-
                             }
                         })
 
