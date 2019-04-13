@@ -141,27 +141,28 @@ $(document).ready(function () {
             let countryOrder = getArrayOfRandomNumbers();
             let countries = ["Austria", "England", "France", "Turkey", "Russia", "Germany", "Italy"];
             let countryStarters = {
-                Austria: [{ VIE: { forceType: "A" } }, { BUD: { forceType: "A" } }, { TRI: { forceType: "F" } }],
-                England: [{ LON: { forceType: "F" } }, { EDI: { forceType: "F" } }, { LVP: { forceType: "A" } }],
-                France: [{ PAR: { forceType: "A" } }, { MAR: { forceType: "A" } }, { BRE: { forceType: "F" } }],
-                Germany: [{ BER: { forceType: "A" } }, { MUN: { forceType: "A" } }, { KIE: { forceType: "F" } }],
-                Italy: [{ ROM: { forceType: "A" } }, { VEN: { forceType: "A" } }, { NAP: { forceType: "F" } }],
-                Russia: [{ MOS: { forceType: "A" } }, { SEV: { forceType: "F" } }, { WAR: { forceType: "A" } }, { STP: { forceType: "F" }}],
-                Turkey: [{ ANK: { forceType: "F" } }, { CON: { forceType: "A" } }, { SMY: { forceType: "A" } }],
+                Austria: { VIE: { forceType: "A" }, BUD: { forceType: "A" }, TRI: { forceType: "F" } },
+                England: { LON: { forceType: "F" }, EDI: { forceType: "F" }, LVP: { forceType: "A" } },
+                France: { PAR: { forceType: "A" }, MAR: { forceType: "A" }, BRE: { forceType: "F" } },
+                Germany: { BER: { forceType: "A" }, MUN: { forceType: "A" }, KIE: { forceType: "F" } },
+                Italy: { ROM: { forceType: "A" }, VEN: { forceType: "A" }, NAP: { forceType: "F" } },
+                Russia: { MOS: { forceType: "A" }, SEV: { forceType: "F" }, WAR: { forceType: "A" }, STP: { forceType: "F" } },
+                Turkey: { ANK: { forceType: "F" }, CON: { forceType: "A" }, SMY: { forceType: "A" } }
             }
             let gameOwner = username;
             let intvite = {};
 
             for (let i = 0; i < names.length; i++) {
-                intvite[names[i]] = { username: names[i], country: countries[countryOrder[i]] };
                 let temp = countryStarters[countries[countryOrder[i]]];
+                intvite[names[i]] = { username: names[i], country: countries[countryOrder[i]], territories: temp };
 
-                for(ter in temp){
-                    let key = Object.keys(temp[ter]).toString();
-                    intvite[names[i]][key] =  temp[ter][key];
-                }
+
+                // for(ter in temp){
+                //     let key = Object.keys(temp[ter]).toString();
+                //     intvite[names[i]][key] =  temp[ter][key];
+                // }
             }
-            
+
             console.log(intvite);
 
 
@@ -185,6 +186,7 @@ $(document).ready(function () {
                         hours: game.hours,
                         dateCreated: new Date().toJSON().slice(0, 10).replace(/-/g, '/')
                     })
+                    let count = 0;
                     for (let i = 0; i < names.length; i++) {
                         playersRef.child(names[i]).child("gameInvite").child(gameID).set({
                             name: game[0]["value"],
@@ -193,6 +195,19 @@ $(document).ready(function () {
                             days: game.days,
                             hours: game.hours,
 
+                        }, function (err) {
+                            count++;
+                            console.log(count);
+                            if (count >= names.length - 1) {
+                                setTimeout(function () {
+                                    var link = "dashboard.html?username=" + username;
+                                    window.location.href = link;
+                                }, 1500);
+                                $("#invitePage").hide();
+                                $("#gemeCreated").show();
+
+
+                            }
                         })
 
                     }
