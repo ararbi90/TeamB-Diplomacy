@@ -17,6 +17,17 @@ var playersRef = db.ref("player");
 
 console.log(firebase)
 
+String.prototype.hashCode = function () {
+    var hash = 0, i, chr;
+    if (this.length === 0) return hash;
+    for (i = 0; i < this.length; i++) {
+        chr = this.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+};
+
 var remote = require('electron').remote;
 
 // show initial value from main process (in dev console)
@@ -56,8 +67,8 @@ $("#register-form").submit(function (event) {
     } else {
         // Test to see if user name exits
         let ref = firebase.database().ref("player"); // Firebase referece 
-        var usernameIn = data[0]["value"];
-        var passwordIn = data[1]["value"];
+        var usernameIn = data[0]["value"].toLowerCase();
+        var passwordIn = data[1]["value"].hashCode();
         var gameIn = "";
         var invitationIn = "";
         ref.once("value").then(function (data) {
@@ -91,8 +102,10 @@ $("#login-form").submit(function (event) {
     // Login fucntionality
     var data = $(this).serializeArray();
     console.log(data);
-    var usernameIn = data[0]["value"];
-    var passwordIn = data[1]["value"];
+    var usernameIn = data[0]["value"].toLowerCase();
+    var passwordIn = data[1]["value"].hashCode();
+    console.log(usernameIn);
+    console.log(passwordIn)
 
     let ref = firebase.database().ref("player"); // Referece for firebase
     let found = false;
@@ -117,7 +130,7 @@ $("#login-form").submit(function (event) {
 });
 
 
-$("document").ready(function(){
+$("document").ready(function () {
     // let t = db.ref("testPage");
     // t.on("child_added", function(snapshot){
     //     let count = 0;
@@ -127,7 +140,7 @@ $("document").ready(function(){
     // })
     // setInterval(function(){
     //     t.child("added4").set({
-            
+
     //             test: 1,
     //             test2: 2
     //         }
