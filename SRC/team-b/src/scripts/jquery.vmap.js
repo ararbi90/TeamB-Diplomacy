@@ -72,7 +72,9 @@ ColorScale.prototype = {
 var JQVMap = function (params) {
   params = params || {};
   var map = this;
+  console.log(params.map);
   var mapData = JQVMap.maps[params.map];
+  console.log(mapData);
   var mapPins;
 
   if( !mapData){
@@ -162,11 +164,8 @@ var JQVMap = function (params) {
       labelShowEvent = jQuery.Event('labelShow.jqvmap'),
       regionMouseOverEvent = jQuery.Event('regionMouseOver.jqvmap');
 
-    code = code.toLowerCase();
 
     if (e.type === 'mouseover') {
-      console.log(code);
-      console.log(mapData.paths[code].name);
       jQuery(params.container).trigger(regionMouseOverEvent, [code, mapData.paths[code].name]);
       if (!regionMouseOverEvent.isDefaultPrevented()) {
         map.highlight(code, containerPath);
@@ -195,7 +194,6 @@ var JQVMap = function (params) {
     var code = regionClickEvent.target.id.split('_').pop();
     var mapClickEvent = jQuery.Event('regionClick.jqvmap');
 
-    code = code.toLowerCase();
 
     jQuery(params.container).trigger(mapClickEvent, [code, mapData.paths[code].name]);
 
