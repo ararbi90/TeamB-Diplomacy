@@ -13,6 +13,8 @@ firebase.initializeApp(config);
 let db = firebase.database();
 let playersRef = db.ref("player");
 let gameRef = db.ref("games");
+let publicChatRef = db.ref("public_chat");
+let privateChatRef = db.ref("game_public_chat");
 let x = 1;
 
 
