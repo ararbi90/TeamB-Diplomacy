@@ -3,9 +3,11 @@
 <head>
     <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <!-- <script src="../node_modules/jquery/dist/jquery.js"></script> -->
+    <link href="https://fonts.googleapis.com/css?family=Bad+Script|Playball|Tangerine|Glegoo" rel="stylesheet">
+
     <style>
         body {
-            background-color: #7f8fa6;
+            background-color: #D9ECF0;
         }
     </style>
 
@@ -13,7 +15,7 @@
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #273c75;">
+    <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #02355A;">
         <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
         <img height="100" src="../../images/diplomacy_logo.png" />
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
@@ -39,15 +41,15 @@
     <div class="container">
         <div class="row">
             <main>
-                <h1>Welcome to the dashboard, <span id="welcome"></span></h1>
-                <h2>News</h2>
-                <p>
+                <h1><span style="font-family:Tangerine;font-size: 80px">Welcome to the dashboard, <span id="welcome"></span></span></h1>
+                <h2><span style="font-family:Playball;font-size: 50px">News</span></h2>
+                <span style="font-family:Bad Script; font-size: 20px"><p>
                     Welcome to Diplomacy! If you are new to the game, we invite you to look over the game rule which
                     can be accessed under the drop-down menu to your right.
                     Once you are prepared to start your adventure, you can create a new game under the drop-down menu
                     as well. If you have been invited to a game, you may accept or decline that invitation under the
                     “Game In Progress” menu below.
-                </p>
+                </p></span>
 
 
             </main>
@@ -59,15 +61,15 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <h3>Games You've Been Invite To</h3>
+                <h3 style="font-family:Playball;">Games You've Been Invite To</h3>
                 <table class="table">
-                    <thead class="thead-light" style="background-color: gray;">
+                    <thead class="thead-light" style="background-color: #EBF2FA;">
                         <tr>
-                            <td>Name</td>
-                            <td>Turn Time Limit</td>
-                            <td>Game Created</td>
-                            <td>Accpet</td>
-                            <td>Decline</td>
+                            <td style="font-family:Glegoo;">Name</td>
+                            <td style="font-family:Glegoo;">Turn Time Limit</td>
+                            <td style="font-family:Glegoo;">Game Created</td>
+                            <td style="font-family:Glegoo;">Accept</td>
+                            <td style="font-family:Glegoo;">Decline</td>
                         </tr>
                     </thead>
                     <tbody id="gameInviteAppend">
@@ -79,9 +81,9 @@
 
             </div>
             <div class="col">
-                <h3>Games In Progress</h3>
+                <h3 style="font-family:Playball;">Games In Progress</h3>
                 <table class="table">
-                    <thead class="thead-light" style="background-color: gray;">
+                    <thead class="thead-light" style="background-color: EBF2FA;">
                         <tr>
                             <td>Name</td>
                             <td>Turn Time Limit</td>
