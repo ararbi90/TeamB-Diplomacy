@@ -225,61 +225,61 @@
             <div class="col" style="text-align: center; border:1px solid #ccc">
                 <div id="ChatBox" class="container">
 
-                    <div class="tab">
-                        <button id="1" class="tablinks" onclick="openTab(event, 'Main')">Main</button>
+                    <div id="t" class="tab">
+                        <button id="1" class="tablinks" onclick="openTab(event, this.id, 'Main')">Main</button>
                         <script>
                             document.addEventListener("DOMContentLoaded", function(event) { 
                             document.getElementById('1').click();
                         });
                         </script>
-                        <!-- <button class="tablinks" onclick="openTab(event, 'France')">France</button>
-                        <button class="tablinks" onclick="openTab(event, 'Russia')">Russia</button>
-                        <button class="tablinks" onclick="openTab(event, 'Austria-Hungary')">Austria-Hungary</button>
-                        <button class="tablinks" onclick="openTab(event, 'England')">England</button>
-                        <button class="tablinks" onclick="openTab(event, 'Turkey')">Turkey</button>
-                        <button class="tablinks" onclick="openTab(event, 'Germany')">Germany</button>
-                        <button class="tablinks" onclick="openTab(event, 'Italy')">Italy</button> -->
+                        <button id="2" class="tablinks" onclick="openTab(event, this.id, 'France')" hidden>France</button>
+                        <button id="3" class="tablinks" onclick="openTab(event, this.id, 'Austria-Hungary')" hidden>Austria-Hungary</button>
+                        <button id="4" class="tablinks" onclick="openTab(event, this.id, 'Russia')" hidden>Russia</button>
+                        <button id="5" class="tablinks" onclick="openTab(event, this.id, 'England')" hidden>England</button>
+                        <button id="6" class="tablinks" onclick="openTab(event, this.id, 'Turkey')" hidden>Turkey</button>
+                        <button id="7" class="tablinks" onclick="openTab(event, this.id, 'Germany')" hidden>Germany</button>
+                        <button id="8" class="tablinks" onclick="openTab(event, this.id, 'Italy')" hidden>Italy</button>
                     </div>
                     <div id="Main" class="tabcontent" style="background-color:#BEBEBE">
                         <!-- <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid darkred;border-radius:5px;list-style-type:none;background-color:#EAEAEA;color:black;clear:both;word-wrap:break-word;max-width:66%;">
                             <li></li>
                         </ul> -->
                     </div>
-                    <!-- <div id="France" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #8FD8D8;border-radius:5px;list-style-type:none;background-color: #EAEAEA;color:black;clear:both;word-wrap:break-word;max-width:66%;">
+                    <div id="France" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                        <!-- <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #8FD8D8;border-radius:5px;list-style-type:none;background-color: #EAEAEA;color:black;clear:both;word-wrap:break-word;max-width:66%;">
                             <li>France.</li>
-                        </ul>
-                    </div>
-                    <div id="Russia" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid white;border-radius:5px;list-style-type:none;background-color:#EAEAEA;color:black;clear:both;word-wrap:break-word;max-width:66%;">
-                            <li>Russia.</li>
-                        </ul>
+                        </ul> -->
                     </div>
                     <div id="Austria-Hungary" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #F48182;border-radius:5px;list-style-type:none;background-color:#EAEAEA;color:black;clear:both;word-wrap:break-word;max-width:66%;">
+                        <!-- <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #F48182;border-radius:5px;list-style-type:none;background-color:#EAEAEA;color:black;clear:both;word-wrap:break-word;max-width:66%;">
                             <li>Austria-Hungary.</li>
-                        </ul>
+                        </ul> -->
+                    </div>
+                    <div id="Russia" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                        <!-- <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid white;border-radius:5px;list-style-type:none;background-color:#EAEAEA;color:black;clear:both;word-wrap:break-word;max-width:66%;">
+                            <li>Russia.</li>
+                        </ul> -->
                     </div>
                     <div id="England" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #4888C8;border-radius:5px;list-style-type:none;background-color:#ECECEC;color:black;clear:both;word-wrap:break-word;max-width:66%;">
+                        <!-- <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #4888C8;border-radius:5px;list-style-type:none;background-color:#ECECEC;color:black;clear:both;word-wrap:break-word;max-width:66%;">
                             <li>England.</li>
-                        </ul>
+                        </ul> -->
                     </div>
                     <div id="Turkey" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #D9D739;border-radius:5px;list-style-type:none;background-color:#ECECEC;color:black;clear:both;word-wrap:break-word;max-width:66%;">
+                        <!-- <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #D9D739;border-radius:5px;list-style-type:none;background-color:#ECECEC;color:black;clear:both;word-wrap:break-word;max-width:66%;">
                             <li>Turkey.</li>
-                        </ul>
+                        </ul> -->
                     </div>
                     <div id="Germany" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #7A7A7A;border-radius:5px;list-style-type:none;background-color:#ECECEC;color:black;clear:both;word-wrap:break-word;max-width:66%;">
+                        <!-- <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #7A7A7A;border-radius:5px;list-style-type:none;background-color:#ECECEC;color:black;clear:both;word-wrap:break-word;max-width:66%;">
                             <li>Germany</li>
-                        </ul>
+                        </ul> -->
                     </div>
                     <div id="Italy" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #76B47C;border-radius:5px;list-style-type:none;background-color:#ECECEC;color:black;clear:both;word-wrap:break-word;max-width:66%;">
+                        <!-- <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #76B47C;border-radius:5px;list-style-type:none;background-color:#ECECEC;color:black;clear:both;word-wrap:break-word;max-width:66%;">
                             <li>Italy</li>
-                        </ul>
-                    </div> -->
+                        </ul> -->
+                    </div>
 
                 </div>
                 <div>
