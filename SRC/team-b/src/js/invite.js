@@ -50,14 +50,22 @@ function getUserLists(users) {
 }
 
 function getArrayOfRandomNumbers() {
-    let numberDic = {};
     let numberArray = [];
     while (numberArray.length < 7) {
         let temp = Math.floor(Math.random() * 7);
-        console.log(numberArray.length);
-        if (numberDic[temp] == null) {
+        var alreadyGenerated = false;
+
+        for (var i = 0; i < numberArray.length; ++i)
+        {
+            if (numberArray[i] == temp)
+            {
+                alreadyGenerated = true;
+            }
+        }
+
+        if (!alreadyGenerated)
+        {
             numberArray.push(temp);
-            numberDic.temp = temp;
         }
     }
     return numberArray;
