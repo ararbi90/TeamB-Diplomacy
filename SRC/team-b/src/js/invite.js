@@ -175,7 +175,7 @@ $(document).ready(function () {
 
             console.log(invite);
 
-
+            // Add owner into the game
             let gameID = gameRef.push().key // This key is the most important part of creating the game
             console.log(gameID)
             gameRef.child(gameID).set({

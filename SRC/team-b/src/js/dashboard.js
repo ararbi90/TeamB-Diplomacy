@@ -55,6 +55,7 @@ function accpetGame(event) {
                     
 
                     $("#" + gameId + "-table").hide()
+                    // Move to the game
 
                 }
 
