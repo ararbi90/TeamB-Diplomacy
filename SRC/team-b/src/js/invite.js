@@ -139,7 +139,7 @@ $(document).ready(function () {
             // Create Gamea
             // Create all game params
             let countryOrder = getArrayOfRandomNumbers();
-            let countries = ["Austria", "England", "France", "Turkey", "Russia", "Germany", "Italy"];
+            let countries = ["Austria-Hungary", "England", "France", "Turkey", "Russia", "Germany", "Italy"];
             let countryStarters = {
                 Austria: { VIE: { forceType: "A" }, BUD: { forceType: "A" }, TRI: { forceType: "F" } },
                 England: { LON: { forceType: "F" }, EDI: { forceType: "F" }, LVP: { forceType: "A" } },
@@ -149,21 +149,31 @@ $(document).ready(function () {
                 Russia: { MOS: { forceType: "A" }, SEV: { forceType: "F" }, WAR: { forceType: "A" }, STP: { forceType: "F" } },
                 Turkey: { ANK: { forceType: "F" }, CON: { forceType: "A" }, SMY: { forceType: "A" } }
             }
+            
             let gameOwner = username;
-            let intvite = {};
+            names.push(gameOwner);
+            let invite = {};
+            let ownerPlayer = {}
 
             for (let i = 0; i < names.length; i++) {
                 let temp = countryStarters[countries[countryOrder[i]]];
-                intvite[names[i]] = { username: names[i], country: countries[countryOrder[i]], territories: temp };
 
+                if (names[i] === gameOwner)
+                {
+                    ownerPlayer = { username: names[i], country: countries[countryOrder[i]], territories: temp }
+                }
+                else
+                {
+                    invite[names[i]] = { username: names[i], country: countries[countryOrder[i]], territories: temp };
+                }
 
                 // for(ter in temp){
                 //     let key = Object.keys(temp[ter]).toString();
-                //     intvite[names[i]][key] =  temp[ter][key];
+                //     invite[names[i]][key] =  temp[ter][key];
                 // }
             }
 
-            console.log(intvite);
+            console.log(invite);
 
 
             let gameID = gameRef.push().key // This key is the most important part of creating the game
@@ -171,13 +181,15 @@ $(document).ready(function () {
             gameRef.child(gameID).set({
                 name: game[0]["value"],
                 owner: gameOwner,
-                invites: intvite,
+                invites: invite,
                 TimeLimitDays: game.days,
-                TimeLimitHours: game.hours
+                TimeLimitHours: game.hours,
+                players: gameOwner
             }, function (error) {
                 if (error) {
 
                 } else {
+                    gameRef.child(gameID).child("players").child(gameOwner).set(ownerPlayer);
                     // This section of the code sends all the invites to the a game and creates the owner of the game
                     console.log("Updating users");
                     playersRef.child(username).child("game").child(gameID).set({
@@ -188,26 +200,29 @@ $(document).ready(function () {
                     })
                     let count = 0;
                     for (let i = 0; i < names.length; i++) {
-                        playersRef.child(names[i]).child("gameInvite").child(gameID).set({
-                            name: game[0]["value"],
-                            owner: username,
-                            dateCreated: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
-                            days: game.days,
-                            hours: game.hours,
+                        if (names[i] != gameOwner)
+                        {
+                            playersRef.child(names[i]).child("gameInvite").child(gameID).set({
+                                name: game[0]["value"],
+                                owner: username,
+                                dateCreated: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
+                                days: game.days,
+                                hours: game.hours,
 
-                        }, function (err) {
-                            count++;
-                            console.log(count);
-                            if (count >= names.length - 1) {
-                                setTimeout(function () {
-                                    var link = "dashboard.html?username=" + username;
-                                    window.location.href = link;
-                                }, 1500);
-                                $("#invitePage").hide();
-                                $("#gemeCreated").show();
+                            }, function (err) {
+                                count++;
+                                console.log(count);
+                                if (count >= names.length - 1) {
+                                    setTimeout(function () {
+                                        var link = "dashboard.html?username=" + username;
+                                        window.location.href = link;
+                                    }, 1500);
+                                    $("#invitePage").hide();
+                                    $("#gemeCreated").show();
 
-                            }
-                        })
+                                }
+                            })
+                        }
 
                     }
 

@@ -1,5 +1,10 @@
 $ = require("jquery");
 
+// Create chats if not already
+
+var urlParams = new URLSearchParams(location.search);
+let gameID = urlParams.get("gameID");
+
 var tabs = []
 let chatCount = 0;
 
@@ -24,6 +29,7 @@ function openTab(evt, tabName) {
     tabs.push(tabName);
 }
 
+// Handles message overflow
 function createValidMessage(input)
 {
     var result = "";
@@ -55,12 +61,7 @@ function createValidMessage(input)
     return result;
 }
 
-function createUserMessage(color) {
-    var node = document.createElement("LI");
-    node.id = "chat-" + chatCount;
-    message = createValidMessage(document.getElementById("messageinput").value);
-    var textnode = document.createTextNode(message);
-    node.appendChild(textnode);
+function createUserMessage(node, color) {
     node.style.textAlign = "left";
     node.style.padding = "3px";
     node.style.margin = "0 0 5px 0";
@@ -74,15 +75,9 @@ function createUserMessage(color) {
     node.style.wordWrap = "break-word";
     node.style.maxWidth = "66%";
     chatCount++;
-
-    return node;
 }
 
-function createIncomingMessage(color) {
-    var node = document.createElement("LI");
-    message = createValidMessage(document.getElementById("messageinput").value);
-    var textnode = document.createTextNode(message);
-    node.appendChild(textnode);
+function createIncomingMessage(node, color) {
     node.style.textAlign = "left";
     node.style.padding = "3px";
     node.style.margin = "0 0 5px 0";
@@ -95,130 +90,21 @@ function createIncomingMessage(color) {
     node.style.clear = "both";
     node.style.wordWrap = "break-word";
     node.style.maxWidth = "66%";
-
-    return node;
 }
 
 function sendMessage() {
+    // Don't send empty message
     if (!document.getElementById("messageinput").value.trim())
     {
         return;
     }
 
-    node1 = createUserMessage("black");
+    message = createValidMessage(document.getElementById("messageinput").value);
 
-    if (tabs[tabs.length - 1] === "France")
-    {
-        node2 = createIncomingMessage("#8FD8D8");
-        document.getElementById("France").appendChild(node1);
-
-        setTimeout(function () {
-            document.getElementById("France").appendChild(node2);
-            var objDiv = document.getElementById("France");
-            objDiv.scrollTop = objDiv.scrollHeight;
-        }, 2000);
-
-        var objDiv = document.getElementById("France");
-        objDiv.scrollTop = objDiv.scrollHeight;
-    } 
-    else if (tabs[tabs.length - 1] === "Russia")
-    {
-        node2 = createIncomingMessage("white");
-        document.getElementById("Russia").appendChild(node1);
-
-        setTimeout(function () {
-            document.getElementById("Russia").appendChild(node2);
-            var objDiv = document.getElementById("Russia");
-            objDiv.scrollTop = objDiv.scrollHeight;
-        }, 2000);
-
-        var objDiv = document.getElementById("Russia");
-        objDiv.scrollTop = objDiv.scrollHeight;
-    } 
-    else if (tabs[tabs.length - 1] === "Austria-Hungary")
-    {
-        node2 = createIncomingMessage("#F48182");
-        document.getElementById("Austria-Hungary").appendChild(node1);
-
-        setTimeout(function () {
-            document.getElementById("Austria-Hungary").appendChild(node2)
-            var objDiv = document.getElementById("Austria-Hungary");
-            objDiv.scrollTop = objDiv.scrollHeight;
-        }, 2000);
-
-        var objDiv = document.getElementById("Austria-Hungary");
-        objDiv.scrollTop = objDiv.scrollHeight;
-    } 
-    else if (tabs[tabs.length - 1] === "England")
-    {
-        node2 = createIncomingMessage("#4888C8");
-        document.getElementById("England").appendChild(node1);
-
-        setTimeout(function () {
-            document.getElementById("England").appendChild(node2);
-            var objDiv = document.getElementById("England");
-            objDiv.scrollTop = objDiv.scrollHeight;
-        }, 2000);
-
-        var objDiv = document.getElementById("England");
-        objDiv.scrollTop = objDiv.scrollHeight;
-    } 
-    else if (tabs[tabs.length - 1] === "Turkey")
-    {
-        node2 = createIncomingMessage("#D9D739");
-        document.getElementById("Turkey").appendChild(node1);
-
-        setTimeout(function () {
-            document.getElementById("Turkey").appendChild(node2);
-            var objDiv = document.getElementById("Turkey");
-            objDiv.scrollTop = objDiv.scrollHeight;
-        }, 2000);
-
-        var objDiv = document.getElementById("Turkey");
-        objDiv.scrollTop = objDiv.scrollHeight;
-    } 
-    else if (tabs[tabs.length - 1] === "Germany")
-    {
-        node2 = createIncomingMessage("#7A7A7A");
-        document.getElementById("Germany").appendChild(node1);
-
-        setTimeout(function () {
-            document.getElementById("Germany").appendChild(node2);
-            var objDiv = document.getElementById("Germany");
-            objDiv.scrollTop = objDiv.scrollHeight;
-        }, 2000);
-
-        var objDiv = document.getElementById("Germany");
-        objDiv.scrollTop = objDiv.scrollHeight;
-    } 
-    else if (tabs[tabs.length - 1] === "Italy")
-    {
-        node2 = createIncomingMessage("#76B47C");
-        document.getElementById("Italy").appendChild(node1);
-
-        setTimeout(function () {
-            document.getElementById("Italy").appendChild(node2);
-            var objDiv = document.getElementById("Italy");
-            objDiv.scrollTop = objDiv.scrollHeight;
-        }, 2000);
-
-        var objDiv = document.getElementById("Italy");
-        objDiv.scrollTop = objDiv.scrollHeight;
-    } 
-    else
-    {
-        node2 = createIncomingMessage("darkred");
-        document.getElementById("Main").appendChild(node1);
-
-        setTimeout(function () {
-            document.getElementById("Main").appendChild(node2);
-            var objDiv = document.getElementById("Main");
-            objDiv.scrollTop = objDiv.scrollHeight;
-        }, 2000);
-
-        var objDiv = document.getElementById("Main");
-        objDiv.scrollTop = objDiv.scrollHeight;
-    }
+    publicChatRef.child(gameID).push({
+        message: message,
+        username : username
+    });
 
     $('#messageinput').val("");
 }
@@ -227,4 +113,54 @@ $("#messageinput").keyup(function(event) {
     if (event.keyCode === 13) {
         $("#subitMSG").click();
     }
+});
+
+var messageColors = new Map([
+    ["France", "#8FD8D8"], ["Russia", "white"], ["Austria-Hungary", "#F48182"],
+    ["England", "#4888C8"], ["Turkey", "#D9D739"], ["Germany", "#7A7A7A"], ["Italy", "#76B47C"]
+])
+
+gameRef.child(gameID).child("players").on("child_added", function (snapshot)
+{
+    console.log(snapshot.val());
+})
+
+publicChatRef.child(gameID).on("child_added", function (snapshot) {
+    //console.log(snapshot.val().message);
+
+    let messageContent = snapshot.val().message;
+    let messageSender = snapshot.val().username;
+
+    gameRef.child(gameID).child("players").on("child_added", function (snapshot)
+    {
+        if (snapshot.val().username === messageSender)
+        {
+            if (messageSender === username)
+            {
+                var node = document.createElement("LI");
+                node.id = "chat-" + chatCount;
+                var textnode = document.createTextNode(messageContent);
+                node.appendChild(textnode);
+                createUserMessage(node, messageColors.get(snapshot.val().country));
+                document.getElementById("Main").appendChild(node);
+        
+                // Auto scroll
+                var objDiv = document.getElementById("Main");
+                objDiv.scrollTop = objDiv.scrollHeight;
+            }
+            else
+            {
+                var node = document.createElement("LI");
+                node.id = "chat-" + chatCount;
+                var textnode = document.createTextNode(messageContent);
+                node.appendChild(textnode);
+                createIncomingMessage(node, messageColors.get(snapshot.val().country));
+                document.getElementById("Main").appendChild(node);
+        
+                // Auto scroll
+                var objDiv = document.getElementById("Main");
+                objDiv.scrollTop = objDiv.scrollHeight;
+            }
+        }
+    })
 });

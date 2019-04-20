@@ -1,7 +1,7 @@
 $ = require("jquery");
 
 var urlParams = new URLSearchParams(location.search);
-console.log(urlParams.get("username"));
+//console.log(urlParams.get("username"));
 let username = urlParams.get("username");
 
 document.getElementById("navbarDropdownMenuLink").innerHTML = username;
