@@ -85,6 +85,25 @@ function declineGame(event) {
     return;
 }
 
+// Delete the invites and game that as expired
+function autoDecline(gameId){
+
+    gameRef.child(gameId).child("invites").once("value").then(function (data) {
+        data.forEach(function(invites){
+            console.log("username from invite"+invites.val().username);
+            console.log(username);
+            playersRef.child(invites.key).child("gameInvite").child(gameId).remove();
+        })
+    });
+    setTimeout(function(){
+        console.log("Fuck this shit")
+        gameRef.child(gameId).remove();
+    },3000);
+    
+
+    return;
+}
+
 function reJoinGame(event) {
     // Need to make updates here
     // Create on value promises
@@ -102,7 +121,17 @@ function setAllInvites() {
         console.log(data.val());
         console.log(++count);
 
-        tableInvite.append("<tr id= " + data.key + "-table>" +
+
+        //Check how many secs unil expiration.
+        let seconds = (data.val().expirationDate - Date.now())/1000;
+        console.log("Seconds until expiration: "+ seconds);
+        console.log("Mins until expiration: "+ seconds/60);
+        //console.log((data.val().expirationDate - Date.now())/1000);
+        
+        //Before adding the invites to the table we must check the invite expiration time.
+        if(Date.now() <= data.val().expirationDate){
+
+            tableInvite.append("<tr id= " + data.key + "-table>" +
             "<td>" + data.val().name + "</td>" +
             "<td>" + data.val().days + " </td>" +
             "<td>" + data.val().dateCreated + "</td>" +
@@ -111,7 +140,15 @@ function setAllInvites() {
 
         $("#" + (data.key + "-accept") + "").click(accpetGame);
         $("#" + (data.key + "-decline") + "").click(declineGame);
+            
+        }else{
+            // Autodecline the invite has since it has expired.
+            autoDecline(data.key);
 
+            
+        }
+
+        
 
     });
 

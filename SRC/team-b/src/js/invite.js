@@ -143,8 +143,16 @@ $(document).ready(function () {
                 return false;
             }
 
+            // Set the expiration timestamp for the invites
+            const daysUntilExpiration = 5;
+            const dayInMilli = 86400000;  
+            
+            //let expirationDate = Date.now() + daysUntilExpiration * dayInMilli;
+            let expirationDate = Date.now() + 600000;
+            console.log("expirationDate: "+ expirationDate);
+
             console.log("Found All Create Game!!!");
-            // Create Gamea
+            // Create Game
             // Create all game params
             let countryOrder = getArrayOfRandomNumbers();
             let countries = ["Austria-Hungary", "England", "France", "Turkey", "Russia", "Germany", "Italy"];
@@ -189,7 +197,12 @@ $(document).ready(function () {
             gameRef.child(gameID).set({
                 name: game[0]["value"],
                 owner: gameOwner,
+<<<<<<< HEAD
                 invites: invite,
+=======
+                expirationDate:expirationDate, 
+                invites: intvite,
+>>>>>>> michaels
                 TimeLimitDays: game.days,
                 TimeLimitHours: game.hours,
                 players: gameOwner
@@ -208,6 +221,7 @@ $(document).ready(function () {
                     })
                     let count = 0;
                     for (let i = 0; i < names.length; i++) {
+<<<<<<< HEAD
                         if (names[i] != gameOwner)
                         {
                             playersRef.child(names[i]).child("gameInvite").child(gameID).set({
@@ -231,6 +245,29 @@ $(document).ready(function () {
                                 }
                             })
                         }
+=======
+                        playersRef.child(names[i]).child("gameInvite").child(gameID).set({
+                            name: game[0]["value"],
+                            owner: username,
+                            dateCreated: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
+                            expirationDate:expirationDate,
+                            days: game.days,
+                            hours: game.hours,
+
+                        }, function (err) {
+                            count++;
+                            console.log(count);
+                            if (count >= names.length - 1) {
+                                setTimeout(function () {
+                                    var link = "dashboard.html?username=" + username;
+                                    window.location.href = link;
+                                }, 1500);
+                                $("#invitePage").hide();
+                                $("#gemeCreated").show();
+
+                            }
+                        })
+>>>>>>> michaels
 
                     }
 
