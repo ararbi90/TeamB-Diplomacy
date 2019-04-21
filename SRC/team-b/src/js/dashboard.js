@@ -27,13 +27,8 @@ function accpetGame(event) {
     // Create on value promises
     let gameId = this.id.substring(0, this.id.search("-accept"));
     gameRef.child(gameId).child("invites").once("value").then(function (snapshot) {
-        let userInformation = 0;
-        snapshot.forEach(function (data) {
-            if (data.key == username) {
-                userInformation = data.val();
 
-            }
-        });
+        let userInformation = snapshot.child(username).val();
         gameRef.child(gameId).child("players").child(username).set(
             userInformation
             , function (error) {
@@ -51,21 +46,14 @@ function accpetGame(event) {
                             }
                         })
                     });
-
-                    
-
-                    $("#" + gameId + "-table").hide()
-                    // Move to the game
-
+                    $("#" + gameId + "-table").remove();
                 }
-
-
             });
 
     });
     let link = "game.html?gameID=" + gameId + "&username=" + username;
     console.log(link);
-    //window.location.href = link;
+
 }
 
 function declineGame(event) {
@@ -86,20 +74,38 @@ function declineGame(event) {
 }
 
 // Delete the invites and game that as expired
-function autoDecline(gameId){
-
+function autoDecline(gameId) {
+    // query database
     gameRef.child(gameId).child("invites").once("value").then(function (data) {
-        data.forEach(function(invites){
-            console.log("username from invite"+invites.val().username);
+        console.log("Auto decline is here");
+        // Get all the invites from the game
+        data.forEach(function (invites) {
+            console.log("username from invite " + invites.val().username);
             console.log(username);
+            // Set each player to decline the game
             playersRef.child(invites.key).child("gameInvite").child(gameId).remove();
-        })
+        });
+        // Remove invites section from db
+        gameRef.child(gameId).child('invites').remove();
+        // Check to see it there are more than one players in the game
+        gameRef.child(gameId).once("value").then(function (snap) {
+            let count = 0;
+            let gamePlayers = snap.child("players");
+            console.log(snap.val());
+            gamePlayers.forEach(function (d) {
+                count++;
+            });
+            if (count <= 1) {
+                // If there are one or less players delete game and delete game from the owner
+                console.log("Deleting game and game entry from owner");
+                playersRef.child(snap.child('owner').val()).child('game').child(gameId).remove();
+                gameRef.child(gameId).remove();
+
+            }
+
+        });
     });
-    setTimeout(function(){
-        console.log("Fuck this shit")
-        gameRef.child(gameId).remove();
-    },3000);
-    
+
 
     return;
 }
@@ -113,6 +119,67 @@ function reJoinGame(event) {
 
 }
 
+
+function getArrayOfRandomNumbers(n) {
+    let numberArray = [];
+    while (numberArray.length < n) {
+        let temp = Math.floor(Math.random() * n);
+
+        var found = numberArray.find(function (element) {
+            return element == temp;
+        });
+        if (found == undefined) {
+            numberArray.push(temp);
+        }
+    }
+    return numberArray;
+}
+
+
+
+
+function gameButtonHandler(gameId, expirationDate) {
+    //console.log(gameId);
+
+    gameRef.child(gameId).once("value").then(function (data) {
+        // Check if territories are created
+        let gamePlayers = [];
+        let allPlayers = data.child("players");
+        let createTerretories = false;
+        allPlayers.forEach(function (player) {
+            if (player.val().territories == null) {
+                createTerretories = true;
+            }
+            gamePlayers.push(player.key);
+        });
+
+        // If invites are null or time has expired and no teritories exit then create teritories
+        if (createTerretories && (Date.now() >= data.child('expirationDate').val() || data.child("invites").val() == null)) {
+            if (gamePlayers.length <= 1) {
+                // Time has runout and no one has accpeted the game
+                autoDecline(gameId);
+            }
+            else {
+                console.log("Creating terretories");
+                if (data.child("invites").val() != null) {
+                    gameRef.child(gameId).child("invites").remove();
+                }
+                console.log(getArrayOfRandomNumbers(5));
+
+            }
+        }
+        else if (!createTerretories) {
+            $("#" + gameId + "").click(reJoinGame);
+            console.log("No need to create territories");
+        }
+        else {
+            console.log("Waiting to people to accpet the game");
+            $("#" + gameId + "").attr("disabled", true);
+            $("#" + gameId + "").html("Waiting for other players");
+        }
+    });
+}
+
 function setAllInvites() {
     // This fucntion creates all the invites tables
     var count = 0
@@ -123,32 +190,30 @@ function setAllInvites() {
 
 
         //Check how many secs unil expiration.
-        let seconds = (data.val().expirationDate - Date.now())/1000;
-        console.log("Seconds until expiration: "+ seconds);
-        console.log("Mins until expiration: "+ seconds/60);
+        let seconds = (data.val().expirationDate - Date.now()) / 1000;
+        console.log("Seconds until expiration: " + seconds);
+        console.log("Mins until expiration: " + seconds / 60);
         //console.log((data.val().expirationDate - Date.now())/1000);
-        
+
         //Before adding the invites to the table we must check the invite expiration time.
-        if(Date.now() <= data.val().expirationDate){
+        if (Date.now() <= data.val().expirationDate) {
 
             tableInvite.append("<tr id= " + data.key + "-table>" +
-            "<td>" + data.val().name + "</td>" +
-            "<td>" + data.val().days + " </td>" +
-            "<td>" + data.val().dateCreated + "</td>" +
-            "<td><button type='button' class='btn btn-primary' id=" + (data.key + "-accept") + ">Accpet</button></td>" +
-            "<td><button type='button' class='btn btn-primary' id=" + (data.key + "-decline") + ">Decline</button></td></tr>");
+                "<td>" + data.val().name + "</td>" +
+                "<td>" + data.val().days + " </td>" +
+                "<td>" + data.val().dateCreated + "</td>" +
+                "<td><button type='button' class='btn btn-primary' id=" + (data.key + "-accept") + ">Accpet</button></td>" +
+                "<td><button type='button' class='btn btn-primary' id=" + (data.key + "-decline") + ">Decline</button></td></tr>");
 
-        $("#" + (data.key + "-accept") + "").click(accpetGame);
-        $("#" + (data.key + "-decline") + "").click(declineGame);
-            
-        }else{
+            $("#" + (data.key + "-accept") + "").click(accpetGame);
+            $("#" + (data.key + "-decline") + "").click(declineGame);
+
+        } else {
             // Autodecline the invite has since it has expired.
             autoDecline(data.key);
 
-            
-        }
 
-        
+        }
 
     });
 
@@ -158,13 +223,16 @@ function setAllGamesInProgress() {
     // This fucntion creates all the game tables
     var gameTable = $("#currentGames")
     playersRef.child(username).child("game").on("child_added", function (data) {
-        console.log(data.val());
+        let seconds = (data.val().expirationDate - Date.now()) / 1000;
+        //console.log(data.val());
         gameTable.append("<tr>" +
             "<td>" + data.val().name + "</td>" +
             "<td>" + data.val().days + " </td>" +
             "<td>" + data.val().dateCreated + "</td>" +
             "<td><button type='button' class='btn btn-primary' id=" + data.key + ">Re-Join</button></td></tr>");
-        $("#" + data.key + "").click(reJoinGame);
+
+        gameButtonHandler(data.key, data.val().expirationDate);
+
 
     });
 
