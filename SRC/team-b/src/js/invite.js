@@ -135,8 +135,16 @@ $(document).ready(function () {
                 return false;
             }
 
+            // Set the expiration timestamp for the invites
+            const daysUntilExpiration = 5;
+            const dayInMilli = 86400000;  
+            
+            //let expirationDate = Date.now() + daysUntilExpiration * dayInMilli;
+            let expirationDate = Date.now() + 600000;
+            console.log("expirationDate: "+ expirationDate);
+
             console.log("Found All Create Game!!!");
-            // Create Gamea
+            // Create Game
             // Create all game params
             let countryOrder = getArrayOfRandomNumbers();
             let countries = ["Austria", "England", "France", "Turkey", "Russia", "Germany", "Italy"];
@@ -171,6 +179,7 @@ $(document).ready(function () {
             gameRef.child(gameID).set({
                 name: game[0]["value"],
                 owner: gameOwner,
+                expirationDate:expirationDate, 
                 invites: intvite,
                 TimeLimitDays: game.days,
                 TimeLimitHours: game.hours
@@ -192,6 +201,7 @@ $(document).ready(function () {
                             name: game[0]["value"],
                             owner: username,
                             dateCreated: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
+                            expirationDate:expirationDate,
                             days: game.days,
                             hours: game.hours,
 
