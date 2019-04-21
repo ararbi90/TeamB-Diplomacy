@@ -49,27 +49,7 @@ function getUserLists(users) {
     };
 }
 
-function getArrayOfRandomNumbers() {
-    let numberArray = [];
-    while (numberArray.length < 7) {
-        let temp = Math.floor(Math.random() * 7);
-        var alreadyGenerated = false;
 
-        for (var i = 0; i < numberArray.length; ++i)
-        {
-            if (numberArray[i] == temp)
-            {
-                alreadyGenerated = true;
-            }
-        }
-
-        if (!alreadyGenerated)
-        {
-            numberArray.push(temp);
-        }
-    }
-    return numberArray;
-}
 
 
 $(document).ready(function () {
@@ -167,28 +147,13 @@ $(document).ready(function () {
             }
             
             let gameOwner = username;
-            names.push(gameOwner);
+            //names.push(gameOwner);
             let invite = {};
-            let ownerPlayer = {}
 
-            for (let i = 0; i < names.length; i++) {
-                let temp = countryStarters[countries[countryOrder[i]]];
-
-                if (names[i] === gameOwner)
-                {
-                    ownerPlayer = { username: names[i], country: countries[countryOrder[i]], territories: temp }
-                }
-                else
-                {
-                    invite[names[i]] = { username: names[i], country: countries[countryOrder[i]], territories: temp };
-                }
-
-                // for(ter in temp){
-                //     let key = Object.keys(temp[ter]).toString();
-                //     invite[names[i]][key] =  temp[ter][key];
-                // }
-            }
-
+            names.forEach(function(name, index){
+                invite[name] = {username: name};
+            })
+                
             console.log(invite);
 
             // Add owner into the game
@@ -197,20 +162,15 @@ $(document).ready(function () {
             gameRef.child(gameID).set({
                 name: game[0]["value"],
                 owner: gameOwner,
-<<<<<<< HEAD
                 invites: invite,
-=======
                 expirationDate:expirationDate, 
-                invites: intvite,
->>>>>>> michaels
                 TimeLimitDays: game.days,
-                TimeLimitHours: game.hours,
-                players: gameOwner
+                TimeLimitHours: game.hours
             }, function (error) {
                 if (error) {
 
                 } else {
-                    gameRef.child(gameID).child("players").child(gameOwner).set(ownerPlayer);
+                    gameRef.child(gameID).child("players").child(gameOwner).set(gameOwner);
                     // This section of the code sends all the invites to the a game and creates the owner of the game
                     console.log("Updating users");
                     playersRef.child(username).child("game").child(gameID).set({
@@ -221,38 +181,14 @@ $(document).ready(function () {
                     })
                     let count = 0;
                     for (let i = 0; i < names.length; i++) {
-<<<<<<< HEAD
-                        if (names[i] != gameOwner)
-                        {
-                            playersRef.child(names[i]).child("gameInvite").child(gameID).set({
-                                name: game[0]["value"],
-                                owner: username,
-                                dateCreated: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
-                                days: game.days,
-                                hours: game.hours,
 
-                            }, function (err) {
-                                count++;
-                                console.log(count);
-                                if (count >= names.length - 1) {
-                                    setTimeout(function () {
-                                        var link = "dashboard.html?username=" + username;
-                                        window.location.href = link;
-                                    }, 1500);
-                                    $("#invitePage").hide();
-                                    $("#gemeCreated").show();
-
-                                }
-                            })
-                        }
-=======
                         playersRef.child(names[i]).child("gameInvite").child(gameID).set({
                             name: game[0]["value"],
                             owner: username,
                             dateCreated: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
                             expirationDate:expirationDate,
                             days: game.days,
-                            hours: game.hours,
+                            hours: game.hours
 
                         }, function (err) {
                             count++;
@@ -266,8 +202,8 @@ $(document).ready(function () {
                                 $("#gemeCreated").show();
 
                             }
-                        })
->>>>>>> michaels
+                        });
+
 
                     }
 
