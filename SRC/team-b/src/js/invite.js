@@ -197,9 +197,6 @@ $(document).ready(function () {
             gameRef.child(gameID).set({
                 name: game[0]["value"],
                 owner: gameOwner,
-<<<<<<< HEAD
-                invites: invite,
-=======
                 expirationDate:expirationDate, 
                 invites: intvite,
 >>>>>>> michaels
