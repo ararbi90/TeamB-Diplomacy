@@ -59,7 +59,32 @@ $(document).ready(function () {
         // Add attribites to the objects
         game.days = $("#days").val();
         game.hours = $("#hours").val();
+        game.expirationHours = $("#expiration_hours").val();
+        game.expirationMinutes = $("#expiration_minutes").val();
 
+        // Set defaults if the user hasn't selected turn or expiration duration
+        // turn default:        1 day 
+        // expiration default:  6 hours
+        if(game.days == "Choose..."){
+            game.days = 1;
+        }
+        if(game.hours == "Choose..."){
+            game.hours = 0;
+        }
+
+        if(game.expirationHours == "Choose..."){
+            game.expirationHours = 6;
+        }else{
+            game.expirationHours = parseInt(game.expirationHours);
+        }
+        if(game.expirationMinutes == "Choose..."){
+            game.expirationMinutes = 0;
+        }else{
+            game.expirationMinutes = parseInt(game.expirationMinutes);
+        }
+
+
+       
 
         // Creates a hashtable for users
         let userList = getUserLists(users);
@@ -123,12 +148,10 @@ $(document).ready(function () {
                 return false;
             }
 
-            // Set the expiration timestamp for the invites
-            const daysUntilExpiration = 5;
-            const dayInMilli = 86400000;  
-            
-            //let expirationDate = Date.now() + daysUntilExpiration * dayInMilli;
-            let expirationDate = Date.now() + 600000;
+            // Set the expiration timestamp for the invites using UTC (milliseconds)
+            // Convert the expiration minutes and hours to milliseconds
+            let expirationDuration = (game.expirationHours*60 + game.expirationMinutes) * 60 * 1000;
+            let expirationDate = Date.now() + expirationDuration;
             console.log("expirationDate: "+ expirationDate);
 
             console.log("Found All Create Game!!!");
@@ -189,7 +212,7 @@ $(document).ready(function () {
                                     window.location.href = link;
                                 }, 1500);
                                 $("#invitePage").hide();
-                                $("#gemeCreated").show();
+                                $("#gameCreated").show();
 
                             }
                         });
