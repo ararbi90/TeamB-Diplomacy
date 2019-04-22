@@ -8,8 +8,7 @@ let gameID = urlParams.get("gameID");
 var tabs = [];
 let chatCount = 0;
 
-function openTab(evt, id, tabName)
-{
+function openTab(evt, id, tabName) {
     // Get all elements with class="tabcontent" and hide them
     var tabcontent = document.getElementsByClassName("tabcontent");
     for (var i = 0; i < tabcontent.length; i++) {
@@ -31,29 +30,24 @@ function openTab(evt, id, tabName)
 }
 
 // Handles message overflow
-function createValidMessage(input)
-{
+function createValidMessage(input) {
     var result = "";
     count = 0;
 
-    for (var i = 0; i < input.length; i++)
-    {
+    for (var i = 0; i < input.length; i++) {
         var character = input.charAt(i);
 
-        if (count > 30)
-        {
+        if (count > 30) {
             count = 0;
             result += "\n";
             result += character;
         }
 
-        if (character === " " || character === "\n"|| character === "\t")
-        {
+        if (character === " " || character === "\n" || character === "\t") {
             count = 0;
             result += character;
         }
-        else
-        {
+        else {
             count++;
             result += character;
         }
@@ -69,8 +63,7 @@ var messageColors = new Map([
 ])
 
 // Style the message
-function styleMessage(node, country)
-{
+function styleMessage(node, country) {
     var countries = country.split("_");
 
     node.style.textAlign = "left";
@@ -85,17 +78,14 @@ function styleMessage(node, country)
     node.style.maxWidth = "66%";
 
     // Color
-    if (countries.length == 1)
-    {
+    if (countries.length == 1) {
         node.style.borderBottom = "8px solid " + messageColors.get(countries[0]);
     }
-    else if (countries.length == 2)
-    {
+    else if (countries.length == 2) {
         node.style.borderTop = "8px solid " + messageColors.get(countries[0]);
         node.style.borderBottom = "8px solid " + messageColors.get(countries[1]);
     }
-    else if (countries.length == 3)
-    {
+    else if (countries.length == 3) {
         node.style.borderTop = "8px solid " + messageColors.get(countries[0]);
         node.style.borderBottom = "8px solid " + messageColors.get(countries[1]);
         node.style.borderLeft = "8px solid " + messageColors.get(countries[2]);
@@ -223,40 +213,33 @@ var uniqueCountryKeys = [
 
 function sendMessage() {
     // Don't send empty message
-    if (!document.getElementById("messageinput").value.trim())
-    {
+    if (!document.getElementById("messageinput").value.trim()) {
         return;
     }
 
     message = createValidMessage(document.getElementById("messageinput").value);
 
-    if (tabs[tabs.length - 1] === "Main")
-    {
+    if (tabs[tabs.length - 1] === "Main") {
         // Log chat in DB
         publicChatRef.child(gameID).push({
             message: message,
-            username : username
+            username: username
         });
     }
-    else
-    {
+    else {
         var country1 = tabs[tabs.length - 1]; // Opposing player's country
         var country2 = "";
 
-        gameRef.child(gameID).child("players").on("child_added", function (snapshot)
-        {
+        gameRef.child(gameID).child("players").on("child_added", function (snapshot) {
             // Find the current user's country
-            if (snapshot.key === username)
-            {
+            if (snapshot.key === username) {
                 country2 = snapshot.val().country;
 
                 // Get the chat key
                 var privateChatKey = "";
 
-                for (var i = 0; i < countryKeys.get(country1).length; ++i)
-                {
-                    if (countryKeys.get(country1)[i][0] === country2)
-                    {
+                for (var i = 0; i < countryKeys.get(country1).length; ++i) {
+                    if (countryKeys.get(country1)[i][0] === country2) {
                         privateChatKey = countryKeys.get(country1)[i][1];
                     }
                 }
@@ -270,83 +253,109 @@ function sendMessage() {
                 })
             }
         })
-        
+
     }
 
     // Empty message input box
     $('#messageinput').val("");
 }
 
-$("#messageinput").keyup(function(event) {
+$("#messageinput").keyup(function (event) {
     if (event.keyCode === 13) {
         $("#subitMSG").click();
     }
 });
 
 // Public Chat
-publicChatRef.child(gameID).on("child_added", function (snapshot)
-{
-    // Get every public message and its sender
-    let messageContent = snapshot.val().message;
-    let messageSender = snapshot.val().username;
 
-    // Get every player in the game.
-    gameRef.child(gameID).child("players").on("child_added", function (snapshot)
-    {
-        // Continue if the player was the sender.
-        if (snapshot.key === messageSender)
-        {
-            var node = document.createElement("LI");
-            node.id = "chat-" + chatCount;
-            var textnode = document.createTextNode(messageContent);
-            node.appendChild(textnode);
+gameRef.child(gameID).child("players").once("value").then(function (snap) {
+    let player = {};
+    snap.forEach(element => {
+        player[element.key] = element.val();
+    });
 
-            if (messageSender === username)
-            {
-                // If the sender is the user, float the message right.
-                node.style.cssFloat = "right";
-            }
-            else
-            {
-                // If the sender is not the user, float the message left.
-                node.style.cssFloat = "left";
-            }
+    publicChatRef.child(gameID).on("child_added", function (snapshot) {
+        // Get every public message and its sender
+        let messageContent = snapshot.val().message;
+        let messageSender = snapshot.val().username;
 
-            // Style message and append
-            styleMessage(node, snapshot.val().country);
-            document.getElementById("Main").appendChild(node);
+        var node = document.createElement("LI");
+        node.id = "chat-" + chatCount;
+        var textnode = document.createTextNode(messageContent);
+        node.appendChild(textnode);
 
-            // Auto scroll
-            var objDiv = document.getElementById("Main");
-            objDiv.scrollTop = objDiv.scrollHeight;
+        if (messageSender === username) {
+            // If the sender is the user, float the message right.
+            node.style.cssFloat = "right";
         }
+        else {
+            // If the sender is not the user, float the message left.
+            node.style.cssFloat = "left";
+        }
+
+        // Style message and append
+        styleMessage(node, player[messageSender].country);
+        document.getElementById("Main").appendChild(node);
+
+        // Auto scroll
+        var objDiv = document.getElementById("Main");
+        objDiv.scrollTop = objDiv.scrollHeight;
     })
-});
+})
+
+// publicChatRef.child(gameID).on("child_added", function (snapshot) {
+//     // Get every public message and its sender
+//     let messageContent = snapshot.val().message;
+//     let messageSender = snapshot.val().username;
+
+//     // Get every player in the game.
+//     gameRef.child(gameID).child("players").on("child_added", function (snapshot) {
+//         // Continue if the player was the sender.
+//         if (snapshot.key === messageSender) {
+//             var node = document.createElement("LI");
+//             node.id = "chat-" + chatCount;
+//             var textnode = document.createTextNode(messageContent);
+//             node.appendChild(textnode);
+
+//             if (messageSender === username) {
+//                 // If the sender is the user, float the message right.
+//                 node.style.cssFloat = "right";
+//             }
+//             else {
+//                 // If the sender is not the user, float the message left.
+//                 node.style.cssFloat = "left";
+//             }
+
+//             // Style message and append
+//             styleMessage(node, snapshot.val().country);
+//             document.getElementById("Main").appendChild(node);
+
+//             // Auto scroll
+//             var objDiv = document.getElementById("Main");
+//             objDiv.scrollTop = objDiv.scrollHeight;
+//         }
+//     })
+// });
 
 // Private Chat tablinks
-gameRef.child(gameID).child("players").on("child_added", function (snapshot)
-{
+gameRef.child(gameID).child("players").on("child_added", function (snapshot) {
     // Loop through players and countries
     // If the country is not the user we need a tablink
-    if (snapshot.key != username)
-    {
+    if (snapshot.key != username) {
         var tablink = document.getElementById(tablinkIDs.get(snapshot.val().country));
 
         // Unhide if it is hidden
-        if (tablink.hidden)
-        {
+        if (tablink.hidden) {
             tablink.hidden = false;
         }
     }
 })
 
 // Private chat messages
-for (var i = 0; i < uniqueCountryKeys.length; ++i)
-{
+for (var i = 0; i < uniqueCountryKeys.length; ++i) {
     var key = uniqueCountryKeys[i];
 
-    privateChatRef.child(gameID).child(key).on("child_added", function (snapshot)
-    {
+    privateChatRef.child(gameID).child(key).on("child_added", function (snapshot) {
         // Get every public message and its sender
         let messageContent = snapshot.val().message;
         let messageSender = snapshot.val().username;
@@ -359,27 +368,22 @@ for (var i = 0; i < uniqueCountryKeys.length; ++i)
         // console.log("\n");
 
         // Get every player in the game (for user's country).
-        gameRef.child(gameID).child("players").on("child_added", function (snapshot)
-        {
+        gameRef.child(gameID).child("players").on("child_added", function (snapshot) {
             let p = snapshot.key;
             let pc = snapshot.val().country;
 
-            if (p === username)
-            {
+            if (p === username) {
                 let userCountry = pc; // User's country
 
                 // Continue if user was involved in the message
-                if (userCountry === country1 || userCountry === country2)
-                {
+                if (userCountry === country1 || userCountry === country2) {
                     // Get every player in the game
-                    gameRef.child(gameID).child("players").on("child_added", function (snapshot)
-                    {
+                    gameRef.child(gameID).child("players").on("child_added", function (snapshot) {
                         let player = snapshot.key;
                         let playerCountry = snapshot.val().country;
 
                         // Continue if the player was the sender.
-                        if (player === messageSender)
-                        {
+                        if (player === messageSender) {
                             var node = document.createElement("LI");
                             node.id = "chat-" + chatCount;
                             var textnode = document.createTextNode(messageContent);
@@ -387,22 +391,18 @@ for (var i = 0; i < uniqueCountryKeys.length; ++i)
 
                             var tablink = ""; // Opposing player's country ... where we need to append
 
-                            if (country1 === userCountry)
-                            {
+                            if (country1 === userCountry) {
                                 tablink = country2;
                             }
-                            else
-                            {
+                            else {
                                 tablink = country1;
                             }
 
-                            if (messageSender === username)
-                            {
+                            if (messageSender === username) {
                                 // If the sender is the user, float the message right.
                                 node.style.cssFloat = "right";
                             }
-                            else
-                            {
+                            else {
                                 // If the sender is not the user, float the message left.
                                 node.style.cssFloat = "left";
                             }
@@ -416,7 +416,7 @@ for (var i = 0; i < uniqueCountryKeys.length; ++i)
                             objDiv.scrollTop = objDiv.scrollHeight;
                         }
                     })
-                }  
+                }
             }
         })
     })
