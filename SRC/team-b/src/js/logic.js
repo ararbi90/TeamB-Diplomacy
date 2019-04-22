@@ -1,4 +1,8 @@
+function testLogic()
 {
+console.log("Logic testing");
+
+var stuff = {
     "BOH": {"name": "Bohemia", "type": "INLAND", "adjacencies": ["GAL", "TYR", "VIE", "MUN", "SIL"]}, 
     "BUD": {"name": "Budapest", "type": "INLAND", "adjacencies": ["GAL", "TRI", "VIE", "RUM", "SER"]}, 
     "GAL": {"name": "Galicia", "type": "INLAND", "adjacencies": ["BOH", "BUD", "VIE", "SIL", "UKR", "WAR", "RUM"]}, 
@@ -79,4 +83,61 @@
     "SKA": {"name": "Skaggerak", "type": "SEA", "adjacencies": ["DEN", "NWY", "SWE", "NTH"]}, 
     "TYN": {"name": "Tyrrhenian Sea", "type": "SEA", "adjacencies": ["NAP", "ROM", "TUS", "TUN", "GOL", "ION", "WES"]}, 
     "WES": {"name": "Western Mediterranean", "type": "SEA", "adjacencies": ["NAF", "SPA", "TUN", "GOL", "MID", "TYN"]}
+}
+
+//player clicks on their army to get possible action: Move, Convoy, Hold
+var army = ['LON', 'YOR', 'EDI'];
+//list of all convoys the player hold
+var conv = ['NAT','NTH', 'MID', 'NRG'];
+var inUse = []; //todo
+
+//list of convoy that can be chained together, need better name.
+var zoneList = [];
+
+//list of area user can land on based on their convoy chain.
+var landingZone = [];
+
+//check if anything in conv is adj to LON. Replace LON with whatever army the user uses
+//Probably should check if the country is coastal to be efficient.
+for(var ocean in conv)
+{
+    if(stuff["LON"]["adjacencies"].includes(conv[ocean].toString()))
+    {
+        zoneList.push(conv[ocean]);
+    }
+}
+
+//Loop through conv list and connect all adj ocean.
+for(var i = 0; i <= conv.length; i++)
+{
+    for(var ocean in conv)
+    {
+        for( var zone in zoneList)
+        {
+            if(conv[ocean] != zoneList[zone]){
+                if(stuff[conv[ocean]]["adjacencies"].includes(zoneList[zone].toString())){
+                    if(!zoneList.includes(conv[ocean])){
+                        zoneList.push(conv[ocean])
+                    }
+                }
+            }
+        }
+    }
+}
+console.log("Convoy Chain:");
+console.log(zoneList.toString());
+for(var ocean in zoneList)
+{
+    stuff[zoneList[ocean]]["adjacencies"].forEach(function(element)
+    {
+        if(stuff[element]["type"] == "COASTAL"){
+            if(!landingZone.includes(stuff[element]["name"])){
+                landingZone.push(stuff[element]["name"]);
+            }
+        }
+    });
+}
+//To be placed in dropdown menu for possible move
+console.log("Landing Zone:");
+console.log(landingZone.toString());
 }
