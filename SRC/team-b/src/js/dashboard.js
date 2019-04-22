@@ -136,11 +136,55 @@ function getArrayOfRandomNumbers(n) {
 }
 
 
+function createAndAssignTerrtories(players) {
 
+    let countries = ["Austria", "England", "France", "Turkey", "Russia", "Germany", "Italy"];
+
+    let assingOrder = {
+        7: ["Austria", "England", "France", "Turkey", "Russia", "Germany", "Italy"],
+        6:["Austria", "England", "France", "Turkey", "Russia", "Germany"],
+        5:["Austria", "England", "France", "Turkey", "Russia"],
+        4:[["Austria", "France"], "England", ["Turkey", "Germany"], ["Russia", "Italy"]],
+        3: [["Austria", "England", "Germany"], ["Turkey", "France"], ["Russia", "Italy"]],
+        2: [["Austria", "Turkey", "Germany"], ["England", "France", "Russia"]],
+    }
+    let colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+    let powers = {
+        Austria: { VIE: { forceType: "A" }, BUD: { forceType: "A" }, TRI: { forceType: "F" } },
+        England: { LON: { forceType: "F" }, EDI: { forceType: "F" }, LVP: { forceType: "A" } },
+        France: { PAR: { forceType: "A" }, MAR: { forceType: "A" }, BRE: { forceType: "F" } },
+        Russia: { MOS: { forceType: "A" }, SEV: { forceType: "F" }, WAR: { forceType: "A" }, STP: { forceType: "F" } },
+        Turkey: { ANK: { forceType: "F" }, CON: { forceType: "A" }, SMY: { forceType: "A" } },
+        Germany: { BER: { forceType: "A" }, MUN: { forceType: "A" }, KIE: { forceType: "F" } },
+        Italy: { ROM: { forceType: "A" }, VEN: { forceType: "A" }, NAP: { forceType: "F" } }
+    }
+
+    let order = getArrayOfRandomNumbers(players.length);
+
+    let playerTerritories = {}
+    let terrlist = assingOrder[players.length];
+
+    for(let i = 0; i < players.length; i++){
+        let terr = terrlist[order[i]];
+        let temp = {};
+        let tempColor = colors[i];
+        if(typeof(terr) != "string"){
+
+            terr.forEach(function(pow){
+                temp = Object.assign(temp, powers[pow]);
+            });
+            playerTerritories[players[i]] = {territories: temp, color: tempColor};
+        }
+        else{
+            playerTerritories[players[i]] = {territories: powers[terr], color: tempColor};
+        }
+
+    }
+    console.log(playerTerritories)
+    return playerTerritories;
+}
 
 function gameButtonHandler(gameId, expirationDate) {
-    //console.log(gameId);
-
     gameRef.child(gameId).once("value").then(function (data) {
         // Check if territories are created
         let gamePlayers = [];
@@ -162,9 +206,13 @@ function gameButtonHandler(gameId, expirationDate) {
             else {
                 console.log("Creating terretories");
                 if (data.child("invites").val() != null) {
-                    gameRef.child(gameId).child("invites").remove();
+                    autoDecline(gameId);
                 }
-                console.log(getArrayOfRandomNumbers(5));
+                gameRef.child(gameId).child("players").set(createAndAssignTerrtories(gamePlayers),
+                function(error){
+                    $("#" + gameId + "").click(reJoinGame);
+                }
+                );
 
             }
         }

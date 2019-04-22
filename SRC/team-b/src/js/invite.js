@@ -134,17 +134,7 @@ $(document).ready(function () {
             console.log("Found All Create Game!!!");
             // Create Game
             // Create all game params
-            let countryOrder = getArrayOfRandomNumbers();
-            let countries = ["Austria-Hungary", "England", "France", "Turkey", "Russia", "Germany", "Italy"];
-            let countryStarters = {
-                Austria: { VIE: { forceType: "A" }, BUD: { forceType: "A" }, TRI: { forceType: "F" } },
-                England: { LON: { forceType: "F" }, EDI: { forceType: "F" }, LVP: { forceType: "A" } },
-                France: { PAR: { forceType: "A" }, MAR: { forceType: "A" }, BRE: { forceType: "F" } },
-                Germany: { BER: { forceType: "A" }, MUN: { forceType: "A" }, KIE: { forceType: "F" } },
-                Italy: { ROM: { forceType: "A" }, VEN: { forceType: "A" }, NAP: { forceType: "F" } },
-                Russia: { MOS: { forceType: "A" }, SEV: { forceType: "F" }, WAR: { forceType: "A" }, STP: { forceType: "F" } },
-                Turkey: { ANK: { forceType: "F" }, CON: { forceType: "A" }, SMY: { forceType: "A" } }
-            }
+            
             
             let gameOwner = username;
             //names.push(gameOwner);
@@ -162,10 +152,7 @@ $(document).ready(function () {
             gameRef.child(gameID).set({
                 name: game[0]["value"],
                 owner: gameOwner,
-<<<<<<< HEAD
-=======
                 invites: invite,
->>>>>>> ahmed
                 expirationDate:expirationDate, 
                 TimeLimitDays: game.days,
                 TimeLimitHours: game.hours
