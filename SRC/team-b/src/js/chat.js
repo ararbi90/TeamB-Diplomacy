@@ -62,32 +62,20 @@ function createValidMessage(input)
     return result;
 }
 
-// Main diff: float right
-function createUserMessage(node, color)
-{
-    node.style.textAlign = "left";
-    node.style.padding = "3px";
-    node.style.margin = "0 0 5px 0";
-    node.style.cssFloat = "right";
-    node.style.borderBottom = "8px solid " + color
-    node.style.borderRadius = "5px";
-    node.style.listStyleType = "none";
-    node.style.backgroundColor = "#EAEAEA";
-    node.style.color = "black";
-    node.style.clear = "both";
-    node.style.wordWrap = "break-word";
-    node.style.maxWidth = "66%";
-    chatCount++;
-}
+// Countries mapped to their corresponding message colors
+var messageColors = new Map([
+    ["France", "#8FD8D8"], ["Austria-Hungary", "#F48182"], ["Russia", "white"],
+    ["England", "#4888C8"], ["Turkey", "#D9D739"], ["Germany", "#7A7A7A"], ["Italy", "#76B47C"]
+])
 
-// Main diff: float left
-function createIncomingMessage(node, color)
+// Style the message
+function styleMessage(node, country)
 {
+    var countries = country.split("_");
+
     node.style.textAlign = "left";
     node.style.padding = "3px";
     node.style.margin = "0 0 5px 0";
-    node.style.cssFloat = "left";
-    node.style.borderBottom = "8px solid " + color
     node.style.borderRadius = "5px";
     node.style.listStyleType = "none";
     node.style.backgroundColor = "#EAEAEA";
@@ -95,6 +83,26 @@ function createIncomingMessage(node, color)
     node.style.clear = "both";
     node.style.wordWrap = "break-word";
     node.style.maxWidth = "66%";
+
+    // Color
+    if (countries.length == 1)
+    {
+        node.style.borderBottom = "8px solid " + messageColors.get(countries[0]);
+    }
+    else if (countries.length == 2)
+    {
+        node.style.borderTop = "8px solid " + messageColors.get(countries[0]);
+        node.style.borderBottom = "8px solid " + messageColors.get(countries[1]);
+    }
+    else if (countries.length == 3)
+    {
+        node.style.borderTop = "8px solid " + messageColors.get(countries[0]);
+        node.style.borderBottom = "8px solid " + messageColors.get(countries[1]);
+        node.style.borderLeft = "8px solid " + messageColors.get(countries[2]);
+        node.style.borderRight = "8px solid " + messageColors.get(countries[2]);
+    }
+
+    chatCount++;
 }
 
 // Tab content IDs mapped to their corresponding tablink IDs
@@ -105,12 +113,6 @@ var tablinkIDs = new Map([
     ["Russia_Italy", "11"], ["Austria-Hungary_England_Germany", "12"],
     ["Turkey_France", "13"], ["Austria-Hungary_Turkey_Germany", "14"],
     ["England_France_Russia", "15"]
-])
-
-// Countries mapped to their corresponding message colors
-var messageColors = new Map([
-    ["France", "#8FD8D8"], ["Austria-Hungary", "#F48182"], ["Russia", "white"],
-    ["England", "#4888C8"], ["Turkey", "#D9D739"], ["Germany", "#7A7A7A"], ["Italy", "#76B47C"]
 ])
 
 // Countries mapped to every other country and the key that results from this pair
@@ -281,7 +283,6 @@ $("#messageinput").keyup(function(event) {
     }
 });
 
-
 // Public Chat
 publicChatRef.child(gameID).on("child_added", function (snapshot)
 {
@@ -295,36 +296,29 @@ publicChatRef.child(gameID).on("child_added", function (snapshot)
         // Continue if the player was the sender.
         if (snapshot.key === messageSender)
         {
+            var node = document.createElement("LI");
+            node.id = "chat-" + chatCount;
+            var textnode = document.createTextNode(messageContent);
+            node.appendChild(textnode);
+
             if (messageSender === username)
             {
-                // If the sender is the user, create a user message.
-                var node = document.createElement("LI");
-                node.id = "chat-" + chatCount;
-                var textnode = document.createTextNode(messageContent);
-                node.appendChild(textnode);
-                //createUserMessage(node, messageColors.get(snapshot.val().country));
-                createUserMessage(node, "black");
-                document.getElementById("Main").appendChild(node);
-        
-                // Auto scroll
-                var objDiv = document.getElementById("Main");
-                objDiv.scrollTop = objDiv.scrollHeight;
+                // If the sender is the user, float the message right.
+                node.style.cssFloat = "right";
             }
             else
             {
-                // If the sender is not the user, create an incoming message.
-                var node = document.createElement("LI");
-                node.id = "chat-" + chatCount;
-                var textnode = document.createTextNode(messageContent);
-                node.appendChild(textnode);
-                //createIncomingMessage(node, messageColors.get(snapshot.val().country));
-                createIncomingMessage(node, "black");
-                document.getElementById("Main").appendChild(node);
-        
-                // Auto scroll
-                var objDiv = document.getElementById("Main");
-                objDiv.scrollTop = objDiv.scrollHeight;
+                // If the sender is not the user, float the message left.
+                node.style.cssFloat = "left";
             }
+
+            // Style message and append
+            styleMessage(node, snapshot.val().country);
+            document.getElementById("Main").appendChild(node);
+
+            // Auto scroll
+            var objDiv = document.getElementById("Main");
+            objDiv.scrollTop = objDiv.scrollHeight;
         }
     })
 });
@@ -404,26 +398,22 @@ for (var i = 0; i < uniqueCountryKeys.length; ++i)
 
                             if (messageSender === username)
                             {
-                                // If the sender is the user, create a user message.
-                                createUserMessage(node, "black");
-                                //createUserMessage(node, messageColors.get(playerCountry));
-                                document.getElementById(tablink).appendChild(node);
-                        
-                                // Auto scroll
-                                var objDiv = document.getElementById(tablink);
-                                objDiv.scrollTop = objDiv.scrollHeight;
+                                // If the sender is the user, float the message right.
+                                node.style.cssFloat = "right";
                             }
                             else
                             {
-                                // If the sender is not the user, create an incoming message.
-                                createIncomingMessage(node, "black");
-                                //createIncomingMessage(node, messageColors.get(snapshot.val().country));
-                                document.getElementById(tablink).appendChild(node);
-                        
-                                // Auto scroll
-                                var objDiv = document.getElementById(tablink);
-                                objDiv.scrollTop = objDiv.scrollHeight;
+                                // If the sender is not the user, float the message left.
+                                node.style.cssFloat = "left";
                             }
+
+                            // Style message and append
+                            styleMessage(node, playerCountry);
+                            document.getElementById(tablink).appendChild(node);
+
+                            // Auto scroll
+                            var objDiv = document.getElementById(tablink);
+                            objDiv.scrollTop = objDiv.scrollHeight;
                         }
                     })
                 }  
