@@ -170,30 +170,17 @@ function createAndAssignTerrtories(players) {
         let tempColor = colors[i];
         if(typeof(terr) != "string"){
 
-            var result = "";
-            var first = true;
-
+            let result = "";
             // Create a string for the multiple countries, separated by an underscore
-            terr.forEach(function(pow)
+            terr.forEach(function(pow, index)
             {
-                if (first)
-                {
-                    first = false;
-                }
-                else
-                {
+
+                pow = pow === "Austria" ? "Austria-Hungary": pow;
+                if(index != 0){
                     result = result + "_";
                 }
-
-                // Austria = Austria-Hungary
-                if (pow === "Austria")
-                {
-                    pow = "Austria-Hungary";
-                }
-
                 result = result + pow;
             })
-
             terr.forEach(function(pow){
                 temp = Object.assign(temp, powers[pow]);
             });
@@ -205,7 +192,6 @@ function createAndAssignTerrtories(players) {
             {
                 terr = "Austria-Hungary"
             }
-
             playerTerritories[players[i]] = {territories: powers[terr], color: tempColor, country: terr};
         }
 
