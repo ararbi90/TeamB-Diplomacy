@@ -100,7 +100,11 @@ function createIncomingMessage(node, color)
 // Tab content IDs mapped to their corresponding tablink IDs
 var tablinkIDs = new Map([
     ["France", "2"], ["Austria-Hungary", "3"], ["Russia", "4"],
-    ["England", "5"], ["Turkey", "6"], ["Germany", "7"], ["Italy", "8"]
+    ["England", "5"], ["Turkey", "6"], ["Germany", "7"], ["Italy", "8"],
+    ["Austria-Hungary_France", "9"], ["Turkey_Germany", "10"],
+    ["Russia_Italy", "11"], ["Austria-Hungary_England_Germany", "12"],
+    ["Turkey_France", "13"], ["Austria-Hungary_Turkey_Germany", "14"],
+    ["England_France_Russia", "15"]
 ])
 
 // Countries mapped to their corresponding message colors
@@ -141,7 +145,10 @@ var countryKeys = new Map([
         ["Russia", "RUS_ENG"],
         ["Turkey", "ENG_TUR"],
         ["Germany", "ENG_GER"],
-        ["Italy", "ENG_ITA"]]
+        ["Italy", "ENG_ITA"],
+        ["Austria-Hungary_France", "AHF_ENG"],
+        ["Turkey_Germany", "TGE_ENG"],
+        ["Russia_Italy", "RUI_ENG"]]
     ],
     ["Turkey", [
         ["France", "FRA_TUR"],
@@ -166,6 +173,37 @@ var countryKeys = new Map([
         ["England", "ENG_ITA"],
         ["Turkey", "TUR_ITA"],
         ["Germany", "GER_ITA"]]
+    ],
+    ["Austria-Hungary_France", [
+        ["England", "AHF_ENG"],
+        ["Turkey_Germany", "AHF_TGE"],
+        ["Russia_Italy", "AHF_RUI"]]
+    ],
+    ["Turkey_Germany", [
+        ["Austria-Hungary_France", "AHF_TGE"],
+        ["England", "TGE_ENG"],
+        ["Russia_Italy", "TGE_RUI"]]
+    ],
+    ["Russia_Italy", [
+        ["Austria-Hungary_France", "AHF_RUI"],
+        ["England", "RUI_ENG"],
+        ["Turkey_Germany", "TGE_RUI"],
+        ["Austria-Hungary_England_Germany", "AEG_RUI"],
+        ["Turkey_France", "TUF_RUI"]]
+    ],
+    ["Austria-Hungary_England_Germany", [
+        ["Turkey_France", "AEG_TUF"],
+        ["Russia_Italy", "AEG_RUI"]]
+    ],
+    ["Turkey_France", [
+        ["Austria-Hungary_England_Germany", "AEG_TUF"],
+        ["Russia_Italy", "TUF_RUI"]]
+    ],
+    ["Austria-Hungary_Turkey_Germany", [
+        ["England_France_Russia", "ATG_EFR"]]
+    ],
+    ["England_France_Russia", [
+        ["Austria-Hungary_Turkey_Germany", "ATG_EFR"]]
     ]
 ])
 
@@ -175,7 +213,10 @@ var uniqueCountryKeys = [
     "RUS_ENG", "RUS_TUR", "RUS_GER", "RUS_ITA",
     "ENG_TUR", "ENG_GER", "ENG_ITA",
     "TUR_GER", "TUR_ITA",
-    "GER_ITA"
+    "GER_ITA",
+    "AHF_ENG", "AHF_TGE", "AHF_RUI", "TGE_ENG", "TGE_RUI", "RUI_ENG",
+    "AEG_TUF", "AEG_RUI", "TUF_RUI",
+    "ATG_EFR"
 ]
 
 function sendMessage() {
@@ -203,7 +244,7 @@ function sendMessage() {
         gameRef.child(gameID).child("players").on("child_added", function (snapshot)
         {
             // Find the current user's country
-            if (snapshot.val().username === username)
+            if (snapshot.key === username)
             {
                 country2 = snapshot.val().country;
 
@@ -240,6 +281,7 @@ $("#messageinput").keyup(function(event) {
     }
 });
 
+
 // Public Chat
 publicChatRef.child(gameID).on("child_added", function (snapshot)
 {
@@ -251,7 +293,7 @@ publicChatRef.child(gameID).on("child_added", function (snapshot)
     gameRef.child(gameID).child("players").on("child_added", function (snapshot)
     {
         // Continue if the player was the sender.
-        if (snapshot.val().username === messageSender)
+        if (snapshot.key === messageSender)
         {
             if (messageSender === username)
             {
@@ -260,7 +302,8 @@ publicChatRef.child(gameID).on("child_added", function (snapshot)
                 node.id = "chat-" + chatCount;
                 var textnode = document.createTextNode(messageContent);
                 node.appendChild(textnode);
-                createUserMessage(node, messageColors.get(snapshot.val().country));
+                //createUserMessage(node, messageColors.get(snapshot.val().country));
+                createUserMessage(node, "black");
                 document.getElementById("Main").appendChild(node);
         
                 // Auto scroll
@@ -274,7 +317,8 @@ publicChatRef.child(gameID).on("child_added", function (snapshot)
                 node.id = "chat-" + chatCount;
                 var textnode = document.createTextNode(messageContent);
                 node.appendChild(textnode);
-                createIncomingMessage(node, messageColors.get(snapshot.val().country));
+                //createIncomingMessage(node, messageColors.get(snapshot.val().country));
+                createIncomingMessage(node, "black");
                 document.getElementById("Main").appendChild(node);
         
                 // Auto scroll
@@ -290,7 +334,7 @@ gameRef.child(gameID).child("players").on("child_added", function (snapshot)
 {
     // Loop through players and countries
     // If the country is not the user we need a tablink
-    if (snapshot.val().username != username)
+    if (snapshot.key != username)
     {
         var tablink = document.getElementById(tablinkIDs.get(snapshot.val().country));
 
@@ -323,7 +367,7 @@ for (var i = 0; i < uniqueCountryKeys.length; ++i)
         // Get every player in the game (for user's country).
         gameRef.child(gameID).child("players").on("child_added", function (snapshot)
         {
-            let p = snapshot.val().username;
+            let p = snapshot.key;
             let pc = snapshot.val().country;
 
             if (p === username)
@@ -336,7 +380,7 @@ for (var i = 0; i < uniqueCountryKeys.length; ++i)
                     // Get every player in the game
                     gameRef.child(gameID).child("players").on("child_added", function (snapshot)
                     {
-                        let player = snapshot.val().username;
+                        let player = snapshot.key;
                         let playerCountry = snapshot.val().country;
 
                         // Continue if the player was the sender.
@@ -347,7 +391,7 @@ for (var i = 0; i < uniqueCountryKeys.length; ++i)
                             var textnode = document.createTextNode(messageContent);
                             node.appendChild(textnode);
 
-                            var tablink = "";
+                            var tablink = ""; // Opposing player's country ... where we need to append
 
                             if (country1 === userCountry)
                             {
@@ -361,7 +405,8 @@ for (var i = 0; i < uniqueCountryKeys.length; ++i)
                             if (messageSender === username)
                             {
                                 // If the sender is the user, create a user message.
-                                createUserMessage(node, messageColors.get(playerCountry));
+                                createUserMessage(node, "black");
+                                //createUserMessage(node, messageColors.get(playerCountry));
                                 document.getElementById(tablink).appendChild(node);
                         
                                 // Auto scroll
@@ -371,7 +416,8 @@ for (var i = 0; i < uniqueCountryKeys.length; ++i)
                             else
                             {
                                 // If the sender is not the user, create an incoming message.
-                                createIncomingMessage(node, messageColors.get(snapshot.val().country));
+                                createIncomingMessage(node, "black");
+                                //createIncomingMessage(node, messageColors.get(snapshot.val().country));
                                 document.getElementById(tablink).appendChild(node);
                         
                                 // Auto scroll

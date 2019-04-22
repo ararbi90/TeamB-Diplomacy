@@ -5,8 +5,8 @@ var urlParams = new URLSearchParams(location.search);
 let username = urlParams.get("username");
 
 
-console.log(urlParams.get("getID"));
-let gameID = urlParams.get("getID");
+//console.log(urlParams.get("getID"));
+//let gameID = urlParams.get("getID");
 
 document.getElementById("navbarDropdownMenuLink").innerHTML = username;
 
