@@ -111,19 +111,18 @@ $(document).ready(function () {
             return false;
         }
 
-        if(Object.keys(userList).length == 0){
-            var x = document.getElementById("selfInvite");
+        // if(Object.keys(userList).length == 0){
+        //     var x = document.getElementById("selfInvite");
 
-            x.className = "show";
-            x.innerHTML = "No one invited";
+        //     x.className = "show";
+        //     x.innerHTML = "No one invited";
 
-            // After 1.5 seconds, remove the show class
-            setTimeout(function () {
-                x.className = x.className.replace("show", "");
-            }, 1500);
-            return false;
-
-        }
+        //     // After 1.5 seconds, remove the show class
+        //     setTimeout(function () {
+        //         x.className = x.className.replace("show", "");
+        //     }, 1500);
+        //     return false;
+        // }
 
         //This section verifies players and creates the game
         // This is promise
