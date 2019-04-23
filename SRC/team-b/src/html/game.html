@@ -27,13 +27,35 @@
     <!-- Initial confiuration for the map-->
     <script>
       jQuery(document).ready(function () {
+        var enabledRegions = ["ADR","AEG","BAL","BAR","BLA","EAS","ENG","BOT","GOL","HEL","ION","IRI","MID","NAT","NTH","NRG","SKA","TYN","WES","CLY","EDI","LVP","YOR","WAL","LON","PIC","BRE","PAR","BUR","GAS","MAR","PIE","VEN","TUS","ROM","APU","NAP","TYR","BOH","VIE","GAL","BUD","TRI","CON","ANK","ARM","SMY","SYR","FIN","STP","LVN","MOS","WAR","UKR","SEV","RUH","KIE","BER","PRU","MUN","SIL","NWY","SWE","DEN","HOL","BEL","POR","SPA","NAF","TUN","RUM","SER","BUL","ALB","GRE"];
+        var currentRegion;
+
         jQuery('#vmap').vectorMap({
           map: 'diplomacy',
           enableZoom: true,
           showTooltip: true,
           colors: defaultcolors,
           hoverColors: hovercolors,
-          selectedColors: hovercolors
+          selectedColors: hovercolors,
+          onRegionClick: function(event, code, region){
+            // Check if this is an Enabled Region
+            if(enabledRegions.indexOf(code) === -1){
+              // Not an Enabled Region
+              event.preventDefault();
+            }
+          },
+          onRegionOver: function(event, code, region){
+            // Check if this is an Enabled Region
+            if(enabledRegions.indexOf(code) === -1){
+              // Not an Enabled Region
+              event.preventDefault();
+            } 
+          },
+          onLabelShow: function(event, label, code){
+            if(enabledRegions.indexOf(code) === -1){
+              event.preventDefault();
+            }
+          }
         });
       });
     </script>

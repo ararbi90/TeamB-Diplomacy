@@ -208,8 +208,10 @@ var JQVMap = function (params) {
     if ( !mapClickEvent.isDefaultPrevented()) {
       if (map.isSelected(code)) {
         map.deselect(code, targetPath);
+        console.log("deselect");
       } else {
         map.select(code, targetPath);
+        console.log("select");
       }
     }
   });
@@ -584,6 +586,7 @@ JQVMap.prototype.deselect = function (cc, path) {
     jQuery(this.container).trigger('regionDeselect.jqvmap', [cc]);
     path.currentFillColor = path.getOriginalFill();
     path.setFill(path.getOriginalFill());
+    console.log("here");
   } else {
     for (var key in this.countries) {
       this.selectedRegions.splice(this.selectedRegions.indexOf(key), 1);
