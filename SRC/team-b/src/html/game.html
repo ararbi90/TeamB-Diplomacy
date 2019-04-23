@@ -12,7 +12,6 @@
     <link href="../css/jqvmap.css" media="screen" rel="stylesheet" type="text/css"/>
     <link href="../../bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link href="../css/game.css" rel="stylesheet" />
-
     
     <script src="../../node_modules/popper.js/dist/umd/popper.js"></script>
     <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
@@ -21,13 +20,20 @@
 
     <script type="text/javascript" src="../scripts/jquery.vmap.js"></script>
     <script type="text/javascript" src="../js/jquery.vmap.diplomacy.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/jquery.vmap.defaultcolors.js"></script>
+    <script type="text/javascript" src="../js/jquery.vmap.hovercolors.js"></script>
 
+
+    <!-- Initial confiuration for the map-->
     <script>
       jQuery(document).ready(function () {
         jQuery('#vmap').vectorMap({
           map: 'diplomacy',
           enableZoom: true,
-          showTooltip: true
+          showTooltip: true,
+          colors: defaultcolors,
+          hoverColors: hovercolors,
+          selectedColors: hovercolors
         });
       });
     </script>

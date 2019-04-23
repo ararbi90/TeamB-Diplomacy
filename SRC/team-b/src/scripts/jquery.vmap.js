@@ -91,6 +91,7 @@ var JQVMap = function (params) {
 
   this.color = params.color;
   this.selectedColor = params.selectedColor;
+  this.selectedColors = params.selectedColors;
   this.hoverColor = params.hoverColor;
   this.hoverColors = params.hoverColors;
   this.hoverOpacity = params.hoverOpacity;
@@ -144,7 +145,7 @@ var JQVMap = function (params) {
     var path = this.canvas.createPath({
       path: mapData.paths[key].path
     });
-
+    
     path.setFill(this.color);
     path.id = map.getCountryId(key);
     map.countries[key] = path;
@@ -250,10 +251,10 @@ var JQVMap = function (params) {
   if (params.selectedRegions) {
     if (params.selectedRegions instanceof Array) {
       for(var k in params.selectedRegions) {
-        this.select(params.selectedRegions[k].toLowerCase());
+        this.select(params.selectedRegions[k]);
       }
     } else {
-      this.select(params.selectedRegions.toLowerCase());
+      this.select(params.selectedRegions);
     }
   }
 
@@ -345,16 +346,17 @@ JQVMap.maps = {};
 
     var defaultParams = {
       map: 'world_en',
-      backgroundColor: '#a5bfdd',
+      backgroundColor: '#000000',
       color: '#f4f3f0',
       hoverColor: '#c9dfaf',
       hoverColors: {},
       selectedColor: '#c9dfaf',
+      selectedColors: {},
       scaleColors: ['#b6d6ff', '#005ace'],
       normalizeFunction: 'linear',
       enableZoom: true,
       showTooltip: true,
-      borderColor: '#818181',
+      borderColor: '#000000',
       borderWidth: 1,
       borderOpacity: 0.25,
       selectedRegions: null,
@@ -574,7 +576,6 @@ JQVMap.prototype.bindZoomButtons = function () {
 };
 
 JQVMap.prototype.deselect = function (cc, path) {
-  cc = cc.toLowerCase();
   path = path || jQuery('#' + this.getCountryId(cc))[0];
 
   if (this.isSelected(cc)) {
@@ -610,7 +611,7 @@ JQVMap.prototype.getPins = function(){
   var ret = {};
   jQuery.each(pins, function(index, pinObj){
     pinObj = jQuery(pinObj);
-    var cc = pinObj.attr('for').toLowerCase();
+    var cc = pinObj.attr('for');
     var pinContent = pinObj.html();
     ret[cc] = pinContent;
   });
@@ -903,7 +904,6 @@ JQVMap.prototype.resize = function () {
 };
 
 JQVMap.prototype.select = function (cc, path) {
-  cc = cc.toLowerCase();
   path = path || jQuery('#' + this.getCountryId(cc))[0];
 
   if (!this.isSelected(cc)) {
@@ -914,9 +914,13 @@ JQVMap.prototype.select = function (cc, path) {
     }
 
     jQuery(this.container).trigger('regionSelect.jqvmap', [cc]);
-    if (this.selectedColor && path) {
-      path.currentFillColor = this.selectedColor;
-      path.setFill(this.selectedColor);
+    
+    if (this.selectedColors && (cc in this.selectedColors)) {
+        path.currentFillColor = this.selectedColors[cc];
+        path.setFill(this.selectedColors[cc]);
+    } else if (this.selectedColor && path) {
+        path.currentFillColor = this.selectedColor;
+        path.setFill(this.selectedColor);
     }
   }
 };
@@ -978,7 +982,6 @@ JQVMap.prototype.setValues = function (values) {
     val;
 
   for (var cc in values) {
-    cc = cc.toLowerCase();
     val = parseFloat(values[cc]);
 
     if (isNaN(val)) {
@@ -1001,7 +1004,6 @@ JQVMap.prototype.setValues = function (values) {
 
   var colors = {};
   for (cc in values) {
-    cc = cc.toLowerCase();
     val = parseFloat(values[cc]);
     colors[cc] = isNaN(val) ? this.color : this.colorScale.getColor(val);
   }
@@ -1010,7 +1012,6 @@ JQVMap.prototype.setValues = function (values) {
 };
 
 JQVMap.prototype.unhighlight = function (cc, path) {
-  cc = cc.toLowerCase();
   path = path || jQuery('#' + this.getCountryId(cc))[0];
   path.setOpacity(1);
   if (path.currentFillColor) {
@@ -1102,6 +1103,7 @@ VectorCanvas.prototype.createPath = function (config) {
     }
 
     node.setFill = function (color) {
+      console.log(color);
       this.setAttribute('fill', color);
       if (this.getAttribute('original') === null) {
         this.setAttribute('original', color);
@@ -1140,6 +1142,7 @@ VectorCanvas.prototype.createPath = function (config) {
     node.appendChild(fill);
 
     node.setFill = function (color) {
+      console.log("here5");
       this.getElementsByTagName('fill')[0].color = color;
       if (this.getAttribute('original') === null) {
         this.setAttribute('original', color);
