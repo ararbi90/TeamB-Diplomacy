@@ -3,7 +3,6 @@
 <head>
     <!-- <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"> -->
     <!-- <script src="../node_modules/jquery/dist/jquery.js"></script> -->
-    
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script>
         window.jQuery = window.$ = require('jquery');
@@ -12,7 +11,8 @@
     <link href="../css/jqvmap.css" media="screen" rel="stylesheet" type="text/css"/>
     <link href="../../bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link href="../css/game.css" rel="stylesheet" />
-    
+    <link href="https://fonts.googleapis.com/css?family=Bad+Script|Playball|Tangerine|Glegoo" rel="stylesheet">
+
     <script src="../../node_modules/popper.js/dist/umd/popper.js"></script>
     <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
     <script src="../js/game.js"></script>
@@ -61,8 +61,13 @@
     </script>
 </head>
 
-<body style="background-color: #DEE4E7">
-    <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #273c75;">
+<body style="background-color: #D9ECF0">
+    <style>
+        #ChatBox {
+            font-family: Glegoo;
+        }
+    </style>
+    <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #02355A;">
         <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
         <img height="100" src="../../images/diplomacy_logo.png" />
         <div class="collapse navbar-collapse" id="navbarNavDropdown" ;">
@@ -82,7 +87,7 @@
             </ul>
         </div>
     </nav>
-    <h2 style="text-align: center; margin: 1%;">Current Player Positions</h2>
+    <h2 style="text-align: center; margin: 1%; font-family:Playball;">Current Player Positions</h2>
     <div id="snackbar"></div>
     <div class="container" style="height:175%; width:85%">
         
@@ -91,65 +96,70 @@
 
         <div class="row">
             <div class="col" style="text-align: center; border:1px solid #ccc">
-                <div class="container">
+                <div id="ChatBox" class="container">
 
-                    <div class="tab">
-                        <button id="1" class="tablinks" onclick="openTab(event, 'Main')">Main</button>
+                    <div id="t" class="tab">
+                        <button id="1" class="tablinks" onclick="openTab(event, this.id, 'Main')">Main</button>
                         <script>
                             document.addEventListener("DOMContentLoaded", function(event) { 
                             document.getElementById('1').click();
                         });
                         </script>
-                        <button class="tablinks" onclick="openTab(event, 'France')">France</button>
-                        <button class="tablinks" onclick="openTab(event, 'Russia')">Russia</button>
-                        <button class="tablinks" onclick="openTab(event, 'Austria-Hungary')">Austria-Hungary</button>
-                        <button class="tablinks" onclick="openTab(event, 'England')">England</button>
-                        <button class="tablinks" onclick="openTab(event, 'Turkey')">Turkey</button>
-                        <button class="tablinks" onclick="openTab(event, 'Germany')">Germany</button>
-                        <button class="tablinks" onclick="openTab(event, 'Italy')">Italy</button>
+                        <button id="2" class="tablinks" onclick="openTab(event, this.id, 'France')" hidden>France</button>
+                        <button id="3" class="tablinks" onclick="openTab(event, this.id, 'Austria-Hungary')" hidden>Austria-Hungary</button>
+                        <button id="4" class="tablinks" onclick="openTab(event, this.id, 'Russia')" hidden>Russia</button>
+                        <button id="5" class="tablinks" onclick="openTab(event, this.id, 'England')" hidden>England</button>
+                        <button id="6" class="tablinks" onclick="openTab(event, this.id, 'Turkey')" hidden>Turkey</button>
+                        <button id="7" class="tablinks" onclick="openTab(event, this.id, 'Germany')" hidden>Germany</button>
+                        <button id="8" class="tablinks" onclick="openTab(event, this.id, 'Italy')" hidden>Italy</button>
+                        <button id="9" class="tablinks" onclick="openTab(event, this.id, 'Austria-Hungary_France')" hidden>Austria-Hungary/
+                            France</button>
+                        <button id="10" class="tablinks" onclick="openTab(event, this.id, 'Turkey_Germany')" hidden>Turkey/
+                            Germany</button>
+                        <button id="11" class="tablinks" onclick="openTab(event, this.id, 'Russia_Italy')" hidden>Russia/
+                            Italy</button>
+                        <button id="12" class="tablinks" onclick="openTab(event, this.id, 'Austria-Hungary_England_Germany')" hidden>Austria-Hungary/
+                            England/
+                            Germany</button>
+                        <button id="13" class="tablinks" onclick="openTab(event, this.id, 'Turkey_France')" hidden>Turkey/
+                            France</button>
+                        <button id="14" class="tablinks" onclick="openTab(event, this.id, 'Austria-Hungary_Turkey_Germany')" hidden>Austria-Hungary/
+                            Turkey/
+                            Germany</button>
+                        <button id="15" class="tablinks" onclick="openTab(event, this.id, 'England_France_Russia')" hidden>England/
+                            France/
+                            Russia</button>
                     </div>
                     <div id="Main" class="tabcontent" style="background-color:#BEBEBE">
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid darkred;border-radius:5px;list-style-type:none;background-color:#EAEAEA;color:black;clear:both;word-wrap:break-word;max-width:66%;">
-                            <li>It was the best of times, it was the worst of times, it was the age of wisdom, it was
-                                the age of foolishness</li>
-                        </ul>
                     </div>
                     <div id="France" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #8FD8D8;border-radius:5px;list-style-type:none;background-color: #EAEAEA;color:black;clear:both;word-wrap:break-word;max-width:66%;">
-                            <li>France.</li>
-                        </ul>
-                    </div>
-                    <div id="Russia" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid white;border-radius:5px;list-style-type:none;background-color:#EAEAEA;color:black;clear:both;word-wrap:break-word;max-width:66%;">
-                            <li>Russia.</li>
-                        </ul>
                     </div>
                     <div id="Austria-Hungary" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #F48182;border-radius:5px;list-style-type:none;background-color:#EAEAEA;color:black;clear:both;word-wrap:break-word;max-width:66%;">
-                            <li>Austria-Hungary.</li>
-                        </ul>
+                    </div>
+                    <div id="Russia" class="tabcontent" style="background-color:#BEBEBE" hidden>
                     </div>
                     <div id="England" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #4888C8;border-radius:5px;list-style-type:none;background-color:#ECECEC;color:black;clear:both;word-wrap:break-word;max-width:66%;">
-                            <li>England.</li>
-                        </ul>
                     </div>
                     <div id="Turkey" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #D9D739;border-radius:5px;list-style-type:none;background-color:#ECECEC;color:black;clear:both;word-wrap:break-word;max-width:66%;">
-                            <li>Turkey.</li>
-                        </ul>
                     </div>
                     <div id="Germany" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #7A7A7A;border-radius:5px;list-style-type:none;background-color:#ECECEC;color:black;clear:both;word-wrap:break-word;max-width:66%;">
-                            <li>Germany</li>
-                        </ul>
                     </div>
                     <div id="Italy" class="tabcontent" style="background-color:#BEBEBE" hidden>
-                        <ul style="text-align:left;padding:3px;margin:0 0 5px 0;float:left;border-bottom:8px solid #76B47C;border-radius:5px;list-style-type:none;background-color:#ECECEC;color:black;clear:both;word-wrap:break-word;max-width:66%;">
-                            <li>Italy</li>
-                        </ul>
                     </div>
-
+                    <div id="Austria-Hungary_France" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                    </div>
+                    <div id="Turkey_Germany" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                    </div>
+                    <div id="Russia_Italy" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                    </div>
+                    <div id="Austria-Hungary_England_Germany" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                    </div>
+                    <div id="Turkey_France" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                    </div>
+                    <div id="Austria-Hungary_Turkey_Germany" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                    </div>
+                    <div id="England_France_Russia" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                    </div>
                 </div>
                 <div>
                     <input type="text" id="messageinput" class="form-control" style="background-color: #ECEFF1">
@@ -159,7 +169,7 @@
             </div>
             <!-- Remove this -->
             <div class="col" style="text-align: center; border:1px solid #ccc">
-                <h3 style="text-align: center;">Current Moves</h3>
+                <h3 style="text-align: center; font-family:Playball;">Current Moves</h3>
                 <form style="text-align: justify;">
                     <!-- <div class="p-3">
                         <label class="p-1">
@@ -236,7 +246,7 @@
                         </select>
                     </div> -->
                     <table class="table">
-                        <thead class="thead-light" style="background-color: gray;">
+                        <thead class="thead-light" style="background-color: #EBF2FA; font-family:Glegoo;">
                             <tr>
                                 <td>Location</td>
                                 <td>Move Type</td>
@@ -256,7 +266,6 @@
             </div>
         </div>
     </div>
-    
 </body>
 
 </html>

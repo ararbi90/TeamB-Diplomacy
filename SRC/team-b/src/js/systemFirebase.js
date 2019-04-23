@@ -13,6 +13,8 @@ firebase.initializeApp(config);
 let db = firebase.database();
 let playersRef = db.ref("player");
 let gameRef = db.ref("games");
+let publicChatRef = db.ref("public_chat");
+let privateChatRef = db.ref("private_chat");
 let x = 1;
 
 
@@ -20,7 +22,7 @@ let playerRequestNotComplete = false;
 let playerData = null;
 
 
-// All invite funstions
+// All invite functions
 
 
 let PlayerFireBaseClass = class {
@@ -38,8 +40,6 @@ let PlayerFireBaseClass = class {
     }
 
 }
-
-
 
 
 let PlayerFireBase = new PlayerFireBaseClass();

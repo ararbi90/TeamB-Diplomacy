@@ -49,19 +49,7 @@ function getUserLists(users) {
     };
 }
 
-function getArrayOfRandomNumbers() {
-    let numberDic = {};
-    let numberArray = [];
-    while (numberArray.length < 7) {
-        let temp = Math.floor(Math.random() * 7);
-        console.log(numberArray.length);
-        if (numberDic[temp] == null) {
-            numberArray.push(temp);
-            numberDic.temp = temp;
-        }
-    }
-    return numberArray;
-}
+
 
 
 $(document).ready(function () {
@@ -71,7 +59,32 @@ $(document).ready(function () {
         // Add attribites to the objects
         game.days = $("#days").val();
         game.hours = $("#hours").val();
+        game.expirationHours = $("#expiration_hours").val();
+        game.expirationMinutes = $("#expiration_minutes").val();
 
+        // Set defaults if the user hasn't selected turn or expiration duration
+        // turn default:        1 day 
+        // expiration default:  6 hours
+        if(game.days == "Choose..."){
+            game.days = 1;
+        }
+        if(game.hours == "Choose..."){
+            game.hours = 0;
+        }
+
+        if(game.expirationHours == "Choose..."){
+            game.expirationHours = 6;
+        }else{
+            game.expirationHours = parseInt(game.expirationHours);
+        }
+        if(game.expirationMinutes == "Choose..."){
+            game.expirationMinutes = 0;
+        }else{
+            game.expirationMinutes = parseInt(game.expirationMinutes);
+        }
+
+
+       
 
         // Creates a hashtable for users
         let userList = getUserLists(users);
@@ -97,6 +110,19 @@ $(document).ready(function () {
             }, 1500);
             return false;
         }
+
+        // if(Object.keys(userList).length == 0){
+        //     var x = document.getElementById("selfInvite");
+
+        //     x.className = "show";
+        //     x.innerHTML = "No one invited";
+
+        //     // After 1.5 seconds, remove the show class
+        //     setTimeout(function () {
+        //         x.className = x.className.replace("show", "");
+        //     }, 1500);
+        //     return false;
+        // }
 
         //This section verifies players and creates the game
         // This is promise
@@ -135,49 +161,42 @@ $(document).ready(function () {
                 return false;
             }
 
+            // Set the expiration timestamp for the invites using UTC (milliseconds)
+            // Convert the expiration minutes and hours to milliseconds
+            let expirationDuration = (game.expirationHours*60 + game.expirationMinutes) * 60 * 1000;
+            let expirationDate = Date.now() + expirationDuration;
+            console.log("expirationDate: "+ expirationDate);
+
             console.log("Found All Create Game!!!");
-            // Create Gamea
+            // Create Game
             // Create all game params
-            let countryOrder = getArrayOfRandomNumbers();
-            let countries = ["Austria", "England", "France", "Turkey", "Russia", "Germany", "Italy"];
-            let countryStarters = {
-                Austria: { VIE: { forceType: "A" }, BUD: { forceType: "A" }, TRI: { forceType: "F" } },
-                England: { LON: { forceType: "F" }, EDI: { forceType: "F" }, LVP: { forceType: "A" } },
-                France: { PAR: { forceType: "A" }, MAR: { forceType: "A" }, BRE: { forceType: "F" } },
-                Germany: { BER: { forceType: "A" }, MUN: { forceType: "A" }, KIE: { forceType: "F" } },
-                Italy: { ROM: { forceType: "A" }, VEN: { forceType: "A" }, NAP: { forceType: "F" } },
-                Russia: { MOS: { forceType: "A" }, SEV: { forceType: "F" }, WAR: { forceType: "A" }, STP: { forceType: "F" } },
-                Turkey: { ANK: { forceType: "F" }, CON: { forceType: "A" }, SMY: { forceType: "A" } }
-            }
+            
+            
             let gameOwner = username;
-            let intvite = {};
+            //names.push(gameOwner);
+            let invite = {};
 
-            for (let i = 0; i < names.length; i++) {
-                let temp = countryStarters[countries[countryOrder[i]]];
-                intvite[names[i]] = { username: names[i], country: countries[countryOrder[i]], territories: temp };
+            names.forEach(function(name, index){
+                invite[name] = {username: name};
+            })
+                
+            console.log(invite);
 
-
-                // for(ter in temp){
-                //     let key = Object.keys(temp[ter]).toString();
-                //     intvite[names[i]][key] =  temp[ter][key];
-                // }
-            }
-
-            console.log(intvite);
-
-
+            // Add owner into the game
             let gameID = gameRef.push().key // This key is the most important part of creating the game
             console.log(gameID)
             gameRef.child(gameID).set({
                 name: game[0]["value"],
                 owner: gameOwner,
-                invites: intvite,
+                invites: invite,
+                expirationDate:expirationDate, 
                 TimeLimitDays: game.days,
                 TimeLimitHours: game.hours
             }, function (error) {
                 if (error) {
 
                 } else {
+                    gameRef.child(gameID).child("players").child(gameOwner).set(gameOwner);
                     // This section of the code sends all the invites to the a game and creates the owner of the game
                     console.log("Updating users");
                     playersRef.child(username).child("game").child(gameID).set({
@@ -188,12 +207,14 @@ $(document).ready(function () {
                     })
                     let count = 0;
                     for (let i = 0; i < names.length; i++) {
+
                         playersRef.child(names[i]).child("gameInvite").child(gameID).set({
                             name: game[0]["value"],
                             owner: username,
                             dateCreated: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
+                            expirationDate:expirationDate,
                             days: game.days,
-                            hours: game.hours,
+                            hours: game.hours
 
                         }, function (err) {
                             count++;
@@ -204,10 +225,11 @@ $(document).ready(function () {
                                     window.location.href = link;
                                 }, 1500);
                                 $("#invitePage").hide();
-                                $("#gemeCreated").show();
+                                $("#gameCreated").show();
 
                             }
-                        })
+                        });
+
 
                     }
 

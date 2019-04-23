@@ -1,73 +1,50 @@
-// const functions = require('firebase-functions');
+var createError = require('http-errors');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+const express = require("express");
 
+var testRouter = require('./routes/test');
+var usersRouter = require('./routes/users');
 
+const functions = require("firebase-functions");
+const cors = require("cors");
 
-
-// // // Create and Deploy Your First Cloud Functions
-// // // https://firebase.google.com/docs/functions/write-firebase-functions
-// //
-// // exports.helloWorld = functions.https.onRequest((request, response) => {
-// //  response.send("Hello from Firebase!");
-// // });
-
-// // The Firebase Admin SDK to access the Firebase Realtime Database.
-// const admin = require('firebase-admin');
-// admin.initializeApp();
-
-
-
-// // Take the text parameter passed to this HTTP endpoint and insert it into the
-// // Realtime Database under the path /messages/:pushId/original
-// exports.addMessage = functions.https.onRequest((req, res) => {
-//     // Grab the text parameter.
-//     const original = req.query.text;
-//     // Push the new message into the Realtime Database using the Firebase Admin SDK.
-//     var text = {};
-//     admin.database().ref('player').on("child_added", function (data) {
-//         console.log(data.key);
-//         console.log(data.val());
-//         text[data.key] = (data.val());        
-
-//     });
-//     res.send(text);
-// });
-
-const functions = require("firebase-functions")
-const cors = require("cors")
-const express = require("express")
 
 /* Express with CORS & automatic trailing '/' solution */
-const app3 = express()
-app3.use(cors({ origin: true }))
-app3.get("*", (request, response) => {
+const app = express()
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors({ origin: true }))
+
+app.use('/users', usersRouter);
+app.use('/test', testRouter);
+
+app.get("*", (request, response) => {
     console.log(request.body);
     response.send(
-        request.body
+        "<h1>Team B Dipomacy backend</h1>"
     )
 })
 
-// app3.post("*", (request, response) => {
-//     console.log(request.body);
-//     response.send(
-//         request.body
-//     )
-// })
 
-app3.post("/test", (request, response) => {
-    console.log(request.body);
-    response.send(
-        request.body
-    )
-})
+
 
 // not as clean, but a better endpoint to consume
-const api3 = functions.https.onRequest((request, response) => {
+const teamBackend = functions.https.onRequest((request, response) => {
     if (!request.path) {
         request.url = `/${request.url}` // prepend '/' to keep query params if any
     }
-    return app3(request, response)
+    return app(request, response)
 })
 
 module.exports = {
-    api3
+    teamBackend
 }
