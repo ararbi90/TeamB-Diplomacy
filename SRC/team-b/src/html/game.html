@@ -110,7 +110,8 @@
                 <area shape="rect" coords="481,878,560,907" alt="Wales"
                     id="WAL" onclick="makeToast(this.id)" />
                 <area shape="rect" coords="562,897,653,925" alt="London"
-                    id="LON" onclick="makeToast(this.id)" />
+                    id="LON" onclick="makeToast(this.id); testLogic(this.id);
+                        document.getElementById('armySelected').innerHTML = 'LON' " />
                 <area shape="rect" coords="794,771,898,800" alt="Denmark"
                     id="DEN" onclick="makeToast(this.id)" />
                 <area shape="poly" coords="934,515,895,544,880,625,913,615,941,531" alt="Norway"
@@ -392,8 +393,24 @@
                 </form>
             </div>
         </div>
-        <button type="test" onclick="testLogic()">Test</button>
+        <button type="test" onclick="testLogic('ROM')">Test</button>
     </div>
+
+    <!--Player Action Modal-->
+    <div class="modal" id="actionModal">
+        <div class="modal-content">
+                <span class="close">&times;</span>
+                <p id="armySelected"></p>
+                <div class="dropdown" id="dropdownstuff">
+                    <button type="convoy" class="dropbtn" onclick="convoy(document.getElementById('armySelected').innerHTML)">Convoy</button>
+                    <div id="convoyDropDown" class="dropdown-convoy">
+                    </div>
+                                        <button type="test" id="issueOrderButton" onclick="issueOrder('CONVOY', document.getElementById('armySelected').innerHTML)">Submit Order</button>
+
+                </div>
+        </div>
+    </div>
+
 
     <script>
         window.jQuery = window.$ = require('jquery');
