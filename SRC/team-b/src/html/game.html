@@ -27,8 +27,16 @@
         jQuery('#vmap').vectorMap({
           map: 'diplomacy',
           enableZoom: true,
-          showTooltip: true
+          showTooltip: true,
+          backgroundColor: '#DEE4E7'
         });
+        jQuery('#vmap').bind('resize.jqvmap',
+        function(event, width, height)
+        {
+            // sizeMap();
+            console.log("Width: " + width + " HEIGHT: " + height);
+        }
+        );
       });
     </script>
 </head>
@@ -56,10 +64,12 @@
     </nav>
     <h2 style="text-align: center; margin: 1%;">Current Player Positions</h2>
     <div id="snackbar"></div>
-    <div class="container" style="height:175%; width:85%">
+    <div class="container">
         
         <!-- Container for the vector map -->
-        <div id="vmap" style="width: 1300px; height: 1000px;"></div>
+        <div class="row">
+            <div id="vmap" style="width: 90%; min-height: 80%; max-height: 90%;" class="rounded mx-auto d-block"></div>
+        </div>
 
         <div class="row">
             <div class="col" style="text-align: center; border:1px solid #ccc">
