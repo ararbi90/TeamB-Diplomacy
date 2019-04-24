@@ -179,12 +179,12 @@ function createAndAssignTerrtories(players) {
             terr.forEach(function (pow) {
                 temp = Object.assign(temp, powers[pow]);
             });
-            playerTerritories[players[i]] = { territories: temp, color: tempColor, country: result };
+            playerTerritories[players[i]] = { territories: temp, color: tempColor, country: result, supplyCenters: temp};
         }
         else {
             // Austria = Austria-Hungary
             let temp = terr === "Austria" ? "Austria-Hungary" : terr;
-            playerTerritories[players[i]] = { territories: powers[terr], color: tempColor, country: temp };
+            playerTerritories[players[i]] = { territories: powers[terr], color: tempColor, country: temp, supplyCenters: powers[terr]};
         }
 
     }
