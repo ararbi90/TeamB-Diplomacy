@@ -1,10 +1,10 @@
 var express = require('express');
-
+//const admin = require('./firebaseAdmin');
 const functions = require('firebase-functions');
 
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 const admin = require('firebase-admin');
-admin.initializeApp();
+// admin.initializeApp();
 
 var router = express.Router();
 
@@ -19,5 +19,7 @@ router.get('/', function(req, res, next) {
     return true;
   }).catch(error => {console.log(error)});
 });
+
+
 
 module.exports = router;
