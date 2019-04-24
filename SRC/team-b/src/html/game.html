@@ -34,32 +34,7 @@
           map: 'diplomacy',
           enableZoom: true,
           showTooltip: true,
-<<<<<<< HEAD
           backgroundColor: '#DEE4E7'
-=======
-          colors: defaultcolors,
-          hoverColors: hovercolors,
-          selectedColors: hovercolors,
-          onRegionClick: function(event, code, region){
-            // Check if this is an Enabled Region
-            if(enabledRegions.indexOf(code) === -1){
-              // Not an Enabled Region
-              event.preventDefault();
-            }
-          },
-          onRegionOver: function(event, code, region){
-            // Check if this is an Enabled Region
-            if(enabledRegions.indexOf(code) === -1){
-              // Not an Enabled Region
-              event.preventDefault();
-            } 
-          },
-          onLabelShow: function(event, label, code){
-            if(enabledRegions.indexOf(code) === -1){
-              event.preventDefault();
-            }
-          }
->>>>>>> benson
         });
         jQuery('#vmap').bind('resize.jqvmap',
         function(event, width, height)
