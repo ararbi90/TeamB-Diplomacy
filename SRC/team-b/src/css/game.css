@@ -50,6 +50,9 @@
 div.row > img.map {
   height: 50%;
 }
+#row{
+  font-family: 'Tangerine', cursive;
+}
 
 img.map {
   height: 100%;
