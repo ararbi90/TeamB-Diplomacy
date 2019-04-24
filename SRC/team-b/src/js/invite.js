@@ -189,6 +189,8 @@ $(document).ready(function () {
                 name: game[0]["value"],
                 owner: gameOwner,
                 invites: invite,
+                current_round: {year: '1901', season: 'spring'},
+                current_phase:'order writing',
                 expirationDate:expirationDate, 
                 TimeLimitDays: game.days,
                 TimeLimitHours: game.hours
