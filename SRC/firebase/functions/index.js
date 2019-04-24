@@ -5,7 +5,8 @@ var logger = require('morgan');
 const express = require("express");
 
 var testRouter = require('./routes/test');
-var usersRouter = require('./routes/users');
+//var usersRouter = require('./routes/users');
+var gameRouter = require('./routes/game');
 
 const functions = require("firebase-functions");
 const cors = require("cors");
@@ -24,7 +25,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: true }))
 
-app.use('/users', usersRouter);
+app.use('/game', gameRouter);
 app.use('/test', testRouter);
 
 app.get("*", (request, response) => {
