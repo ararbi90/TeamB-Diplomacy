@@ -148,7 +148,7 @@ function createAndAssignTerrtories(players) {
         3: [["Austria", "England", "Germany"], ["Turkey", "France"], ["Russia", "Italy"]],
         2: [["Austria", "Turkey", "Germany"], ["England", "France", "Russia"]],
     }
-    let colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+    let colors = ["#327AB5","#82cacf","#71b188","#db878b","#d5cd6c","#c8c8c8","#969696"];
     let powers = {
         Austria: { VIE: { forceType: "A" }, BUD: { forceType: "A" }, TRI: { forceType: "F" } },
         England: { LON: { forceType: "F" }, EDI: { forceType: "F" }, LVP: { forceType: "A" } },
@@ -219,6 +219,15 @@ function gameButtonHandler(gameId, expirationDate) {
                 gameRef.child(gameId).child("players").set(createAndAssignTerrtories(gamePlayers),
                     function (error) {
                         $("#" + gameId + "").click(reJoinGame);
+
+                        //TODO Change the expiration times
+                        let dayLimit = data.child("TimeLimitDays").val();
+                        let hourLimit = data.child("TimeLimitHours").val();
+                        console.log("days: "+ dayLimit);
+                        console.log("hours: "+ hourLimit);
+                        let testTime  = 990099;
+                        //let expiration_time  = Date.now;
+                        gameRef.child(gameId).child("turn_status").child("phase_expiration_time").set(testTime);
                     }
                 );
 
