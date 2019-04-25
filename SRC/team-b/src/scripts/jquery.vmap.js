@@ -850,7 +850,7 @@ JQVMap.prototype.positionPins = function(){
   var pins = this.container.find('.jqvmap-pin');
   jQuery.each(pins, function(index, pinObj){
     pinObj = jQuery(pinObj);
-    var countryId = map.getCountryId(pinObj.attr('for').toLowerCase());
+    var countryId = map.getCountryId(pinObj.attr('for'));
     var countryObj = jQuery('#' + countryId);
     var bbox = countryObj[0].getBBox();
 
