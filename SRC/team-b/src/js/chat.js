@@ -8,16 +8,19 @@ let gameID = urlParams.get("gameID");
 var tabs = [];
 let chatCount = 0;
 
-function openTab(evt, id, tabName) {
+function openTab(evt, tabName)
+{
     // Get all elements with class="tabcontent" and hide them
     var tabcontent = document.getElementsByClassName("tabcontent");
-    for (var i = 0; i < tabcontent.length; i++) {
+    for (var i = 0; i < tabcontent.length; i++)
+    {
         tabcontent[i].hidden = true;
     }
 
     // Get all elements with class="tablinks" and remove the class "active"
     var tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
+    for (i = 0; i < tablinks.length; i++)
+    {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
 
@@ -26,28 +29,37 @@ function openTab(evt, id, tabName) {
     evt.currentTarget.className += " active";
     document.getElementById(tabName).hidden = false;
 
+    // Auto scroll
+    var objDiv = document.getElementById(tabName);
+    objDiv.scrollTop = objDiv.scrollHeight;
+
     tabs.push(tabName);
 }
 
 // Handles message overflow
-function createValidMessage(input) {
+function createValidMessage(input)
+{
     var result = "";
     count = 0;
 
-    for (var i = 0; i < input.length; i++) {
+    for (var i = 0; i < input.length; i++)
+    {
         var character = input.charAt(i);
 
-        if (count > 30) {
+        if (count > 30)
+        {
             count = 0;
             result += "\n";
             result += character;
         }
 
-        if (character === " " || character === "\n" || character === "\t") {
+        if (character === " " || character === "\n" || character === "\t")
+        {
             count = 0;
             result += character;
         }
-        else {
+        else
+        {
             count++;
             result += character;
         }
@@ -63,7 +75,8 @@ var messageColors = new Map([
 ])
 
 // Style the message
-function styleMessage(node, country) {
+function styleMessage(node, country)
+{
     var countries = country.split("_");
 
     node.style.textAlign = "left";
@@ -78,18 +91,21 @@ function styleMessage(node, country) {
     node.style.maxWidth = "66%";
 
     // Color
-    if (countries.length == 1) {
-        node.style.borderBottom = "8px solid " + messageColors.get(countries[0]);
+    if (countries.length == 1)
+    {
+        node.style.borderBottom = "6px solid " + messageColors.get(countries[0]);
     }
-    else if (countries.length == 2) {
-        node.style.borderTop = "8px solid " + messageColors.get(countries[0]);
-        node.style.borderBottom = "8px solid " + messageColors.get(countries[1]);
+    else if (countries.length == 2)
+    {
+        node.style.borderTop = "6px solid " + messageColors.get(countries[0]);
+        node.style.borderBottom = "6px solid " + messageColors.get(countries[1]);
     }
-    else if (countries.length == 3) {
-        node.style.borderTop = "8px solid " + messageColors.get(countries[0]);
-        node.style.borderBottom = "8px solid " + messageColors.get(countries[1]);
-        node.style.borderLeft = "8px solid " + messageColors.get(countries[2]);
-        node.style.borderRight = "8px solid " + messageColors.get(countries[2]);
+    else if (countries.length == 3)
+    {
+        node.style.borderTop = "6px solid " + messageColors.get(countries[0]);
+        node.style.borderBottom = "6px solid " + messageColors.get(countries[1]);
+        node.style.borderLeft = "6px solid " + messageColors.get(countries[2]);
+        node.style.borderRight = "6px solid " + messageColors.get(countries[2]);
     }
 
     chatCount++;
@@ -211,35 +227,43 @@ var uniqueCountryKeys = [
     "ATG_EFR"
 ]
 
-function sendMessage() {
+function sendMessage()
+{
     // Don't send empty message
-    if (!document.getElementById("messageinput").value.trim()) {
+    if (!document.getElementById("messageinput").value.trim())
+    {
         return;
     }
 
     message = createValidMessage(document.getElementById("messageinput").value);
 
-    if (tabs[tabs.length - 1] === "Main") {
+    if (tabs[tabs.length - 1] === "Main")
+    {
         // Log chat in DB
         publicChatRef.child(gameID).push({
             message: message,
             username: username
         });
     }
-    else {
+    else
+    {
         var country1 = tabs[tabs.length - 1]; // Opposing player's country
         var country2 = "";
 
-        gameRef.child(gameID).child("players").on("child_added", function (snapshot) {
+        gameRef.child(gameID).child("players").on("child_added", function (snapshot)
+        {
             // Find the current user's country
-            if (snapshot.key === username) {
+            if (snapshot.key === username)
+            {
                 country2 = snapshot.val().country;
 
                 // Get the chat key
                 var privateChatKey = "";
 
-                for (var i = 0; i < countryKeys.get(country1).length; ++i) {
-                    if (countryKeys.get(country1)[i][0] === country2) {
+                for (var i = 0; i < countryKeys.get(country1).length; ++i)
+                {
+                    if (countryKeys.get(country1)[i][0] === country2)
+                    {
                         privateChatKey = countryKeys.get(country1)[i][1];
                     }
                 }
@@ -259,8 +283,10 @@ function sendMessage() {
     $('#messageinput').val("");
 }
 
-$("#messageinput").keyup(function (event) {
-    if (event.keyCode === 13) {
+$("#messageinput").keyup(function (event)
+{
+    if (event.keyCode === 13)
+    {
         $("#subitMSG").click();
     }
 });
