@@ -84,7 +84,11 @@ $("#register-form").submit(function (event) {
                 });
                 // Return to login
                 $("#register-form").hide("slow");
-                $("#login-form").show("slow");
+                //$("#login-form").show("slow");
+                var link = "dashboard.html?username=" + usernameIn + "&userID=" + data.child(usernameIn).key;
+                window.location.href = link;
+                
+
                 //document.getElementById("login-form").style.display = "block";
                 //document.getElementById("register-form").style.display = "none";
             } else {
