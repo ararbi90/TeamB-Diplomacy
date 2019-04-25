@@ -44,7 +44,7 @@
 
         function debounce() {
             clearTimeout(timer);
-            timer = setTimeout(resizeMap, 250);
+            timer = setTimeout(resizeMap, 500);
         }
 
         function start(){

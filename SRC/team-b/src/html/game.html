@@ -1,104 +1,137 @@
 <html>
+  <head>
+      <link href="../css/jqvmap.css" media="screen" rel="stylesheet" type="text/css"/>
+      <link href="../../bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+      <link href="../css/game.css" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css?family=Bad+Script|Playball|Tangerine|Glegoo" rel="stylesheet">
+  </head>
 
-<head>
-    <!-- <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"> -->
-    <!-- <script src="../node_modules/jquery/dist/jquery.js"></script> -->
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script>
-        window.jQuery = window.$ = require('jquery');
-    </script>
-
-    <link href="../css/jqvmap.css" media="screen" rel="stylesheet" type="text/css"/>
-    <link href="../../bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
-    <link href="../css/game.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Bad+Script|Playball|Tangerine|Glegoo" rel="stylesheet">
-
-    <script src="../../node_modules/popper.js/dist/umd/popper.js"></script>
-    <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="../js/firebase.js"></script>
-    <script src="../js/systemFirebase.js"></script>
-   
-    
-
-    <script type="text/javascript" src="../scripts/jquery.vmap.js"></script>
-    <script type="text/javascript" src="../js/jquery.vmap.diplomacy.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../js/jquery.vmap.defaultcolors.js"></script>
-    <script type="text/javascript" src="../js/jquery.vmap.hovercolors.js"></script>
-
-
-    <!-- Initial confiuration for the map-->
-    <script>
-      jQuery(document).ready(function () {
-        var enabledRegions = ["ADR","AEG","BAL","BAR","BLA","EAS","ENG","BOT","GOL","HEL","ION","IRI","MID","NAT","NTH","NRG","SKA","TYN","WES","CLY","EDI","LVP","YOR","WAL","LON","PIC","BRE","PAR","BUR","GAS","MAR","PIE","VEN","TUS","ROM","APU","NAP","TYR","BOH","VIE","GAL","BUD","TRI","CON","ANK","ARM","SMY","SYR","FIN","STP","LVN","MOS","WAR","UKR","SEV","RUH","KIE","BER","PRU","MUN","SIL","NWY","SWE","DEN","HOL","BEL","POR","SPA","NAF","TUN","RUM","SER","BUL","ALB","GRE"];
-        var currentRegion;
-
-        jQuery('#vmap').vectorMap({
-          map: 'diplomacy',
-          enableZoom: true,
-          showTooltip: true,
-          colors: defaultcolors,
-          hoverColors: hovercolors,
-          selectedColors: hovercolors,
-          onRegionClick: function(event, code, region){
-            // Check if this is an Enabled Region
-            if(enabledRegions.indexOf(code) === -1){
-              // Not an Enabled Region
-              event.preventDefault();
-            }
-          },
-          onRegionOver: function(event, code, region){
-            // Check if this is an Enabled Region
-            if(enabledRegions.indexOf(code) === -1){
-              // Not an Enabled Region
-              event.preventDefault();
-            } 
-          },
-          onLabelShow: function(event, label, code){
-            if(enabledRegions.indexOf(code) === -1){
-              event.preventDefault();
-            }
+  <body style="background-color: #D9ECF0">
+      <style>
+          #ChatBox {
+              font-family: Glegoo;
           }
-        });
-      });
-    </script>
-</head>
+      </style>
+      <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #02355A;">
+          <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
+          <img height="100" src="../../images/diplomacy_logo.png" />
+          <div class="collapse navbar-collapse" id="navbarNavDropdown" ;>
+              <ul class="navbar-nav p-3 ml-auto" style="font-size:20px;margin-right:15px">
 
-<body style="background-color: #D9ECF0">
-    <style>
-        #ChatBox {
-            font-family: Glegoo;
-        }
-    </style>
-    <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #02355A;">
-        <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
-        <img height="100" src="../../images/diplomacy_logo.png" />
-        <div class="collapse navbar-collapse" id="navbarNavDropdown" ;">
-            <ul class="navbar-nav p-3 ml-auto" style="font-size:20px;margin-right:15px">
+                  <li class="nav-item dropdown ">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                          aria-haspopup="true" aria-expanded="false">
+                      </a>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                          <a class="dropdown-item" href="#" id="gameStats" style="font-size:18px">Game Statistics</a>
+                          <a class="dropdown-item" href="#" id="gameRules" style="font-size:18px">Game Rules</a>
+                          <a class="dropdown-item" href="#" id="Dashboard" style="font-size:18px">Dashboard</a>
+                          <a class="dropdown-item" href="#" id="logOut" style="font-size:18px">Log Out</a>
+                      </div>
+                  </li>
+              </ul>
+          </div>
+      </nav>
+      <h2 style="text-align: center; margin: 1%; font-family:Playball;">Current Player Positions</h2>
+      <div id="snackbar"></div>
+      <div class="container">
+          
+          <!-- Container for the vector map -->
+          <div class="row">
+              <div id="vmap" style="width: 90%; min-height: 80%; max-height: 90%;" class="rounded mx-auto d-block"></div>
+          </div>
 
-                <li class="nav-item dropdown ">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#" id="gameStats" style="font-size:18px">Game Statistics</a>
-                        <a class="dropdown-item" href="#" id="gameRules" style="font-size:18px">Game Rules</a>
-                        <a class="dropdown-item" href="#" id="Dashboard" style="font-size:18px">Dashboard</a>
-                        <a class="dropdown-item" href="#" id="logOut" style="font-size:18px">Log Out</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <h2 style="text-align: center; margin: 1%; font-family:Playball;">Current Player Positions</h2>
-    <div id="snackbar"></div>
-    <div class="container" style="height:175%; width:85%">
-        
-        <!-- Container for the vector map -->
-        <div id="vmap" style="width: 1300px; height: 1000px;"></div>
+          <div class="row">
+              <div class="col" style="text-align: center; border:1px solid #ccc">
+                  <div id="ChatBox" class="container">
 
-        <div class="row">
-            <div class="col" style="text-align: center; border:1px solid #ccc">
-                <div id="ChatBox" class="container">
+                      <div id="t" class="tab">
+                          <button id="1" class="tablinks" onclick="openTab(event, this.id, 'Main')">Main</button>
+                          <script>
+                              document.addEventListener("DOMContentLoaded", function(event) { 
+                              document.getElementById('1').click();
+                          });
+                          </script>
+                          <button id="2" class="tablinks" onclick="openTab(event, this.id, 'France')" hidden>France</button>
+                          <button id="3" class="tablinks" onclick="openTab(event, this.id, 'Austria-Hungary')" hidden>Austria-Hungary</button>
+                          <button id="4" class="tablinks" onclick="openTab(event, this.id, 'Russia')" hidden>Russia</button>
+                          <button id="5" class="tablinks" onclick="openTab(event, this.id, 'England')" hidden>England</button>
+                          <button id="6" class="tablinks" onclick="openTab(event, this.id, 'Turkey')" hidden>Turkey</button>
+                          <button id="7" class="tablinks" onclick="openTab(event, this.id, 'Germany')" hidden>Germany</button>
+                          <button id="8" class="tablinks" onclick="openTab(event, this.id, 'Italy')" hidden>Italy</button>
+                          <button id="9" class="tablinks" onclick="openTab(event, this.id, 'Austria-Hungary_France')" hidden>Austria-Hungary/
+                              France</button>
+                          <button id="10" class="tablinks" onclick="openTab(event, this.id, 'Turkey_Germany')" hidden>Turkey/
+                              Germany</button>
+                          <button id="11" class="tablinks" onclick="openTab(event, this.id, 'Russia_Italy')" hidden>Russia/
+                              Italy</button>
+                          <button id="12" class="tablinks" onclick="openTab(event, this.id, 'Austria-Hungary_England_Germany')" hidden>Austria-Hungary/
+                              England/
+                              Germany</button>
+                          <button id="13" class="tablinks" onclick="openTab(event, this.id, 'Turkey_France')" hidden>Turkey/
+                              France</button>
+                          <button id="14" class="tablinks" onclick="openTab(event, this.id, 'Austria-Hungary_Turkey_Germany')" hidden>Austria-Hungary/
+                              Turkey/
+                              Germany</button>
+                          <button id="15" class="tablinks" onclick="openTab(event, this.id, 'England_France_Russia')" hidden>England/
+                              France/
+                              Russia</button>
+                      </div>
+                      <div id="Main" class="tabcontent" style="background-color:#BEBEBE">
+                      </div>
+                      <div id="France" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                      <div id="Austria-Hungary" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                      <div id="Russia" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                      <div id="England" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                      <div id="Turkey" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                      <div id="Germany" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                      <div id="Italy" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                      <div id="Austria-Hungary_France" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                      <div id="Turkey_Germany" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                      <div id="Russia_Italy" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                      <div id="Austria-Hungary_England_Germany" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                      <div id="Turkey_France" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                      <div id="Austria-Hungary_Turkey_Germany" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                      <div id="England_France_Russia" class="tabcontent" style="background-color:#BEBEBE" hidden>
+                      </div>
+                  </div>
+                  <div>
+                      <input type="text" id="messageinput" class="form-control" style="background-color: #ECEFF1">
+                      <button type="submit" class="btn btn-primary" id="subitMSG" onClick="sendMessage()">Submit</button>
+                  </div>
+
+              </div>
+              <!-- Remove this -->
+              <div class="col" style="text-align: center; border:1px solid #ccc">
+                  <h3 style="text-align: center; font-family:Playball;">Current Moves</h3>
+                  <form style="text-align: justify;">
+                      <!-- <div class="p-3">
+                          <label class="p-1">
+                              A PAR
+                          </label>
+                          <select class="firstMoveSelect" id="firstMoveSelect1" onchange="firstMoveChoice(this.value, 1)">
+                          </select>
+                          <select class="unitSelect" id="unitSelect1" hidden>
+                          </select>
+                          <select class="secondMoveSelect" id="secondMoveSelect1" onchange="secondMoveChoice(this.value, 1)"
+                              hidden>
+                          </select>
+                          <select class="locationSelect" id="locationSelect1" hidden>
+                          </select>
+                      </div>
 
                     <div id="t" class="tab">
                         <button id="1" class="tablinks" onclick="openTab(event, 'Main')">Main</button>
@@ -168,108 +201,136 @@
                     <button type="submit" class="btn btn-primary" id="subitMSG" onClick="sendMessage()">Submit</button>
                 </div>
 
-            </div>
-            <!-- Remove this -->
-            <div class="col" style="text-align: center; border:1px solid #ccc">
-                <h3 style="text-align: center; font-family:Playball;">Current Moves</h3>
-                <form style="text-align: justify;">
-                    <!-- <div class="p-3">
-                        <label class="p-1">
-                            A PAR
-                        </label>
-                        <select class="firstMoveSelect" id="firstMoveSelect1" onchange="firstMoveChoice(this.value, 1)">
-                        </select>
-                        <select class="unitSelect" id="unitSelect1" hidden>
-                        </select>
-                        <select class="secondMoveSelect" id="secondMoveSelect1" onchange="secondMoveChoice(this.value, 1)"
-                            hidden>
-                        </select>
-                        <select class="locationSelect" id="locationSelect1" hidden>
-                        </select>
-                    </div>
+                      <div class="p-3">
+                          <label class="p-1">
+                              A PIC
+                          </label>
+                          <select class="firstMoveSelect" id="firstMoveSelect3" onchange="firstMoveChoice(this.value, 3)">
+                          </select>
+                          <select class="unitSelect" id="unitSelect3" hidden>
+                          </select>
+                          <select class="secondMoveSelect" id="secondMoveSelect3" onchange="secondMoveChoice(this.value, 3)"
+                              hidden>
+                          </select>
+                          <select class="locationSelect" id="locationSelect3" hidden>
+                          </select>
+                      </div>
 
-                    <div class="p-3">
-                        <label class="p-1">
-                            A BUR
-                        </label>
-                        <select class="firstMoveSelect" id="firstMoveSelect2" onchange="firstMoveChoice(this.value, 2)">
-                        </select>
-                        <select class="unitSelect" id="unitSelect2" hidden>
-                        </select>
-                        <select class="secondMoveSelect" id="secondMoveSelect2" onchange="secondMoveChoice(this.value, 2)"
-                            hidden>
-                        </select>
-                        <select class="locationSelect" id="locationSelect2" hidden>
-                        </select>
-                    </div>
+                      <div class="p-3">
+                          <label class="p-1">
+                              F ENG
+                          </label>
+                          <select class="firstMoveSelect" id="firstMoveSelect4" onchange="firstMoveChoice(this.value, 4)">
+                          </select>
+                          <select class="unitSelect" id="unitSelect4" hidden>
+                          </select>
+                          <select class="secondMoveSelect" id="secondMoveSelect4" onchange="secondMoveChoice(this.value, 4)"
+                              hidden>
+                          </select>
+                          <select class="locationSelect" id="locationSelect4" hidden>
+                          </select>
+                      </div>
 
-                    <div class="p-3">
-                        <label class="p-1">
-                            A PIC
-                        </label>
-                        <select class="firstMoveSelect" id="firstMoveSelect3" onchange="firstMoveChoice(this.value, 3)">
-                        </select>
-                        <select class="unitSelect" id="unitSelect3" hidden>
-                        </select>
-                        <select class="secondMoveSelect" id="secondMoveSelect3" onchange="secondMoveChoice(this.value, 3)"
-                            hidden>
-                        </select>
-                        <select class="locationSelect" id="locationSelect3" hidden>
-                        </select>
-                    </div>
+                      <div class="p-3">
+                          <label class="p-1">
+                              A BRE
+                          </label>
+                          <select class="firstMoveSelect" id="firstMoveSelect5" onchange="firstMoveChoice(this.value, 5)">
+                          </select>
+                          <select class="unitSelect" id="unitSelect5" hidden>
+                          </select>
+                          <select class="secondMoveSelect" id="secondMoveSelect5" onchange="secondMoveChoice(this.value, 5)"
+                              hidden>
+                          </select>
+                          <select class="locationSelect" id="locationSelect5" hidden>
+                          </select>
+                      </div> -->
+                      <table class="table">
+                          <thead class="thead-light" style="background-color: #EBF2FA; font-family:Glegoo;">
+                              <tr>
+                                  <td>Location</td>
+                                  <td>Move Type</td>
+                                  <td>Order</td>
+      
+                              </tr>
+                          </thead>
+                          <tbody id="gameOrders">
 
-                    <div class="p-3">
-                        <label class="p-1">
-                            F ENG
-                        </label>
-                        <select class="firstMoveSelect" id="firstMoveSelect4" onchange="firstMoveChoice(this.value, 4)">
-                        </select>
-                        <select class="unitSelect" id="unitSelect4" hidden>
-                        </select>
-                        <select class="secondMoveSelect" id="secondMoveSelect4" onchange="secondMoveChoice(this.value, 4)"
-                            hidden>
-                        </select>
-                        <select class="locationSelect" id="locationSelect4" hidden>
-                        </select>
-                    </div>
+                          </tbody>
+                      </table>
+                      <div style="text-align: center;">
+                          <p id="timer">10:23</p>
+                          <button type="submit" class="btn btn-primary">Submit</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
 
-                    <div class="p-3">
-                        <label class="p-1">
-                            A BRE
-                        </label>
-                        <select class="firstMoveSelect" id="firstMoveSelect5" onchange="firstMoveChoice(this.value, 5)">
-                        </select>
-                        <select class="unitSelect" id="unitSelect5" hidden>
-                        </select>
-                        <select class="secondMoveSelect" id="secondMoveSelect5" onchange="secondMoveChoice(this.value, 5)"
-                            hidden>
-                        </select>
-                        <select class="locationSelect" id="locationSelect5" hidden>
-                        </select>
-                    </div> -->
-                    <table class="table">
-                        <thead class="thead-light" style="background-color: #EBF2FA; font-family:Glegoo;">
-                            <tr>
-                                <td>Location</td>
-                                <td>Move Type</td>
-                                <td>Order</td>
-    
-                            </tr>
-                        </thead>
-                        <tbody id="gameOrders">
+      <!-- <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"> -->
+      <!-- <script src="../node_modules/jquery/dist/jquery.js"></script> -->
+      <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+      <script>
+          window.jQuery = window.$ = require('jquery');
+      </script>
+      <script src="../../node_modules/popper.js/dist/umd/popper.js"></script>
+      <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+      <script src="../js/chat.js"></script>
+      <script src="../js/game.js"></script>
 
-                        </tbody>
-                    </table>
-                    <div style="text-align: center;">
-                        <p id="timer">10:23</p>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</body>
-<script src="../js/game.js"></script>
-<script src="../js/chat.js"></script>
+      <script type="text/javascript" src="../scripts/jquery.vmap.js"></script>
+      <script type="text/javascript" src="../js/jquery.vmap.diplomacy.js" charset="utf-8"></script>
+      <script type="text/javascript" src="../js/jquery.vmap.defaultcolors.js"></script>
+      <script type="text/javascript" src="../js/jquery.vmap.hovercolors.js"></script>
 
+      <!-- Initial confiuration for the map-->
+      <script>
+        jQuery(document).ready(function () {
+          var enabledRegions = ["ADR","AEG","BAL","BAR","BLA","EAS","ENG","BOT","GOL","HEL","ION","IRI","MID","NAT","NTH","NRG","SKA","TYN","WES","CLY","EDI","LVP","YOR","WAL","LON","PIC","BRE","PAR","BUR","GAS","MAR","PIE","VEN","TUS","ROM","APU","NAP","TYR","BOH","VIE","GAL","BUD","TRI","CON","ANK","ARM","SMY","SYR","FIN","STP","LVN","MOS","WAR","UKR","SEV","RUH","KIE","BER","PRU","MUN","SIL","NWY","SWE","DEN","HOL","BEL","POR","SPA","NAF","TUN","RUM","SER","BUL","ALB","GRE"];
+          var currentRegion;
+          // the initial parameters for the map. Change according to this link to change the look of the map, https://www.10bestdesign.com/jqvmap/documentation/
+          jQuery('#vmap').vectorMap({
+            map: 'diplomacy',
+            backgroundColor: '#D9ECF0',
+            borderColor: '#000000',
+            borderOpacity: .75,
+            borderWidth: 2,
+            enableZoom: true,
+            showTooltip: true,
+            colors: defaultcolors,
+            hoverColors: hovercolors,
+            selectedColors: hovercolors,
+            pins: { "ADR" : "\u003cimg src=\"..\\..\\images\\supply-center.png\" /\u003e"},
+            pinMode: 'content',
+            onRegionClick: function(event, code, region){
+              // Check if this is an Enabled Region
+              if(enabledRegions.indexOf(code) === -1){
+                // Not an Enabled Region
+                event.preventDefault();
+              }
+            },
+            onRegionOver: function(event, code, region){
+              // Check if this is an Enabled Region
+              if(enabledRegions.indexOf(code) === -1){
+                // Not an Enabled Region
+                event.preventDefault();
+              } 
+            },
+            onLabelShow: function(event, label, code){
+              if(enabledRegions.indexOf(code) === -1){
+                event.preventDefault();
+              }
+            }
+          });
+          jQuery('#vmap').bind('resize.jqvmap',
+          function(event, width, height)
+          {
+              // sizeMap();
+              console.log("Width: " + width + " HEIGHT: " + height);
+              console.log("event: " + event.type);
+          }
+          );
+        });
+      </script>
+  </body>
 </html>
