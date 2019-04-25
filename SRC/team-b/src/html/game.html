@@ -115,7 +115,8 @@
                 <area shape="rect" coords="794,771,898,800" alt="Denmark"
                     id="DEN" onclick="makeToast(this.id)" />
                 <area shape="poly" coords="934,515,895,544,880,625,913,615,941,531" alt="Norway"
-                    id="NWY" onclick="makeToast(this.id)" />
+                    id="NWY" onclick="makeToast(this.id); testLogic(this.id);
+                        document.getElementById('armySelected').innerHTML = 'NWY' " />
                 <area shape="poly" coords="1033,593,990,641,998,703,1032,698,1048,626,1054,602,1054,601" alt="Sweden"
                     id="SWE" onclick="makeToast(this.id)" />
                 <area shape="rect" coords="1211,467,1324,506" alt="Finland"
@@ -404,10 +405,10 @@
                 <h5 id="armySelected"></h5>
                 <div class="dropdown" id="dropdownstuff">
                     <button type="convoy" class="dropbtn" onclick="convoy(document.getElementById('armySelected').innerHTML)">Convoy</button>
-                    <div id="convoyDropDown" class="dropdown-convoy">
-                    </div>
-                                        <button type="test" id="issueOrderButton" onclick="issueOrder('CONVOY', document.getElementById('armySelected').innerHTML)">Submit Order</button>
-
+                    <div id="availableFleet"></div>
+                    <div id="convoyDropDown" class="dropdown-convoy"></div>
+                    <div id="issueOrderButton"></div>
+                         <!-- <button type="test" id="issueOrderButton" onclick="issueOrder('CONVOY', document.getElementById('armySelected').innerHTML)">Submit Order</button> -->
                 </div>
         </div>
     </div>
@@ -427,6 +428,7 @@
     <script src="../js/systemFirebase.js"></script>
     <script src="../js/game.js"></script>
     <script src="../js/chat.js"></script>
+
 
     <!-- Library for jquery and Maphilight for having the map have highlighting spots -VT -->
     <script src="../scripts/jquery.min.js"></script>
