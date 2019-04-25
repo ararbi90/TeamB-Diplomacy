@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html>
+
+<body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+
+        $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/info", { gameId: "-Ld5A9cdoaRB74N1syYg" }, function (res) {
+            console.log(res);
+        }).fail(function (err) {
+            console.log(err);
+        })
+        let submission = {
+            username: "username of submitter",
+            gameId: "gameId",
+            orders: [{
+                UnitType: 'A',
+                CurrentZone: 'LON',
+                MoveType: 'M',
+                MoveZone: 'STP'
+            },
+            {
+                UnitType: 'F',
+                CurrentZone: 'NTH',
+                MoveType: 'C',
+                InitalConvoyZone: 'LON',
+                FinalConvoyZone: 'STP'
+            },
+            {
+                UnitType: 'F',
+                CurrentZone: 'NRG',
+                MoveType: 'C',
+                InitalConvoyZone: 'LON',
+                FinalConvoyZone: 'STP'
+            },
+            {
+                UnitType: 'F',
+                CurrentZone: 'BAR',
+                MoveType: 'C',
+                InitalConvoyZone: 'LON',
+                FinalConvoyZone: 'STP'
+            }]
+        }
+        console.log(submission);
+
+        $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/submitorder", { submission }, function (res) {
+            console.log(res);
+        }).fail(function (err) {
+            console.log(err);
+        })
+    </script>
+
+</body>
+
+</html>
