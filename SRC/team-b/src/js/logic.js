@@ -219,4 +219,23 @@ function issueOrder(moveType, location)
     var selector = document.getElementById('landingZone');
     var value = selector[selector.selectedIndex].value;
     console.log(moveType + " ARMY " + location + " MOV " + value);
+
+    var jsonOutPut = {
+        "OrderList": [
+            {
+                "UnitType": "A",
+                "CurrentZone" :  "",
+                "MoveType": "",
+                "MoveZone" : ""
+            },
+            {
+                "UnitType" : "F",
+                "CurrentZone": "",
+                "MoveType" : "",
+                "InitialConvoyZone" : "",
+                "FinalConvoyZone" : ""
+            },
+        ]
+
+    }
 }
