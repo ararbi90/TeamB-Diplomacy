@@ -149,6 +149,7 @@ function createAndAssignTerrtories(players) {
         2: [["Austria", "Turkey", "Germany"], ["England", "France", "Russia"]],
     }
     let colors = ["#327AB5","#82cacf","#71b188","#db878b","#d5cd6c","#c8c8c8","#969696"];
+    let hoverColors = ["#6fa1cb", "#a7d9dd", "#9bc8ab", "#e5abad", "#e1dc98", "#d8d8d8", "#b5b5b5"];
     let powers = {
         Austria: { VIE: { forceType: "A" }, BUD: { forceType: "A" }, TRI: { forceType: "F" } },
         England: { LON: { forceType: "F" }, EDI: { forceType: "F" }, LVP: { forceType: "A" } },
@@ -184,7 +185,7 @@ function createAndAssignTerrtories(players) {
         else {
             // Austria = Austria-Hungary
             let temp = terr === "Austria" ? "Austria-Hungary" : terr;
-            playerTerritories[players[i]] = { territories: powers[terr], color: tempColor, country: temp, supplyCenters: powers[terr]};
+            playerTerritories[players[i]] = { territories: powers[terr], color: tempColor, hoverColors: hoverColors, country: temp, supplyCenters: powers[terr]};
         }
 
     }
