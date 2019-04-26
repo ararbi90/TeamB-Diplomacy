@@ -169,6 +169,7 @@ function createAndAssignTerrtories(players) {
         let terr = terrlist[order[i]]; // Player country/countries
         let temp = {};
         let tempColor = colors[i];
+        let tempHoverColor = hoverColors[i];
         if (typeof (terr) != "string") {
 
             let result = "";
@@ -185,7 +186,7 @@ function createAndAssignTerrtories(players) {
         else {
             // Austria = Austria-Hungary
             let temp = terr === "Austria" ? "Austria-Hungary" : terr;
-            playerTerritories[players[i]] = { territories: powers[terr], color: tempColor, hoverColors: hoverColors, country: temp, supplyCenters: powers[terr]};
+            playerTerritories[players[i]] = { territories: powers[terr], color: tempColor, hoverColors: tempHoverColor, country: temp, supplyCenters: powers[terr]};
         }
 
     }
