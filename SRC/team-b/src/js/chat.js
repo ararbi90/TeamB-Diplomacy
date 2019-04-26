@@ -70,7 +70,7 @@ function createValidMessage(input)
 
 // Countries mapped to their corresponding message colors
 var messageColors = new Map([
-    ["France", "#82cacf"], ["Austria-Hungary", "#db878b"], ["Russia", "#c8c8c8"],
+    ["France", "#82cacf"], ["Austria-Hungary", "#6c74d5"], ["Russia", "#db878b"],
     ["England", "#327AB5"], ["Turkey", "#d5cd6c"], ["Germany", "#969696"], ["Italy", "#71b188"]
 ])
 
