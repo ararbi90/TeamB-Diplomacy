@@ -317,12 +317,13 @@
                     supplyCenters = player.supplyCenters;
                     $.each(supplyCenters, function(index,supplyCenter) {
                         defaultcolors[index] = player.color;
+                        hovercolors[index] =player.hoverColor;
                     });
-
                     // loop through each unit the player controls
                     territories = player.territories;
                     $.each(territories, function(index,territory){
                         defaultcolors[index] = player.color;
+                        hovercolors[index] = player.hoverColor;
                     });
                 });
 
