@@ -1,0 +1,40 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <!-- <script src="../../node_modules/jquery/dist/jquery.js"></script> -->
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #273c75;">
+        <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
+        <img height="50" src="../../images/diplomacy_logo.png" />
+    </nav>
+
+    </div>
+        <div class="p-3">
+            <label class="p-1" id="this">
+            </label>
+            <select class="firstMoveSelect" id="firstMoveSelect3" onchange="firstMoveChoice(this.value, 3)">
+            </select>
+            <select class="unitSelect" id="unitSelect3" hidden>
+            </select>
+            <select class="secondMoveSelect" id="secondMoveSelect3" onchange="secondMoveChoice(this.value, 3)"
+                hidden>
+            </select>
+            <select class="locationSelect" id="locationSelect3" hidden>
+            </select>
+        </div>
+    </div>
+
+    <script>
+        window.jQuery = window.$ = require('jquery');
+    </script>
+    <script src="../../node_modules/popper.js/dist/umd/popper.js"></script>
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../js/firebase.js"></script>
+    <script src="../js/systemFirebase.js"></script>
+    <script src="../js/build.js"></script>
+</body>
+
+</html>

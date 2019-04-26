@@ -35,5 +35,14 @@ router.post('/submitOrder', function (req, res, next) {
   return true;
 });
 
+/* Resolution logic
+    i) Loop all players orders of current season and put them in one list
+    ii) Begin resolving moves recursively
+        1) Loop all orders in the list if order is a support. Find the support location and add one to variable power and append force/supporting_player to support list
+        2) Repeat above for move but subtrat from vairable power and append force/supporting_player to attack list
+        3) All attacker and supported power is in each location. Recursively itterate through all the support and attacker list to update power.
+        4) If power > 0 then valid move, else invalid move.
+ 
+*/
 
 module.exports = router;
