@@ -21,6 +21,10 @@ document.getElementById("logOut").addEventListener("click", function () {
     let link = "../html/index.html";
     window.location.href = link;
 });
+document.getElementById("build").addEventListener("click", function () {
+    let link = "../html/build.html";
+    window.location.href = link;
+});
 
 function accpetGame(event) {
     // Need to make updates here

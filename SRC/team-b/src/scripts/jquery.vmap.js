@@ -7,6 +7,12 @@
  * @builddate 2016/06/02
  */
 
+const electron = require('electron');
+const BrowserWindow = electron.remote.BrowserWindow;
+var windows = BrowserWindow.getAllWindows();
+
+let windowOpen = false;
+
 var VectorCanvas = function (width, height, params) {
   this.mode = window.SVGAngle ? 'svg' : 'vml';
   this.params = params;
@@ -212,6 +218,30 @@ var JQVMap = function (params) {
       } else {
         map.select(code, targetPath);
         console.log("select");
+
+        if (!windowOpen)
+        {
+          //console.log(code);
+          var somethingIWantToShare = {
+            myFunction: function() {
+              return code;
+            }
+          };
+          let win = new BrowserWindow({ width: 1000, height: 600 });
+          win.loadURL(`file://${__dirname}/../html/build.html`, {
+            renderer: somethingIWantToShare
+          });
+          win.webContents.openDevTools();
+          win.webContents.on('did-finish-load', () => {
+            win.webContents.send('message', code);
+          });
+          windowOpen = true;
+
+          win.on('closed', () => {
+            win = null;
+            windowOpen = false;
+          })
+        }
       }
     }
   });
@@ -1106,7 +1136,7 @@ VectorCanvas.prototype.createPath = function (config) {
     }
 
     node.setFill = function (color) {
-      console.log(color);
+      //console.log(color);
       this.setAttribute('fill', color);
       if (this.getAttribute('original') === null) {
         this.setAttribute('original', color);
