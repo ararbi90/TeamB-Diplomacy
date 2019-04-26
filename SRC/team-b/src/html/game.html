@@ -4,7 +4,8 @@
       <link href="../../bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
       <link href="../css/game.css" rel="stylesheet" />
       <link href="https://fonts.googleapis.com/css?family=Bad+Script|Playball|Tangerine|Glegoo" rel="stylesheet">
-  </head>
+      <script type="text/javascript" src="../js/logic.js"></script>
+    </head>
 
   <body style="background-color: #D9ECF0">
       <style>
@@ -266,6 +267,22 @@
               </div>
           </div>
       </div>
+
+    <!--Player Action Modal-->
+    <div class="modal" id="actionModal">
+        <div class="modal-content">
+                <span class="close">&times;</span>
+                <h4>Army Selected:</h4>
+                <h5 id="armySelected"></h5>
+                <div class="dropdown" id="dropdownstuff">
+                    <button type="convoy" class="dropbtn" onclick="convoy(document.getElementById('armySelected').innerHTML)">Convoy</button>
+                    <div id="availableFleet"></div>
+                    <div id="convoyDropDown" class="dropdown-convoy"></div>
+                    <div id="issueOrderButton"></div>
+                         <!-- <button type="test" id="issueOrderButton" onclick="issueOrder('CONVOY', document.getElementById('armySelected').innerHTML)">Submit Order</button> -->
+                </div>
+        </div>
+    </div>
 
       <!-- <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"> -->
       <!-- <script src="../node_modules/jquery/dist/jquery.js"></script> -->
