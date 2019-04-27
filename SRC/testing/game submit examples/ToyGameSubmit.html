@@ -6,14 +6,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
 
-        $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/info", { gameId: "-Ld5A9cdoaRB74N1syYg" }, function (res) {
+        $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: "-Ld5A9cdoaRB74N1syYg" }, function (res) {
             console.log(res);
         }).fail(function (err) {
             console.log(err);
         })
         let submission = {
-            username: "username of submitter",
-            gameId: "gameId",
+            username: "b",
+            gameId: "-LdLzWJ_uHAESv4bbdVc",
             orders: [{
                 UnitType: 'A',
                 CurrentZone: 'LON',
@@ -42,9 +42,9 @@
                 FinalConvoyZone: 'STP'
             }]
         }
-        console.log(submission);
+        //console.log(submission);
 
-        $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/submitorder", { submission }, function (res) {
+        $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res) {
             console.log(res);
         }).fail(function (err) {
             console.log(err);
