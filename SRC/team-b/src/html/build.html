@@ -3,6 +3,7 @@
 <head>
     <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <!-- <script src="../../node_modules/jquery/dist/jquery.js"></script> -->
+    <link href="../css/game.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -10,22 +11,29 @@
         <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
         <img height="50" src="../../images/diplomacy_logo.png" />
     </nav>
-
+    <div class="col" style="text-align: center; border:1px solid #ccc">
+        <h3 style="text-align: center;">Build Your Move</h3>
+        <form style="text-align: justify;">
+            <div class="p-3">
+                <label class="p-1" id="label">
+                </label>
+                <select class="firstMoveSelect" id="firstMoveSelect" onchange="firstMoveChoice(this.value)">
+                </select>
+                <select class="unitSelect" id="unitSelect" hidden>
+                </select>
+                <select class="secondMoveSelect" id="secondMoveSelect" onchange="secondMoveChoice(this.value)" hidden>
+                </select>
+                <select class="locationSelect" id="locationSelect" hidden>
+                </select>
+            </div>
+        </form>
     </div>
-        <div class="p-3">
-            <label class="p-1" id="this">
-            </label>
-            <select class="firstMoveSelect" id="firstMoveSelect3" onchange="firstMoveChoice(this.value, 3)">
-            </select>
-            <select class="unitSelect" id="unitSelect3" hidden>
-            </select>
-            <select class="secondMoveSelect" id="secondMoveSelect3" onchange="secondMoveChoice(this.value, 3)"
-                hidden>
-            </select>
-            <select class="locationSelect" id="locationSelect3" hidden>
-            </select>
-        </div>
+    <div>
+        <button type="submit" class="btn btn-primary" style="display: block; margin: 0 auto;" id="submit" onClick="submitOrder()">Submit</button>
     </div>
+    <div id="snackbar"></div>
+    <div id="gameID" hidden></div>
+    <div id="username" hidden></div>
 
     <script>
         window.jQuery = window.$ = require('jquery');

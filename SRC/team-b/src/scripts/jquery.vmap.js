@@ -218,31 +218,23 @@ var JQVMap = function (params) {
       } else {
         map.select(code, targetPath);
         console.log("select");
-        testLogic(code); 
-        document.getElementById('armySelected').innerHTML = code;
-        // if (!windowOpen)
-        // {
-        //   //console.log(code);
-        //   var somethingIWantToShare = {
-        //     myFunction: function() {
-        //       return code;
-        //     }
-        //   };
-        //   let win = new BrowserWindow({ width: 1000, height: 600 });
-        //   win.loadURL(`file://${__dirname}/../html/build.html`, {
-        //     renderer: somethingIWantToShare
-        //   });
-        //   win.webContents.openDevTools();
-        //   win.webContents.on('did-finish-load', () => {
-        //     win.webContents.send('message', code);
-        //   });
-        //   windowOpen = true;
+        //testLogic(code); 
+        //document.getElementById('armySelected').innerHTML = code;
+        if (!windowOpen)
+        {
+          let win = new BrowserWindow({ width: 1000, height: 600 });
+          win.loadURL(`file://${__dirname}/../html/build.html`);
+          win.webContents.openDevTools();
+          win.webContents.on('did-finish-load', () => {
+            win.webContents.send('message', code + ' ' + username + ' ' + gameID);
+          });
+          windowOpen = true;
 
-        //   win.on('closed', () => {
-        //     win = null;
-        //     windowOpen = false;
-        //   })
-        // }
+          win.on('closed', () => {
+            win = null;
+            windowOpen = false;
+          })
+        }
       }
     }
   });
