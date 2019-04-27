@@ -39,7 +39,7 @@ router.post('/submitOrder', function (req, res, next) {
     // Get gameinfo
     admin.database().ref('/games').child(gameId).once('value').then(game => {
         let gameInfo = game.val();
-        //console.log(gameInfo);
+        console.log(gameInfo);
         let roundName = gameInfo.turn_status.current_season + gameInfo.turn_status.current_year;
         //console.log(roundName)
         // Submit game
@@ -87,12 +87,12 @@ function resolveGame(game){
         Object.keys(orders[seasonYear]).forEach(function(playerId, index){
             Object.keys(orders[seasonYear][playerId]).forEach(function(eachOrder){
                 let temp = orders[seasonYear][playerId][eachOrder];
-                temp.username = playerId;
+                temp.playerId = playerId;
                 allOrder.push(temp);
             })
         }) 
     })
-    console.log(allOrder);
+    addPowers(allOrder);
 }
 
 /* Resolution logic
@@ -104,5 +104,52 @@ function resolveGame(game){
         4) If power > 0 then valid move, else invalid move.
  
 */
+
+function addPowers(allOrder){
+    allOrder.forEach(function(currentOrder){
+        
+        allOrder.forEach(function(attacker){
+            //1. find all attacker for the current order
+            // move type must be M
+            if(attacker.MoveType === "M"){
+                if(currentOrder.attackPowerList === undefined){
+                    currentOrder.attackPowerList = {};
+                    currentOrder.attackPowerList[attacker.CurrentZone] = -1;
+                }else{
+                    currentOrder.attackPowerList[attacker.CurrentZone] = -1;
+                }
+
+                //find all supporters for this attacker
+                allOrder.forEach(function(supporter){
+                    if(supporter.InitalSupportZone === attacker.CurrentZone && supporter.FinalSupportZone === attacker.MoveZone){
+                        if(currentOrder.attackSupportPowerList === undefined){
+                            currentOrder.attackSupportPowerList = {};
+                            currentOrder.attackSupportPowerList[supporter.CurrentZone] = {power:-1, supportLocation:attacker.CurrentZone };
+                        }else{
+                            currentOrder.attackSupportPowerList[supporter.CurrentZone] = {power:-1, supportLocation:attacker.CurrentZone }
+                        }
+                    }
+                });
+            }
+
+            //This is not an attacker....it's a supporter
+            if(attacker.MoveType === "S"){
+                if(currentOrder.support === undefined){
+                    currentOrder.support = {};
+                    currentOrder.support[attacker.CurrentZone] = -1;
+                }
+            }
+
+        });
+
+
+
+
+
+
+    });
+    console.log(allOrder);
+}
+
 
 module.exports = router;
