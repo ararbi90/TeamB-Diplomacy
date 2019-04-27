@@ -304,31 +304,43 @@ function issueOrder(moveType, origin)
         console.log(moveType + " ARMY " + origin + " MOV " + destination);
         var selectedConvoy = ($('#selectedFleet').text()).split(" ");
         selectedConvoy.pop();
-        var orderList = [moveType, 'ARMY', origin,];
+        var orderList = [origin];
         for(fleet in selectedConvoy)
         {
             orderList.push(selectedConvoy[fleet]);
         }
         orderList.push(destination);
-        console.log("testing: ", orderList);
 
-        var jsonOutPut = {
-            "OrderList": [
-                {
-                    "UnitType": "A",
-                    "CurrentZone" :  "",
-                    "MoveType": "",
-                    "MoveZone" : ""
-                },
-                {
-                    "UnitType" : "F",
-                    "CurrentZone": "",
-                    "MoveType" : "",
-                    "InitialConvoyZone" : "",
-                    "FinalConvoyZone" : ""
-                },
-            ]
-
+        let submission = {
+            username: "username of submitter",
+            gameId: "gameId",
+            orders: [{
+                UnitType: 'A',
+                CurrentZone: origin,
+                MoveType: 'M',
+                MoveZone: destination
+            },
+            {
+                UnitType: 'F',
+                CurrentZone: 'NTH',
+                MoveType: 'C',
+                InitalConvoyZone: 'LON',
+                FinalConvoyZone: 'STP'
+            },
+            {
+                UnitType: 'F',
+                CurrentZone: 'NRG',
+                MoveType: 'C',
+                InitalConvoyZone: 'LON',
+                FinalConvoyZone: 'STP'
+            },
+            {
+                UnitType: 'F',
+                CurrentZone: 'BAR',
+                MoveType: 'C',
+                InitalConvoyZone: 'LON',
+                FinalConvoyZone: 'STP'
+            }]
         }
     });
 }
