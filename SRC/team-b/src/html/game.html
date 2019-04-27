@@ -186,8 +186,10 @@
             var urlParams = new URLSearchParams(location.search);
             let gameID =urlParams.get("gameID");
             let username = urlParams.get("username");
+            let fullGame = null;
             $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", {gameId: gameID}, function(res){
                 // loop through each player
+                fullGame = res;
                 players = res.players;
                 var clickableRegions = [];
                 $.each(players, function(index,player) {
