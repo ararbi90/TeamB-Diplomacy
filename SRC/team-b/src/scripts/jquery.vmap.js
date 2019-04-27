@@ -223,6 +223,7 @@ var JQVMap = function (params) {
         if (!windowOpen)
         {
           let win = new BrowserWindow({ width: 1000, height: 600 });
+          //let win = new BrowserWindow({ width: 500, height: 300 });
           win.loadURL(`file://${__dirname}/../html/build.html`);
           win.webContents.openDevTools();
           win.webContents.on('did-finish-load', () => {
