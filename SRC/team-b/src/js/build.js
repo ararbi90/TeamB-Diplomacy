@@ -23,8 +23,6 @@ ipc.on('message', (event, message) => {
     username = data[1];
     gameID = data[2];
 
-    console.log(gameRef.child(gameID));
-
     document.getElementById("gameID").innerHTML = gameID;
     document.getElementById("username").innerHTML = username;
     
@@ -51,7 +49,7 @@ ipc.on('message', (event, message) => {
         $.getJSON("map.json", function(json) {
             var adjs = json[code]["adjacencies"];
 
-            console.log(Object.keys(json));
+            //console.log(Object.keys(json));
 
             // Can only convoy if Fleet on SEA
             if (forceType === "F" && json[code]["type"] === "SEA")
@@ -302,7 +300,6 @@ function addLocationsToDropdown(move, locationDropdown)
     }
     else
     {
-        console.log("here");
         for (var i = 0; i < secondaryLocations.length; ++i)
         {
             // Append the element to the end of Array list
@@ -482,12 +479,6 @@ function submitOrder()
     {
         // Put order in DB
         var ref = gameRef.child(gameID).child("players").child(username).child("orders");
-        // ref.once("value").then(function (data)
-        // {
-        //     ref.child(thisUnit).set({
-        //         order: order
-        //     });
-        // });
 
         ref.child(thisUnit).set({
             order: order
