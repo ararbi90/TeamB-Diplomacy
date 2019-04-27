@@ -11,28 +11,70 @@ var router = express.Router();
 /* GET users listing. */
 
 
-  let moveKeys = ["UnitType", "CurrentZone", "MoveType","MoveZone"]; 
-  let supportKeys = ["UnitType", "CurrentZone", "MoveType","InitalSupportZone", "FinalSupportZone"];
-  let convoryKeys = ["UnitType", "CurrentZone", "MoveType","InitalConvoyZone", "FinalConvoyZone"]; 
-    
+let moveKeys = ["UnitType", "CurrentZone", "MoveType", "MoveZone"];
+let supportKeys = ["UnitType", "CurrentZone", "MoveType", "InitalSupportZone", "FinalSupportZone"];
+let convoryKeys = ["UnitType", "CurrentZone", "MoveType", "InitalConvoyZone", "FinalConvoyZone"];
 
-  
+
+
 router.post('/Info', function (req, res, next) {
-  let gameId = req.body.gameId;
-  console.log(gameId);
-  admin.database().ref('/games').child(gameId).once('value').then(snapshot => {
-    data = {};
-    console.log(snapshot.child("players").val());
-    res.send(snapshot.val());
-    return true;
-  }).catch(error => { console.log(error) });
+    let gameId = req.body.gameId;
+    console.log(gameId);
+    admin.database().ref('/games').child(gameId).once('value').then(snapshot => {
+        data = {};
+        console.log(snapshot.child("players").val());
+        res.send(snapshot.val());
+        return true;
+    }).catch(error => { console.log(error) });
 });
 
 router.post('/submitOrder', function (req, res, next) {
-  var data = req.body;
-  console.log(data);
-  res.send(data);
-  return true;
+
+    let data = req.body.submission;
+    //console.log(data);
+    let gameId = data.gameId;
+    let username = data.username;
+    let order = data.orders;
+    console.log(order);
+    // Get gameinfo
+    admin.database().ref('/games').child(gameId).once('value').then(game => {
+        let gameInfo = game.val();
+        console.log(gameInfo);
+        let roundName = gameInfo.turn_status.current_season + gameInfo.turn_status.current_year;
+        console.log(roundName)
+        // Submit game
+        admin.database().ref('/games').child(gameId).child('order').child(roundName).child(username).set(
+            order,
+            function (err) {
+                if (err) {
+                    console.log("Error");
+                }
+                admin.database().ref('/games').child(gameId).once('value').then(updatedGame => {
+                    let updated = updatedGame.val();
+                    let numberOfPlayers = Object.keys(updated.players).length;
+                    let numberOfSubmits = Object.keys(updated.order[roundName]).length;
+                    if(numberOfPlayers === numberOfSubmits){
+                        console.log("Resolve");
+                        //Call resolve function
+                        res.send("Resolve");
+                    }else{
+                        console.log("Submitted");
+                        res.send("Submitted");
+                    }
+                    //console.log("Done");
+                    return true;
+                }).catch(error => { console.log(error) });
+                
+            }
+            
+        ).catch(error => { console.log(error) });
+        //res.send("Done");
+        return true;
+    }).catch(error => { console.log(error) });
+
+
+
+    return true;
 });
 
 /* Resolution logic
