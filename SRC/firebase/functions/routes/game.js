@@ -35,13 +35,13 @@ router.post('/submitOrder', function (req, res, next) {
     let gameId = data.gameId;
     let username = data.username;
     let order = data.orders;
-    console.log(order);
+    //console.log(order);
     // Get gameinfo
     admin.database().ref('/games').child(gameId).once('value').then(game => {
         let gameInfo = game.val();
-        console.log(gameInfo);
+        //console.log(gameInfo);
         let roundName = gameInfo.turn_status.current_season + gameInfo.turn_status.current_year;
-        console.log(roundName)
+        //console.log(roundName)
         // Submit game
         admin.database().ref('/games').child(gameId).child('order').child(roundName).child(username).set(
             order,
@@ -54,7 +54,7 @@ router.post('/submitOrder', function (req, res, next) {
                     let numberOfPlayers = Object.keys(updated.players).length;
                     let numberOfSubmits = Object.keys(updated.order[roundName]).length;
                     if(numberOfPlayers === numberOfSubmits){
-                        console.log("Resolve");
+                        //console.log("Resolve");
                         //Call resolve function
                         resolveGame(updated);
                         res.send("Resolve");
@@ -79,7 +79,20 @@ router.post('/submitOrder', function (req, res, next) {
 });
 
 function resolveGame(game){
-    console.log(game);
+    //console.log(game);
+    let orders = game.order;
+    let allOrder = [];
+    Object.keys(orders).forEach(function(seasonYear, index){
+        console.log(seasonYear)
+        Object.keys(orders[seasonYear]).forEach(function(playerId, index){
+            Object.keys(orders[seasonYear][playerId]).forEach(function(eachOrder){
+                let temp = orders[seasonYear][playerId][eachOrder];
+                temp.username = playerId;
+                allOrder.push(temp);
+            })
+        }) 
+    })
+    console.log(allOrder);
 }
 
 /* Resolution logic

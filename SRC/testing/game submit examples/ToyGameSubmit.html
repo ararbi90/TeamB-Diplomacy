@@ -6,7 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
 
-        $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: "-Ld5A9cdoaRB74N1syYg" }, function (res) {
+        $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/info", { gameId: "-Ld5A9cdoaRB74N1syYg" }, function (res) {
             console.log(res);
         }).fail(function (err) {
             console.log(err);
@@ -44,7 +44,7 @@
         }
         //console.log(submission);
 
-        $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res) {
+        $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/submitorder", { submission }, function (res) {
             console.log(res);
         }).fail(function (err) {
             console.log(err);
