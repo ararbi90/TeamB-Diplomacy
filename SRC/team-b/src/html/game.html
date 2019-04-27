@@ -117,7 +117,7 @@
               </div>
               <div class="col" style="text-align: center; border:1px solid #ccc">
                   <h3 style="text-align: center; font-family:Playball;">Current Moves</h3>
-                  <form style="text-align: justify;">
+                  <form id="roundSubmissionForm" style="text-align: justify;">
                       <!-- <table class="table">
                           <thead class="thead-light" style="background-color: #EBF2FA; font-family:Glegoo;">
                               <tr>
@@ -138,7 +138,7 @@
                       </ul>
                       <div style="text-align: center;">
                           <p id="timer">10:23</p>
-                          <button id="submit_orders" type="submit" class="btn btn-primary" onClick="submitOrders()">Submit</button>
+                          <button id="submit_orders" type="submit" class="btn btn-primary">Submit</button>
                       </div>
                   </form>
               </div>
@@ -169,10 +169,6 @@
       </script>
       <script src="../../node_modules/popper.js/dist/umd/popper.js"></script>
       <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
-      <script src="../js/firebase.js"></script>
-      <script src="../js/systemFirebase.js"></script>
-      <script src="../js/chat.js"></script>
-      <script src="../js/game.js"></script>
 
       <script type="text/javascript" src="../scripts/jquery.vmap.js"></script>
       <script type="text/javascript" src="../js/jquery.vmap.diplomacy.js" charset="utf-8"></script>
@@ -186,7 +182,7 @@
             var urlParams = new URLSearchParams(location.search);
             let gameID =urlParams.get("gameID");
             let username = urlParams.get("username");
-            let fullGame = null;
+            var fullGame = null;
             $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", {gameId: gameID}, function(res){
                 // loop through each player
                 fullGame = res;
@@ -263,5 +259,9 @@
             })
         });   
       </script>
+      <script src="../js/firebase.js"></script>
+      <script src="../js/systemFirebase.js"></script>
+      <script src="../js/chat.js"></script>
+      <script src="../js/game.js"></script>
   </body>
 </html>

@@ -26,52 +26,61 @@ document.getElementById("logOut").addEventListener("click", function () {
 //     - Aegean Sea is not adjacent to Black Sea.
 
 
-function controllerTimer(){
+function controllerTimer() {
     let t = $("#timer").html();
     let hr = parseInt(t.substring(0, t.indexOf(":")));
     let min = parseInt(t.substring(t.indexOf(":") + 1));
     let newMin = min - 1;
     let newHr = hr;
-    if(newMin < 0){
+    if (newMin < 0) {
         newHr = hr - 1;
         newMin = 59;
     }
-    if(newMin >= 10 && newHr >= 10){
+    if (newMin >= 10 && newHr >= 10) {
         $("#timer").html(newHr + ":" + newMin);
     }
-    else if(newMin >= 10){
+    else if (newMin >= 10) {
         $("#timer").html("0" + newHr + ":" + newMin);
     }
-    else if(newHr >= 10){
+    else if (newHr >= 10) {
         $("#timer").html(newHr + ":0" + newMin);
     }
-    else{
+    else {
         $("#timer").html("0" + newHr + ":0" + newMin);
     }
 }
 
-function submitOrders()
-{
-    console.log("hi");
-}
+$("#roundSubmissionForm").submit(function () {
+    
+    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", {gameId: gameID}, function(res) {
+        var submission = submitOrders(res);
+        console.log(submission);
+        $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res) {
+            console.log(res);
+        }).fail(function (err) {
+            console.log(err);
+        })
+    }).fail(function (err) {
+        console.log(err);
+    })
+
+    return false;
+})
 
 // Add moves
-gameRef.child(gameID).child("players").child(username).child("orders").on("value", function (snapshot)
-{
+gameRef.child(gameID).child("players").child(username).child("orders_temp").on("value", function (snapshot) {
     $("#orders").empty();
     let orders = new Array();
     snapshot.forEach(element => {
         orders.push(element.val().order);
     });
 
-    if (orders.length > 0)
-    {
+    if (orders.length > 0) {
         document.getElementById("no_orders").hidden = true;
         document.getElementById("orders").hidden = false;
     }
 
-    for (var i = 0; i < orders.length; i++)
-    {
+    for (var i = 0; i < orders.length; i++) {
         var node = document.createElement("LI");
         var textnode = document.createTextNode(orders[i]);
         node.appendChild(textnode);
@@ -79,77 +88,60 @@ gameRef.child(gameID).child("players").child(username).child("orders").on("value
     }
 })
 
-function submitNecessaryHolds()
-{
-    gameRef.child(gameID).child("players").child(username).child("orders").on("value", function (snapshot)
-    {
-        // Get all orders
-        let orders = new Array();
-        snapshot.forEach(element => {
-            orders.push(element.val().order);
-        });
-
-        gameRef.child(gameID).child("players").once("value").then(function (snap)
+//var orders = [];
+function submitOrders(res) {
+    var submission = {};
+    let orders = new Array();
+        if (res.players[username].orders_temp != undefined)
         {
-            // Get all players
-            let players = {};
-            snap.forEach(element => {
-                players[element.key] = element.val();
-            });
-
-            userTerrs = players[username].territories;
-            //console.log(userTerrs);
-    
-            let terrs = new Array();
-            for (var t in userTerrs)
+            var keys = Object.keys(res.players[username].orders_temp);
+            let orders = new Array();
+            for (var i = 0; i < keys.length; i++)
             {
-                terrs.push([players[username].territories[t].forceType, t]);
+                orders.push(res.players[username].orders_temp[keys[i]].order);
             }
+        }
 
-            for (var i = 0; i < terrs.length; i++)
+        userTerrs = res.players[username].territories;
+
+        let terrs = new Array();
+        for (var t in userTerrs)
+        {
+            terrs.push([res.players[username].territories[t].forceType, t]);
+        }
+
+        for (var i = 0; i < terrs.length; i++)
+        {
+            var key = terrs[i][0] + '_' + terrs[i][1];
+            var data = terrs[i][0] + ' ' + terrs[i][1];
+
+            var inOrders = false
+
+            for (var j = 0; j < orders.length; j++)
             {
-                var key = terrs[i][0] + '_' + terrs[i][1];
-                var data = terrs[i][0] + ' ' + terrs[i][1];
-
-                var inOrders = false
-
-                for (var j = 0; j < orders.length; j++)
+                if (orders[j].slice(0, 5) === data)
                 {
-                    if (orders[j].slice(0, 5) === data)
-                    {
-                        inOrders = true;
-                    }
-                }
-
-                if (!inOrders)
-                {
-                    // Submit hold order
-                    var order = data + "-HOLDS";
-
-                    var ref = gameRef.child(gameID).child("players").child(username).child("orders");
-
-                    ref.child(key).set({
-                        order: order
-                    });
+                    inOrders = true;
                 }
             }
-        })
-    })
-}
 
-function createOrdersJSON()
-{
-    gameRef.child(gameID).child("players").child(username).child("orders").on("value", function (snapshot)
-    {
-        // Get all orders
-        let orders = new Array();
-        snapshot.forEach(element => {
-            orders.push(element.val().order);
-        });
+            if (!inOrders)
+            {
+                // Submit hold order
+                var order = data + "-HOLDS";
 
-        let submission = {};
+                orders.push(order);
+
+                var ref = gameRef.child(gameID).child("players").child(username).child("orders_temp");
+
+                ref.child(key).set({
+                    order: order
+                });
+            }
+        }
+
         submission.username = username;
-        submission.gameID = gameID;
+        submission.gameId = gameID;
         submission.orders = [];
 
         for (var i = 0; i < orders.length; i++)
@@ -198,8 +190,7 @@ function createOrdersJSON()
                         order.FinalSupportZone = data2[1];
                     }
                 }
-                else
-                {
+                else {
                     order.InitialSupportZone = data2[0];
                     order.FinalSupportZone = data2[0];
                 }
@@ -208,12 +199,9 @@ function createOrdersJSON()
             submission.orders.push(order);
         }
 
-        console.log(submission);
-    })
+    return submission;
 }
 
-createOrdersJSON();
-
-$("document").ready(function(){
+$("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
 })

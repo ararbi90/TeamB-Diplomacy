@@ -478,7 +478,7 @@ function submitOrder()
     if (validOrder)
     {
         // Put order in DB
-        var ref = gameRef.child(gameID).child("players").child(username).child("orders");
+        var ref = gameRef.child(gameID).child("players").child(username).child("orders_temp");
 
         ref.child(thisUnit).set({
             order: order
