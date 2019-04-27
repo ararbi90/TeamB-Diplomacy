@@ -56,6 +56,7 @@ router.post('/submitOrder', function (req, res, next) {
                     if(numberOfPlayers === numberOfSubmits){
                         console.log("Resolve");
                         //Call resolve function
+                        resolveGame(updated);
                         res.send("Resolve");
                     }else{
                         console.log("Submitted");
@@ -76,6 +77,10 @@ router.post('/submitOrder', function (req, res, next) {
 
     return true;
 });
+
+function resolveGame(game){
+    console.log(game);
+}
 
 /* Resolution logic
     i) Loop all players orders of current season and put them in one list
