@@ -1,6 +1,13 @@
 
 //const fs = require('fs');
-$ = require('jquery');
+var jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const { window } = new JSDOM();
+const { document } = (new JSDOM('')).window;
+global.document = document;
+
+var $ = jQuery = require('jquery')(window);
+//$ = require('jquery');
 
 //let dir = "/Users/mjscheid/Desktop/475/Diplomancy/CurrentWorkingVersion/TeamB-Diplomacy/SRC/testing/";
 //let filename = "ruleDiagramOrders.json";
