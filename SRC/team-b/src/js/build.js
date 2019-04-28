@@ -7,7 +7,7 @@ const ipc = require('electron').ipcRenderer;
 // Array of moves
 let moves = new Array("Choose...","Holds", "Move", "Support");
 // Array of units
-let units = new Array("Choose...");
+let supporUnits = new Array("Choose...");
 // Array of locations
 let moveLocations = new Array("Choose...");
 //let secondaryLocations = new Array("Choose...","ADR","AEG","ALB","ANK","APU","ARM","BAL","BAR","BEL","BER","BLA","BOH","BRE","BUD","BUL","BUR","CLY","CON","DEN","EAS","EDI","ENG","FIN","GAL","GAS","GRE","LYO","BOT","HEL","HOL","ION","IRE","IRI","KIE","LVP","LVN","LON","MAR","MAO","MOS","MUN","NAP","NAO","NAF","NTH","NOR","NWG","PAR","PIC","PIE","POR","PRU","ROM","RUH","RUM","SER","SEV","SIL","SKA","SMY","SPA","STP","SWE","SWI","SYR","TRI","TUN","TUS","TYR","TYS","UKR","VEN","VIE","WAL","WAR","WES","YOR");
@@ -48,28 +48,21 @@ ipc.on('message', (event, message) => {
 
         $.getJSON("map.json", function(json) {
             var adjs = json[code]["adjacencies"];
-
-            //console.log(Object.keys(json));
-
-            // Can only convoy if Fleet on SEA
-            if (forceType === "F" && json[code]["type"] === "SEA")
-            {
-                moves.push("Convoy");
-            }
+            var supportable = false;
 
             // All units except for this one
             for (var user in players)
             {
                 for (var terr in players[user].territories)
                 {
-                    var terrType = json[terr]["type"];
+                    var terrType = players[user].territories[terr].forceType;
                     if (terr !== code)
                     {
                         if (forceType === "F")
                         {
                             // Find common adjacencies
                             var adjs2 = json[terr]["adjacencies"];
-                            adjs2.push(terr);
+                            adjs2.push(terr); // Can support this terr as well
 
                             var commonAdjs = new Array();
 
@@ -109,7 +102,8 @@ ipc.on('message', (event, message) => {
 
                                 if (movable)
                                 {
-                                    units.push(players[user].territories[terr].forceType + ' ' + terr);
+                                    supporUnits.push(terrType + ' ' + terr);
+                                    supportable = true;
                                 }
                             }
                         }
@@ -157,12 +151,18 @@ ipc.on('message', (event, message) => {
 
                                 if (movable)
                                 {
-                                    units.push(players[user].territories[terr].forceType + ' ' + terr);
+                                    supporUnits.push(terrType + ' ' + terr);
+                                    supportable = true;
                                 }
                             }
                         }
                     }
                 }
+            }
+
+            if (supportable)
+            {
+                moves.push("Support");
             }
         
             // Move logic
@@ -195,6 +195,7 @@ ipc.on('message', (event, message) => {
                     }
                 }
             }
+            // If army on the coast
             if (json[code]["type"] === "COASTAL" && forceType === "A")
             {
                 var keys = Object.keys(json);
@@ -205,6 +206,11 @@ ipc.on('message', (event, message) => {
                         moveLocations.push(keys[j]);
                     }
                 }
+            }
+            // Can only convoy if Fleet on SEA
+            if (forceType === "F" && json[code]["type"] === "SEA")
+            {
+                moves.push("Convoy");
             }
         });
     })
@@ -225,31 +231,32 @@ function addUnitsToDropdown(move, unitDropdown)
 {
     if (move == "Convoy")
     {
-        for (var i = 0; i < units.length; ++i)
+        for (var i = 0; i < supporUnits.length; ++i)
         {
             // Add only army units (can't convoy fleet)
-            if (units[i].charAt(0) === "A" || units[i] === "Choose...")
+            if (supporUnits[i].charAt(0) === "A" || supporUnits[i] === "Choose...")
             {
                 // Append the element to the end of the Array list
-                unitDropdown[unitDropdown.length] = new Option(units[i], units[i]);
+                unitDropdown[unitDropdown.length] = new Option(supporUnits[i], supporUnits[i]);
             }
         }
     }
     else
     {
         // Otherwise add all units
-        for (var j = 0; j < units.length; ++j)
+        for (var j = 0; j < supporUnits.length; ++j)
         {
             // Append the element to the end of the Array list
-            unitDropdown[unitDropdown.length] = new Option(units[j], units[j]);
+            unitDropdown[unitDropdown.length] = new Option(supporUnits[j], supporUnits[j]);
         }
     }
 
     unitDropdown.options[0].hidden = "true";
 }
 
-function addSecondMovesToDropdown(move, secondMoveDropdown)
+function addSecondMovesToDropdown(unit, move, secondMoveDropdown)
 {
+    var label = document.getElementById("label");
     if (move == "Convoy")
     {
         for (var i = 0; i < moves.length; ++i)
@@ -264,15 +271,30 @@ function addSecondMovesToDropdown(move, secondMoveDropdown)
     }
     else if (move == "Support")
     {
-        for (var i = 0; i < moves.length; ++i)
-        {
-            // Only valid second moves for "Support" is {"Move", "Hold"}
-            if (moves[i] === "Move" || moves[i] === "Holds" || moves[i] === "Choose...")
+        secondMoveDropdown[secondMoveDropdown.length] = new Option(moves[0], moves[0]);
+
+        var thisUnit = label.innerHTML.split(" ");
+        var thatUnit = unit.split(" ");
+
+        var holdSupportable = false;
+
+        $.getJSON("map.json", function(json) {
+            var adjs = json[thisUnit[1]]["adjacencies"];
+
+            for (var i = 0; i < adjs.length; i++)
             {
-                // Append the element to the end of Array list for the second move
-                secondMoveDropdown[secondMoveDropdown.length] = new Option(moves[i], moves[i]);
+                if (adjs[i] === thatUnit[1])
+                {
+                    holdSupportable = true;
+                }
             }
-        }
+            if (holdSupportable)
+            {
+                secondMoveDropdown[secondMoveDropdown.length] = new Option(moves[1], moves[1]);
+            }
+        })
+
+        secondMoveDropdown[secondMoveDropdown.length] = new Option(moves[2], moves[2]);
     }
     else
     {
@@ -310,6 +332,106 @@ function addLocationsToDropdown(move, locationDropdown)
     locationDropdown.options[0].hidden = "true";
 }
 
+function addSupportLocationsToDropdown(unit, locationDropdown)
+{
+    locationDropdown = document.getElementById("locationSelect");
+    var label = document.getElementById("label");
+
+    locationDropdown[locationDropdown.length] = new Option(secondaryLocations[0], secondaryLocations[0]);
+
+    var thisUnit = label.innerHTML.split(" ");
+    var thatUnit = unit.split(" ");
+
+    $.getJSON("map.json", function(json) {
+        var adjs = json[thisUnit[1]]["adjacencies"];
+        var adjs2 = json[thatUnit[1]]["adjacencies"];
+
+        var forceType = thisUnit[0];
+        var terrType = thatUnit[0];
+
+        var commonAdjs = new Array();
+        var commonMovableAdjs = new Array();
+
+        if (forceType === "F")
+        {
+            for (var i = 0; i < adjs.length; i++)
+            {
+                var adj1 = adjs[i];
+
+                for (var j = 0; j < adjs2.length; j++)
+                {
+                    var adj2 = adjs2[j];
+
+                    if (adj1 === adj2)
+                    {
+                        commonAdjs.push(adj1);
+                    }
+                }
+            }
+
+            if (commonAdjs.length > 0)
+            {
+                for (var i = 0; i < commonAdjs.length; i++)
+                {
+                    if (json[commonAdjs[i]]["type"] === "SEA")
+                    {
+                        if (terrType === "F")
+                        {
+                            commonMovableAdjs.push(commonAdjs[i]);
+                        }
+                    }
+                    else if (json[commonAdjs[i]]["type"] === "COASTAL")
+                    {
+                        commonMovableAdjs.push(commonAdjs[i]);
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (var i = 0; i < adjs.length; i++)
+            {
+                var adj1 = adjs[i];
+
+                for (var j = 0; j < adjs2.length; j++)
+                {
+                    var adj2 = adjs2[j];
+
+                    if (adj1 === adj2)
+                    {
+                        commonAdjs.push(adj1);
+                    }
+                }
+            }
+
+            if (commonAdjs.length > 0)
+            {
+                for (var i = 0; i < commonAdjs.length; i++)
+                {
+                    if (json[commonAdjs[i]]["type"] === "INLAND")
+                    {
+                        if (terrType === "A")
+                        {
+                            commonMovableAdjs.push(commonAdjs[i]);
+                        }
+                    }
+                    else if (json[commonAdjs[i]]["type"] === "COASTAL")
+                    {
+                        commonMovableAdjs.push(commonAdjs[i]);
+                    }
+                }
+            }
+        }
+
+        for (var i = 0; i < commonMovableAdjs.length; i++)
+        {
+            locationDropdown[locationDropdown.length] = new Option(commonMovableAdjs[i], commonMovableAdjs[i]);
+        }
+    })
+
+    locationDropdown.options[0].hidden = "true";
+}
+
 function firstMoveChoice(move) {
     var unitDropdown = document.getElementById("unitSelect");
     var secondMoveDropdown = document.getElementById("secondMoveSelect");
@@ -328,41 +450,50 @@ function firstMoveChoice(move) {
     } else if (move === "Convoy"){
         // Show all dropdowns
         unitDropdown.hidden = false;
-        secondMoveDropdown.hidden =  false;
         locationDropdown.hidden = false;
+        secondMoveDropdown.hidden =  false;
     } else if (move === "Support"){
         // Show all dropdowns except for location
         unitDropdown.hidden = false;
-        secondMoveDropdown.hidden =  false;
         locationDropdown.hidden = true;
+        secondMoveDropdown.hidden =  true;
     }
 
     removeOptions(unitDropdown);
-    removeOptions(secondMoveDropdown);
     removeOptions(locationDropdown);
     addUnitsToDropdown(move, unitDropdown);
-    addSecondMovesToDropdown(move, secondMoveDropdown);
     addLocationsToDropdown(move, locationDropdown);
 }
 
 function secondMoveChoice(move)
 {
     var locationDropdown = document.getElementById("locationSelect");
+    var unitDropdown = document.getElementById("unitSelect");
+    removeOptions(locationDropdown);
 
     if (move == "Holds")
     {
         // Hide location dropdown
         locationDropdown.hidden = true;
-        
+        addLocationsToDropdown(locationDropdown);
     } 
     else if (move == "Move")
     {
         // Show location dropdown
         locationDropdown.hidden = false;
+        addSupportLocationsToDropdown(unitDropdown.value, locationDropdown);
     }
+}
 
-    removeOptions(locationDropdown);
-    addLocationsToDropdown(locationDropdown);
+function unitChoice(unit)
+{
+    var secondMoveDropdown = document.getElementById("secondMoveSelect");
+    var firstMoveDropdown = document.getElementById("firstMoveSelect");
+
+    secondMoveDropdown.hidden = false;
+
+    removeOptions(secondMoveDropdown);
+    addSecondMovesToDropdown(unit, firstMoveDropdown.value, secondMoveDropdown);
 }
 
 function makeToast(data)
