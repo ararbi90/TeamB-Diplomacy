@@ -29,9 +29,8 @@ document.getElementById("logOut").addEventListener("click", function () {
 // var urlParams = new URLSearchParams(location.search);
 // let gameID =urlParams.get("gameID");
 // let username = urlParams.get("username");
-var fullGame = null;
-$.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
-    // loop through each player
+function mapsLogic(res) {
+    // This is benson's code from game.html
     fullGame = res;
     players = res.players;
     var clickableRegions = [];
@@ -100,9 +99,8 @@ $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/
         }
     );
 
-}).fail(function (err) {
-    console.log(err);
-})
+}
+
 
 
 function controllerTimer() {
@@ -147,6 +145,7 @@ $("#roundSubmissionForm").submit(function () {
 })
 
 // Add moves
+// Can be removed
 gameRef.child(gameID).child("players").child(username).child("orders_temp").on("value", function (snapshot) {
     $("#orders").empty();
     let orders = new Array();
@@ -265,7 +264,15 @@ function submitOrders(res) {
 
     return submission;
 }
-
+var fullGame = null;
 $("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
+    
+    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
+        // loop through each player
+        mapsLogic(res);
+
+    }).fail(function (err) {
+        console.log(err);
+    })
 })
