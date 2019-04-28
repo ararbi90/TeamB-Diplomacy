@@ -25,6 +25,85 @@ document.getElementById("logOut").addEventListener("click", function () {
 //     - Skaggerak not adjacent to Helgoland Bight.
 //     - Aegean Sea is not adjacent to Black Sea.
 
+// grab data from firebase about the game/game state
+// var urlParams = new URLSearchParams(location.search);
+// let gameID =urlParams.get("gameID");
+// let username = urlParams.get("username");
+var fullGame = null;
+$.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
+    // loop through each player
+    fullGame = res;
+    players = res.players;
+    var clickableRegions = [];
+    $.each(players, function (index, player) {
+        playerName = index;
+        // loop through each supply center the player controls
+        supplyCenters = player.supplyCenters;
+        $.each(supplyCenters, function (index, supplyCenter) {
+            defaultcolors[index] = player.color;
+            hovercolors[index] = player.hoverColor;
+        });
+        // loop through each unit the player controls
+        territories = player.territories;
+        $.each(territories, function (index, territory) {
+            defaultcolors[index] = player.color;
+            hovercolors[index] = player.hoverColor;
+            if (username == playerName) {
+                clickableRegions.push(index);
+            }
+        });
+    });
+
+    var enabledRegions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
+    var currentRegion;
+    // the initial parameters for the map. Change according to this link to change the look of the map, https://www.10bestdesign.com/jqvmap/documentation/
+    jQuery('#vmap').vectorMap({
+        map: 'diplomacy',
+        backgroundColor: '#000000',
+        borderColor: '#000000',
+        borderOpacity: .75,
+        borderWidth: 2,
+        enableZoom: true,
+        showTooltip: true,
+        color: "#C7B8A3",
+        colors: defaultcolors,
+        hoverColors: hovercolors,
+        selectedColors: hovercolors,
+        showLabels: true,
+        pins: { "ADR": "\u003cimg src=\"..\\..\\images\\supply-center.png\" /\u003e" },
+        pinMode: 'content',
+        onRegionClick: function (event, code, region) {
+            // Check if this is an Enabled Region
+            if (clickableRegions.indexOf(code) === -1) {
+                // Not an Enabled Region
+                event.preventDefault();
+            }
+        },
+        onRegionOver: function (event, code, region) {
+            // Check if this is an Enabled Region
+            if (enabledRegions.indexOf(code) === -1) {
+                // Not an Enabled Region
+                event.preventDefault();
+            }
+        },
+        onLabelShow: function (event, label, code) {
+            if (enabledRegions.indexOf(code) === -1) {
+                event.preventDefault();
+            }
+        }
+    });
+    jQuery('#vmap').bind('resize.jqvmap',
+        function (event, width, height) {
+            // sizeMap();
+            console.log("Width: " + width + " HEIGHT: " + height);
+            console.log("event: " + event.type);
+        }
+    );
+
+}).fail(function (err) {
+    console.log(err);
+})
+
 
 function controllerTimer() {
     let t = $("#timer").html();
@@ -51,8 +130,8 @@ function controllerTimer() {
 }
 
 $("#roundSubmissionForm").submit(function () {
-    
-    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", {gameId: gameID}, function(res) {
+
+    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
         var submission = submitOrders(res);
         console.log(submission);
         $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res) {
@@ -92,112 +171,97 @@ gameRef.child(gameID).child("players").child(username).child("orders_temp").on("
 function submitOrders(res) {
     var submission = {};
     let orders = new Array();
-        if (res.players[username].orders_temp != undefined)
-        {
-            var keys = Object.keys(res.players[username].orders_temp);
-            let orders = new Array();
-            for (var i = 0; i < keys.length; i++)
-            {
-                orders.push(res.players[username].orders_temp[keys[i]].order);
+    if (res.players[username].orders_temp != undefined) {
+        var keys = Object.keys(res.players[username].orders_temp);
+        let orders = new Array();
+        for (var i = 0; i < keys.length; i++) {
+            orders.push(res.players[username].orders_temp[keys[i]].order);
+        }
+    }
+
+    userTerrs = res.players[username].territories;
+
+    let terrs = new Array();
+    for (var t in userTerrs) {
+        terrs.push([res.players[username].territories[t].forceType, t]);
+    }
+
+    for (var i = 0; i < terrs.length; i++) {
+        var key = terrs[i][0] + '_' + terrs[i][1];
+        var data = terrs[i][0] + ' ' + terrs[i][1];
+
+        var inOrders = false
+
+        for (var j = 0; j < orders.length; j++) {
+            if (orders[j].slice(0, 5) === data) {
+                inOrders = true;
             }
         }
 
-        userTerrs = res.players[username].territories;
+        if (!inOrders) {
+            // Submit hold order
+            var order = data + "-HOLDS";
 
-        let terrs = new Array();
-        for (var t in userTerrs)
-        {
-            terrs.push([res.players[username].territories[t].forceType, t]);
+            orders.push(order);
+
+            var ref = gameRef.child(gameID).child("players").child(username).child("orders_temp");
+
+            ref.child(key).set({
+                order: order
+            });
         }
+    }
 
-        for (var i = 0; i < terrs.length; i++)
-        {
-            var key = terrs[i][0] + '_' + terrs[i][1];
-            var data = terrs[i][0] + ' ' + terrs[i][1];
+    submission.username = username;
+    submission.gameId = gameID;
+    submission.orders = [];
 
-            var inOrders = false
+    for (var i = 0; i < orders.length; i++) {
+        var o = orders[i];
+        var data = o.split(" ");
 
-            for (var j = 0; j < orders.length; j++)
-            {
-                if (orders[j].slice(0, 5) === data)
-                {
-                    inOrders = true;
-                }
+        var order = {};
+
+        if (data.length === 2) {
+            order.UnitType = data[0];
+
+            data2 = data[1].split("-");
+
+            order.CurrentZone = data2[0];
+
+            if (data2[1].length === 3) {
+                order.MoveType = "M";
+                order.MoveZone = data2[1];
             }
-
-            if (!inOrders)
-            {
-                // Submit hold order
-                var order = data + "-HOLDS";
-
-                orders.push(order);
-
-                var ref = gameRef.child(gameID).child("players").child(username).child("orders_temp");
-
-                ref.child(key).set({
-                    order: order
-                });
+            else {
+                order.MoveType = "H";
             }
         }
+        else {
+            order.UnitType = data[0];
+            order.CurrentZone = data[1];
+            order.MoveType = data[2];
 
-        submission.username = username;
-        submission.gameId = gameID;
-        submission.orders = [];
+            data2 = data[4].split("-");
 
-        for (var i = 0; i < orders.length; i++)
-        {
-            var o = orders[i];
-            var data = o.split(" ");
-
-            var order = {};
-
-            if (data.length === 2)
-            {
-                order.UnitType = data[0];
-
-                data2 = data[1].split("-");
-
-                order.CurrentZone = data2[0];
-
-                if (data2[1].length === 3)
-                {
-                    order.MoveType = "M";
-                    order.MoveZone = data2[1];
-                }
-                else
-                {
-                    order.MoveType = "H";
-                }
-            }
-            else
-            {
-                order.UnitType = data[0];
-                order.CurrentZone = data[1];
-                order.MoveType = data[2];
-
-                data2 = data[4].split("-");
-
-                if (data2[1].length === 3)
-                {
-                    if (data[2] === "C")
-                    {
-                        order.InitialConvoyZone = data2[0];
-                        order.FinalConvoyZone = data2[1];
-                    }
-                    else
-                    {
-                        order.InitialSupportZone = data2[0];
-                        order.FinalSupportZone = data2[1];
-                    }
+            if (data2[1].length === 3) {
+                if (data[2] === "C") {
+                    order.InitialConvoyZone = data2[0];
+                    order.FinalConvoyZone = data2[1];
                 }
                 else {
                     order.InitialSupportZone = data2[0];
-                    order.FinalSupportZone = data2[0];
+                    order.FinalSupportZone = data2[1];
                 }
             }
-
-            submission.orders.push(order);
+            else {
+                order.InitialSupportZone = data2[0];
+                order.FinalSupportZone = data2[0];
+            }
         }
+
+        submission.orders.push(order);
+    }
 
     return submission;
 }

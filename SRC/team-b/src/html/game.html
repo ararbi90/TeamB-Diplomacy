@@ -177,87 +177,87 @@
 
       <!-- Initial confiuration for the map-->
       <script>
-        jQuery(document).ready(function () {
-            // grab data from firebase about the game/game state
-            var urlParams = new URLSearchParams(location.search);
-            let gameID =urlParams.get("gameID");
-            let username = urlParams.get("username");
-            var fullGame = null;
-            $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", {gameId: gameID}, function(res){
-                // loop through each player
-                fullGame = res;
-                players = res.players;
-                var clickableRegions = [];
-                $.each(players, function(index,player) {
-                    playerName = index;
-                    // loop through each supply center the player controls
-                    supplyCenters = player.supplyCenters;
-                    $.each(supplyCenters, function(index,supplyCenter) {
-                        defaultcolors[index] = player.color;
-                        hovercolors[index] =player.hoverColor;
-                    });
-                    // loop through each unit the player controls
-                    territories = player.territories;
-                    $.each(territories, function(index,territory){
-                        defaultcolors[index] = player.color;
-                        hovercolors[index] = player.hoverColor;
-                        if(username == playerName){
-                            clickableRegions.push(index);
-                        }
-                    });
-                });
+        // jQuery(document).ready(function () {
+        //     // // grab data from firebase about the game/game state
+        //     // var urlParams = new URLSearchParams(location.search);
+        //     // let gameID =urlParams.get("gameID");
+        //     // let username = urlParams.get("username");
+        //     // var fullGame = null;
+        //     // $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", {gameId: gameID}, function(res){
+        //     //     // loop through each player
+        //     //     fullGame = res;
+        //     //     players = res.players;
+        //     //     var clickableRegions = [];
+        //     //     $.each(players, function(index,player) {
+        //     //         playerName = index;
+        //     //         // loop through each supply center the player controls
+        //     //         supplyCenters = player.supplyCenters;
+        //     //         $.each(supplyCenters, function(index,supplyCenter) {
+        //     //             defaultcolors[index] = player.color;
+        //     //             hovercolors[index] =player.hoverColor;
+        //     //         });
+        //     //         // loop through each unit the player controls
+        //     //         territories = player.territories;
+        //     //         $.each(territories, function(index,territory){
+        //     //             defaultcolors[index] = player.color;
+        //     //             hovercolors[index] = player.hoverColor;
+        //     //             if(username == playerName){
+        //     //                 clickableRegions.push(index);
+        //     //             }
+        //     //         });
+        //     //     });
                 
-                var enabledRegions = ["ADR","AEG","BAL","BAR","BLA","EAS","ENG","BOT","GOL","HEL","ION","IRI","MID","NAT","NTH","NRG","SKA","TYN","WES","CLY","EDI","LVP","YOR","WAL","LON","PIC","BRE","PAR","BUR","GAS","MAR","PIE","VEN","TUS","ROM","APU","NAP","TYR","BOH","VIE","GAL","BUD","TRI","CON","ANK","ARM","SMY","SYR","FIN","STP","LVN","MOS","WAR","UKR","SEV","RUH","KIE","BER","PRU","MUN","SIL","NWY","SWE","DEN","HOL","BEL","POR","SPA","NAF","TUN","RUM","SER","BUL","ALB","GRE"];
-                var currentRegion;
-                // the initial parameters for the map. Change according to this link to change the look of the map, https://www.10bestdesign.com/jqvmap/documentation/
-                jQuery('#vmap').vectorMap({
-                    map: 'diplomacy',
-                    backgroundColor: '#000000',
-                    borderColor: '#000000',
-                    borderOpacity: .75,
-                    borderWidth: 2,
-                    enableZoom: true,
-                    showTooltip: true,
-                    color: "#C7B8A3",
-                    colors: defaultcolors,
-                    hoverColors: hovercolors,
-                    selectedColors: hovercolors,
-                    showLabels: true,
-                    pins: { "ADR" : "\u003cimg src=\"..\\..\\images\\supply-center.png\" /\u003e"},
-                    pinMode: 'content',
-                    onRegionClick: function(event, code, region){
-                        // Check if this is an Enabled Region
-                        if(clickableRegions.indexOf(code) === -1){
-                            // Not an Enabled Region
-                            event.preventDefault();
-                        }
-                    },
-                    onRegionOver: function(event, code, region){
-                        // Check if this is an Enabled Region
-                        if(enabledRegions.indexOf(code) === -1){
-                            // Not an Enabled Region
-                            event.preventDefault();
-                        } 
-                    },
-                    onLabelShow: function(event, label, code){
-                        if(enabledRegions.indexOf(code) === -1){
-                            event.preventDefault();
-                        }
-                    }
-                });
-                jQuery('#vmap').bind('resize.jqvmap',
-                    function(event, width, height)
-                    {
-                        // sizeMap();
-                        console.log("Width: " + width + " HEIGHT: " + height);
-                        console.log("event: " + event.type);
-                    }
-                    );
+        //     //     var enabledRegions = ["ADR","AEG","BAL","BAR","BLA","EAS","ENG","BOT","GOL","HEL","ION","IRI","MID","NAT","NTH","NRG","SKA","TYN","WES","CLY","EDI","LVP","YOR","WAL","LON","PIC","BRE","PAR","BUR","GAS","MAR","PIE","VEN","TUS","ROM","APU","NAP","TYR","BOH","VIE","GAL","BUD","TRI","CON","ANK","ARM","SMY","SYR","FIN","STP","LVN","MOS","WAR","UKR","SEV","RUH","KIE","BER","PRU","MUN","SIL","NWY","SWE","DEN","HOL","BEL","POR","SPA","NAF","TUN","RUM","SER","BUL","ALB","GRE"];
+        //     //     var currentRegion;
+        //     //     // the initial parameters for the map. Change according to this link to change the look of the map, https://www.10bestdesign.com/jqvmap/documentation/
+        //     //     jQuery('#vmap').vectorMap({
+        //     //         map: 'diplomacy',
+        //     //         backgroundColor: '#000000',
+        //     //         borderColor: '#000000',
+        //     //         borderOpacity: .75,
+        //     //         borderWidth: 2,
+        //     //         enableZoom: true,
+        //     //         showTooltip: true,
+        //     //         color: "#C7B8A3",
+        //     //         colors: defaultcolors,
+        //     //         hoverColors: hovercolors,
+        //     //         selectedColors: hovercolors,
+        //     //         showLabels: true,
+        //     //         pins: { "ADR" : "\u003cimg src=\"..\\..\\images\\supply-center.png\" /\u003e"},
+        //     //         pinMode: 'content',
+        //     //         onRegionClick: function(event, code, region){
+        //     //             // Check if this is an Enabled Region
+        //     //             if(clickableRegions.indexOf(code) === -1){
+        //     //                 // Not an Enabled Region
+        //     //                 event.preventDefault();
+        //     //             }
+        //     //         },
+        //     //         onRegionOver: function(event, code, region){
+        //     //             // Check if this is an Enabled Region
+        //     //             if(enabledRegions.indexOf(code) === -1){
+        //     //                 // Not an Enabled Region
+        //     //                 event.preventDefault();
+        //     //             } 
+        //     //         },
+        //     //         onLabelShow: function(event, label, code){
+        //     //             if(enabledRegions.indexOf(code) === -1){
+        //     //                 event.preventDefault();
+        //     //             }
+        //     //         }
+        //     //     });
+        //     //     jQuery('#vmap').bind('resize.jqvmap',
+        //     //         function(event, width, height)
+        //     //         {
+        //     //             // sizeMap();
+        //     //             console.log("Width: " + width + " HEIGHT: " + height);
+        //     //             console.log("event: " + event.type);
+        //     //         }
+        //     //         );
 
-            }).fail(function(err){
-                console.log(err);
-            })
-        });   
+        //     // }).fail(function(err){
+        //     //     console.log(err);
+        //     // })
+        // });   
       </script>
       <script src="../js/firebase.js"></script>
       <script src="../js/systemFirebase.js"></script>
