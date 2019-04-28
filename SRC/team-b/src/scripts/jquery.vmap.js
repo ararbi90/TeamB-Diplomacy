@@ -222,10 +222,10 @@ var JQVMap = function (params) {
         //document.getElementById('armySelected').innerHTML = code;
         if (!windowOpen)
         {
-          let win = new BrowserWindow({ width: 800, height: 400 });
-          //let win = new BrowserWindow({ width: 500, height: 300 });
+          //let win = new BrowserWindow({ width: 800, height: 800 });
+          let win = new BrowserWindow({ width: 500, height: 300 });
           win.loadURL(`file://${__dirname}/../html/build.html`);
-          win.webContents.openDevTools();
+          //win.webContents.openDevTools();
           win.webContents.on('did-finish-load', () => {
             win.webContents.send('message', code + ' ' + username + ' ' + gameID);
           });
