@@ -159,6 +159,17 @@ function createAndAssignTerrtories(players) {
         Germany: { BER: { forceType: "A" }, MUN: { forceType: "A" }, KIE: { forceType: "F" } },
         Italy: { ROM: { forceType: "A" }, VEN: { forceType: "A" }, NAP: { forceType: "F" } }
     }
+    // **FOR TESTING:
+
+    // let powers = {
+    //     Austria: { VIE: { forceType: "A" }, BUD: { forceType: "A" }, TRI: { forceType: "F" } },
+    //     England: { NTH: { forceType: "F" }, EDI: { forceType: "A" }, LON: { forceType: "A" }, ENG: { forceType: "F" } },
+    //     France: { BRE: { forceType: "A" }, MAR: { forceType: "A" }, MID: { forceType: "F" } },
+    //     Russia: { MOS: { forceType: "A" }, SEV: { forceType: "F" }, WAR: { forceType: "A" }, STP: { forceType: "F" } },
+    //     Turkey: { ANK: { forceType: "F" }, CON: { forceType: "A" }, SMY: { forceType: "A" } },
+    //     Germany: { BER: { forceType: "A" }, MUN: { forceType: "A" }, KIE: { forceType: "F" } },
+    //     Italy: { ROM: { forceType: "A" }, VEN: { forceType: "A" }, NAP: { forceType: "F" } }
+    // }
 
     let order = getArrayOfRandomNumbers(players.length);
 

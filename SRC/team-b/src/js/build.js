@@ -5,7 +5,7 @@ $ = require('jquery');
 const ipc = require('electron').ipcRenderer;
 
 // Array of moves
-let moves = new Array("Choose...","Holds", "Move", "Support");
+let moves = new Array("Choose...","Holds", "Move");
 // Array of units
 let supporUnits = new Array("Choose...");
 // Array of locations
@@ -50,7 +50,7 @@ ipc.on('message', (event, message) => {
             var adjs = json[code]["adjacencies"];
             var supportable = false;
 
-            // All units except for this one
+            // All terrs except for this one
             for (var user in players)
             {
                 for (var terr in players[user].territories)
@@ -160,12 +160,20 @@ ipc.on('message', (event, message) => {
                 }
             }
 
+            // Move logic
             if (supportable)
             {
+                firstMoveDropdown[firstMoveDropdown.length] = new Option("Support", "Support");
                 moves.push("Support");
             }
+
+            // Can only convoy if Fleet on SEA
+            if (forceType === "F" && json[code]["type"] === "SEA")
+            {
+                firstMoveDropdown[firstMoveDropdown.length] = new Option("Convoy", "Convoy");
+                moves.push("Convoy");
+            }
         
-            // Move logic
             for (var i = 0; i < adjs.length; i++)
             {
                 a = adjs[i];
@@ -179,38 +187,105 @@ ipc.on('message', (event, message) => {
                 }
                 else
                 {
-                    if (json[code]["type"] === "COASTAL")
+                    if (json[a]["type"] === "INLAND" || json[a]["type"] === "COASTAL")
                     {
-                        if (json[a]["type"] === "INLAND")
-                        {
-                            moveLocations.push(a);
-                        }
-                    }
-                    else
-                    {
-                        if (json[a]["type"] === "INLAND" || json[a]["type"] === "COASTAL")
-                        {
-                            moveLocations.push(a);
-                        }
+                        moveLocations.push(a);
                     }
                 }
             }
             // If army on the coast
             if (json[code]["type"] === "COASTAL" && forceType === "A")
             {
-                var keys = Object.keys(json);
-                for (var j = 0; j < keys.length; j++)
+                // All terrs except for this one
+                var convoyTerrs = new Array();
+                var terrsToCheck = new Array(code);
+                while (true)
                 {
-                    if (json[keys[j]]["type"] === "COASTAL")
+                    var newTerrsToCheck = new Array();
+                    for (var i = 0; i < terrsToCheck.length; i++)
                     {
-                        moveLocations.push(keys[j]);
+                        c = terrsToCheck[i];
+                        adjs = json[c]["adjacencies"];
+
+                        for (var user in players)
+                        {
+                            for (var terr in players[user].territories)
+                            {
+                                var unitType = players[user].territories[terr].forceType;
+                                var terrType = json[terr]["type"];
+                                if (terr !== c)
+                                {
+                                    if (terrType === "SEA" && unitType === "F") // All fleets on water
+                                    {
+                                        var inAdjs = false;
+
+                                        for (var j = 0; j < adjs.length; j++)
+                                        {
+                                            if (adjs[j] === terr)
+                                            {
+                                                inAdjs = true;
+                                            }
+                                        }
+
+                                        if (inAdjs) // Fleet can convoy the army
+                                        {
+                                            var adjs2 = json[terr]["adjacencies"];
+
+                                            var inArray = false;
+
+                                            for (var j = 0; j < convoyTerrs.length; j++)
+                                            {
+                                                if (convoyTerrs[j] === terr)
+                                                {
+                                                    inArray = true;
+                                                }
+                                            }
+
+                                            if (!inArray)
+                                            {
+                                                convoyTerrs.push(terr);
+                                                newTerrsToCheck.push(terr);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    terrsToCheck = newTerrsToCheck;
+                    if (terrsToCheck.length === 0)
+                    {
+                        break;
                     }
                 }
-            }
-            // Can only convoy if Fleet on SEA
-            if (forceType === "F" && json[code]["type"] === "SEA")
-            {
-                moves.push("Convoy");
+                for (var i = 0; i < convoyTerrs.length; i++)
+                {
+                    var convoyAdjs = json[convoyTerrs[i]]["adjacencies"];
+
+                    for (var j = 0; j < convoyAdjs.length; j++)
+                    {
+                        if (convoyAdjs[j] !== code)
+                        {
+                            if (json[convoyAdjs[j]][["type"]] === "COASTAL")
+                            {
+                                var inMoves = false;
+
+                                for (var k = 0; k < moveLocations.length; k++)
+                                {
+                                    if (moveLocations[k] === convoyAdjs[j])
+                                    {
+                                        inMoves = true;
+                                    }
+                                }
+
+                                if (!inMoves)
+                                {
+                                    moveLocations.push(convoyAdjs[j]);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
     })
@@ -489,8 +564,10 @@ function unitChoice(unit)
 {
     var secondMoveDropdown = document.getElementById("secondMoveSelect");
     var firstMoveDropdown = document.getElementById("firstMoveSelect");
+    var locationDropdown = document.getElementById("locationSelect");
 
     secondMoveDropdown.hidden = false;
+    locationDropdown.hidden = true;
 
     removeOptions(secondMoveDropdown);
     addSecondMovesToDropdown(unit, firstMoveDropdown.value, secondMoveDropdown);
