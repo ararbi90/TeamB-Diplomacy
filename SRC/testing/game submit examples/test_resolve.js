@@ -9,8 +9,19 @@ let rule_diagram_orders = JSON.parse(raw);
 
 
 // do a for each over rule_diagram_orders to test all diagrams
-let diagram_1_order = rule_diagram_orders[0];
-console.log("diagram 1 object" + JSON.stringify(diagram_1_order,null,1));
+let diagram_1 = rule_diagram_orders[0];
+//console.log("diagram 1 object" + JSON.stringify(diagram_1,null,1));
+//keys [ 'submissions', 'actual', 'predicted', 'diagram' ]
+console.log(diagram_1.diagram)
+console.log(diagram_1.actual)
+console.log(diagram_1.predicted)
+console.log(diagram_1.submissions)
+
+
+
+
+
+
 
 
 
