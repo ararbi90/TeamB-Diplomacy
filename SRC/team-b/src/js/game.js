@@ -1,5 +1,7 @@
 $ = require("jquery");
 
+console.log("refresh");
+
 var urlParams = new URLSearchParams(location.search);
 let username = urlParams.get("username");
 
@@ -101,8 +103,6 @@ function mapsLogic(res) {
 
 }
 
-
-
 function controllerTimer() {
     let t = $("#timer").html();
     let hr = parseInt(t.substring(0, t.indexOf(":")));
@@ -127,25 +127,7 @@ function controllerTimer() {
     }
 }
 
-$("#roundSubmissionForm").submit(function () {
-
-    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
-        var submission = submitOrders(res);
-        console.log(submission);
-        $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res) {
-            console.log(res);
-        }).fail(function (err) {
-            console.log(err);
-        })
-    }).fail(function (err) {
-        console.log(err);
-    })
-
-    return false;
-})
-
 // Add moves
-// Can be removed
 gameRef.child(gameID).child("players").child(username).child("orders_temp").on("value", function (snapshot) {
     $("#orders").empty();
     let orders = new Array();
@@ -166,38 +148,47 @@ gameRef.child(gameID).child("players").child(username).child("orders_temp").on("
     }
 })
 
-//var orders = [];
-function submitOrders(res) {
+function submitOrders(res)
+{
     var submission = {};
+
+    // Get all orders in orders_temp
     let orders = new Array();
-    if (res.players[username].orders_temp != undefined) {
+    if (res.players[username].orders_temp != undefined)
+    {
         var keys = Object.keys(res.players[username].orders_temp);
-        let orders = new Array();
-        for (var i = 0; i < keys.length; i++) {
-            orders.push(res.players[username].orders_temp[keys[i]].order);
+        for (var i = 0; i < keys.length; i++)
+        {
+            var order = res.players[username].orders_temp[keys[i]].order;
+            orders.push(order);
         }
     }
 
     userTerrs = res.players[username].territories;
 
     let terrs = new Array();
-    for (var t in userTerrs) {
+    for (var t in userTerrs)
+    {
         terrs.push([res.players[username].territories[t].forceType, t]);
     }
 
-    for (var i = 0; i < terrs.length; i++) {
+    for (var i = 0; i < terrs.length; i++)
+    {
         var key = terrs[i][0] + '_' + terrs[i][1];
         var data = terrs[i][0] + ' ' + terrs[i][1];
 
         var inOrders = false
 
-        for (var j = 0; j < orders.length; j++) {
-            if (orders[j].slice(0, 5) === data) {
+        for (var j = 0; j < orders.length; j++)
+        {
+            if (orders[j].slice(0, 5) === data)
+            {
                 inOrders = true;
             }
         }
 
-        if (!inOrders) {
+        if (!inOrders)
+        {
             // Submit hold order
             var order = data + "-HOLDS";
 
@@ -211,49 +202,59 @@ function submitOrders(res) {
         }
     }
 
+    // Build submission
     submission.username = username;
     submission.gameId = gameID;
     submission.orders = [];
 
-    for (var i = 0; i < orders.length; i++) {
+    for (var i = 0; i < orders.length; i++)
+    {
         var o = orders[i];
         var data = o.split(" ");
 
         var order = {};
 
-        if (data.length === 2) {
+        if (data.length === 2)
+        {
             order.UnitType = data[0];
 
             data2 = data[1].split("-");
 
             order.CurrentZone = data2[0];
 
-            if (data2[1].length === 3) {
+            if (data2[1].length === 3)
+            {
                 order.MoveType = "M";
                 order.MoveZone = data2[1];
             }
-            else {
+            else
+            {
                 order.MoveType = "H";
             }
         }
-        else {
+        else
+        {
             order.UnitType = data[0];
             order.CurrentZone = data[1];
             order.MoveType = data[2];
 
             data2 = data[4].split("-");
 
-            if (data2[1].length === 3) {
-                if (data[2] === "C") {
+            if (data2[1].length === 3)
+            {
+                if (data[2] === "C")
+                {
                     order.InitialConvoyZone = data2[0];
                     order.FinalConvoyZone = data2[1];
                 }
-                else {
+                else
+                {
                     order.InitialSupportZone = data2[0];
                     order.FinalSupportZone = data2[1];
                 }
             }
-            else {
+            else
+            {
                 order.InitialSupportZone = data2[0];
                 order.FinalSupportZone = data2[0];
             }
@@ -267,10 +268,27 @@ function submitOrders(res) {
 var fullGame = null;
 $("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
-    
+
     $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
         // loop through each player
         mapsLogic(res);
+        //addOrders(res['players']['orders_temp'])
+        $("#roundSubmissionForm").submit(function () {
+
+            $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2) {
+                var submission = submitOrders(res2);
+                //console.log(submission);
+                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res3) {
+                    console.log(res3);
+                }).fail(function (err) {
+                    console.log(err);
+                })
+            }).fail(function (err) {
+                console.log(err);
+            })
+        
+            return false;
+        })
 
     }).fail(function (err) {
         console.log(err);
