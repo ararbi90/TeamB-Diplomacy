@@ -1,9 +1,10 @@
 $ = require("jquery");
 
-console.log("refresh");
+console.log("phase2");
 
 var urlParams = new URLSearchParams(location.search);
 let username = urlParams.get("username");
+let gameID = urlParams.get("gameID");
 
 document.getElementById("navbarDropdownMenuLink").innerHTML = username;
 
@@ -19,13 +20,6 @@ document.getElementById("logOut").addEventListener("click", function () {
     let link = "../html/index.html";
     window.location.href = link;
 });
-
-// LOGIC NOTES:
-//     - Denmark is adjacent to Kiel.
-//     - Sweden adjacent to Denmark not Helgoland Bight.
-//     - Baltic Sea not adjacent to Helgoland Bight.
-//     - Skaggerak not adjacent to Helgoland Bight.
-//     - Aegean Sea is not adjacent to Black Sea.
 
 // grab data from firebase about the game/game state
 // var urlParams = new URLSearchParams(location.search);
@@ -102,13 +96,6 @@ function mapsLogic(res) {
 
 }
 
-function nextPhase()
-{
-    let link = "phase2.html?gameID=" + gameID + "&username=" + username;
-
-    window.location.href = link;
-}
-
 function controllerTimer() {
     let t = $("#timer").html();
     let hr = parseInt(t.substring(0, t.indexOf(":")));
@@ -133,26 +120,13 @@ function controllerTimer() {
     }
 }
 
-// Add moves
-gameRef.child(gameID).child("players").child(username).child("orders_temp").on("value", function (snapshot) {
-    $("#orders").empty();
-    let orders = new Array();
-    snapshot.forEach(element => {
-        orders.push(element.val().order);
-    });
+function nextPhase()
+{
+    let link = "phase3.html?gameID=" + gameID + "&username=" + username;
 
-    if (orders.length > 0) {
-        document.getElementById("no_orders").hidden = true;
-        document.getElementById("orders").hidden = false;
-    }
+    window.location.href = link;
+}
 
-    for (var i = 0; i < orders.length; i++) {
-        var node = document.createElement("LI");
-        var textnode = document.createTextNode(orders[i]);
-        node.appendChild(textnode);
-        document.getElementById("orders").appendChild(node);
-    }
-})
 
 function submitOrders(res)
 {
@@ -271,6 +245,7 @@ function submitOrders(res)
 
     return submission;
 }
+
 $("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
 

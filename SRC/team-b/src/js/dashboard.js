@@ -113,7 +113,12 @@ function autoDecline(gameId) {
 function reJoinGame(event) {
     // Need to make updates here
     // Create on value promises
+
+    // **TESTING:
+
     let link = "game.html?gameID=" + this.id + "&username=" + username;
+    //let link = "phase2.html?gameID=" + this.id + "&username=" + username;
+    //let link = "phase3.html?gameID=" + this.id + "&username=" + username;
     console.log(link);
     window.location.href = link;
 
