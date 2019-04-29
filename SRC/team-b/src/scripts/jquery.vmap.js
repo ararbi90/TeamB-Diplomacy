@@ -223,9 +223,14 @@ var JQVMap = function (params) {
         if (!windowOpen)
         {
           //let win = new BrowserWindow({ width: 800, height: 800 });
-          let win = new BrowserWindow({ width: 500, height: 300 });
+          let win = new BrowserWindow({ width: 500, height: 400 });
+
           win.loadURL(`file://${__dirname}/../html/build.html`);
+          //win.loadURL(`file://${__dirname}/../html/retreatDisband.html`);
+          //win.loadURL(`file://${__dirname}/../html/addRemove.html`);
+
           //win.webContents.openDevTools();
+
           win.webContents.on('did-finish-load', () => {
             win.webContents.send('message', code + ' ' + username + ' ' + gameID);
           });
