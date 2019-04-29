@@ -25,9 +25,29 @@ let diagram_1 = rule_diagram_orders[0];
 // console.log(diagram_1.submissions)
 
 
+/* Cases we need to do:
+1) No one moves just a hold
+2) No one is in a terriotry and a players wants to move there
+3) Two or more Players are trying to move into a territory and it is vacant
+4) Two or more players are are moving to a location without someone present and one has greater support than the rest
+5) Two or more Players are trying to move to a location without support and an other player is there
+6) Two or more Players are trying to move to a location with one player having greatest support and an other player is there
 
+*/
 
+// {
+//     UnitType: 'A',
+//     CurrentZone: 'LON',
+//     MoveType: 'H',
+// }, {
 
+    // {
+    //     UnitType: 'A',
+    //     CurrentZone: 'MOS',
+    //     MoveType: 'S',
+    //     InitalSupportZone: 'LVP',
+    //     FinalSupportZone: 'LON'
+    // }
 
 let submissions = [{
     username: "a",
@@ -35,7 +55,10 @@ let submissions = [{
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
-        MoveType: 'H',
+        MoveType: 'S',
+        InitalSupportZone: 'RUM',
+        FinalSupportZone: 'MOS'
+
     }, {
         UnitType: 'A',
         CurrentZone: 'RUM',
@@ -51,7 +74,7 @@ let submissions = [{
         UnitType: 'A',
         CurrentZone: 'LVP',
         MoveType: 'M',
-        MoveZone: 'LON'
+        MoveZone: 'MOS'
     }
     ]
 },
@@ -61,10 +84,8 @@ let submissions = [{
     orders: [
         {
             UnitType: 'A',
-            CurrentZone: 'MOS',
-            MoveType: 'S',
-            InitalSupportZone: 'LVP',
-            FinalSupportZone: 'LON'
+            CurrentZone: 'SYR',
+            MoveType: 'H'
         }]
 }]
 console.log(submissions);
