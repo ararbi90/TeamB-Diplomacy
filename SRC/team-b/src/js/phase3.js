@@ -127,6 +127,55 @@ function nextPhase()
     window.location.href = link;
 }
 
+// Edit status
+gameRef.child(gameID).child("players").child(username).child("territories").on("value", function (snapshot)
+{
+    $("#num_units").empty();
+
+    let terrs = new Array();
+    snapshot.forEach(element => {
+        terrs.push(element.val().forceType);
+    });
+
+    gameRef.child(gameID).child("players").child(username).child("supplyCenters").on("value", function (snapshot)
+    {
+        let supps = new Array();
+        snapshot.forEach(element => {
+            supps.push(element.val().forceType);
+        });
+
+        var terrLength = terrs.length;
+        var suppLength = supps.length;
+
+        console.log(terrLength);
+        console.log(suppLength);
+
+        var unitsToAdd = suppLength - terrLength;
+
+        if (unitsToAdd < 0)
+        {
+            unitsToAdd = 0;
+        }
+
+        var unitsToRemove = terrLength - suppLength;
+
+        if (unitsToRemove < 0)
+        {
+            unitsToRemove = 0;
+        }
+
+        var node = document.createElement("LI");
+        var textnode = document.createTextNode("Number Of Units To Add: " + unitsToAdd);
+        node.appendChild(textnode);
+        document.getElementById("num_units").appendChild(node);
+
+        var node = document.createElement("LI");
+        var textnode = document.createTextNode("Number Of Units To Remove: " + unitsToRemove);
+        node.appendChild(textnode);
+        document.getElementById("num_units").appendChild(node);
+    })
+})
+
 
 function submitOrders(res)
 {
