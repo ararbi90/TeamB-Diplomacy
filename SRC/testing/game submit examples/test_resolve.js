@@ -35,31 +35,54 @@ let diagram_1 = rule_diagram_orders[0];
 
 */
 
-// {
-//     UnitType: 'A',
-//     CurrentZone: 'LON',
-//     MoveType: 'H',
-// }, {
 
-    // {
-    //     UnitType: 'A',
-    //     CurrentZone: 'MOS',
-    //     MoveType: 'S',
-    //     InitalSupportZone: 'LVP',
-    //     FinalSupportZone: 'LON'
-    // }
-
-let submissions = [{
+// everything is a hold workds
+let holds = [{
     username: "a",
     gameId: "-LdW62ST8C_INLjZJ1gQ",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
-        MoveType: 'S',
-        InitalSupportZone: 'RUM',
-        FinalSupportZone: 'MOS'
+        MoveType: 'H'
 
     }, {
+        UnitType: 'A',
+        CurrentZone: 'RUM',
+        MoveType: 'H',
+    }
+    ]
+},
+{
+    username: "b",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'LVP',
+        MoveType: 'H'
+    }
+    ]
+},
+{
+    username: "c",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [
+        {
+            UnitType: 'A',
+            CurrentZone: 'MOS',
+            MoveType: 'H'
+        }]
+}]
+
+
+
+//  one or more players are attepting to a vacat location --------------------works 
+// a moves to mos  fail    correct  --but shows up twice in filed list
+// b moves to mos  fail    correct  --but shows up twice in filed list
+// c holds in syr  pass
+let submission1 = [{
+    username: "a",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [{
         UnitType: 'A',
         CurrentZone: 'RUM',
         MoveType: 'M',
@@ -84,19 +107,230 @@ let submissions = [{
     orders: [
         {
             UnitType: 'A',
-            CurrentZone: 'MOS',
-            MoveType: 'H'
-        },
-        {
-            UnitType: 'A',
             CurrentZone: 'SYR',
-            MoveType: 'S',
-            InitalSupportZone: 'MOS',
-            FinalSupportZone: 'MOS'
-    
+            MoveType: 'H'
         }]
 }]
-console.log(submissions);
+
+// CASE 2
+// a hold in lon
+// a mov syr to eas
+// b mov lvp to mos
+// c hold in adr
+let submissions2 = [{
+    username: "a",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'LON',
+        MoveType: 'H'
+
+    }, {
+        UnitType: 'A',
+        CurrentZone: 'SYR',
+        MoveType: 'M',
+        MoveZone: 'EAS'
+    }
+    ]
+},
+{
+    username: "b",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'LVP',
+        MoveType: 'M',
+        MoveZone: 'MOS'
+    }
+    ]
+},
+{
+    username: "c",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [
+        {
+            UnitType: 'A',
+            CurrentZone: 'ADR',
+            MoveType: 'H'
+        }]
+}]
+
+// CASE 4 WORKS
+let submissions3 = [{
+    username: "a",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'LON',
+        MoveType: 'H'
+
+    }
+    ]
+},
+{
+    username: "b",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'LVP',
+        MoveType: 'M',
+        MoveZone: 'LON'
+    },{
+        UnitType: 'A',
+        CurrentZone: 'ION',
+        MoveType: 'S',
+        InitialSupportZone: 'LVP',
+        FinalSupportZone: 'LON'
+    }
+    ]
+},
+{
+    username: "c",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [
+        {
+            UnitType: 'A',
+            CurrentZone: 'ADR',
+            MoveType: 'M',
+            MoveZone: 'LON'
+        }]
+}]
+
+
+// CASE 5
+// P1 is holding with no support
+// P2 and P3 are moving into where P1 is holding
+// P1's hold should be accepted,
+// P2/P3 should fail
+let submissions4 = [{
+    username: "a",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'LON',
+        MoveType: 'H'
+
+    }
+    ]
+},
+{
+    username: "b",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'LVP',
+        MoveType: 'M',
+        MoveZone: 'LON'
+    }
+    ]
+},
+{
+    username: "c",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [
+        {
+            UnitType: 'A',
+            CurrentZone: 'ADR',
+            MoveType: 'M',
+            MoveZone: 'LON'
+        }]
+}]
+
+
+
+// CASE 6
+// a's hold fails
+// c's move fails
+// b's move and support is accepted
+let submissions5 = [{
+    username: "a",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'LON',
+        MoveType: 'H'
+
+    }
+    ]
+},
+{
+    username: "b",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'LVP',
+        MoveType: 'M',
+        MoveZone: 'LON'
+    },
+    {
+        UnitType: 'A',
+        CurrentZone: 'BOT',
+        MoveType: 'S',
+        InitialSupportZone:"LVP",
+        FinalSupportZone:"LON"
+    }
+    ]
+},
+{
+    username: "c",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [
+        {
+            UnitType: 'A',
+            CurrentZone: 'ADR',
+            MoveType: 'M',
+            MoveZone: 'LON'
+        }]
+}]
+
+
+
+// CASE 6
+// a's hold fails
+// c's move fails
+// b's move and support is accepted
+let submissions6 = [{
+    username: "a",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'LON',
+        MoveType: 'H'
+
+    }
+    ]
+},
+{
+    username: "b",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'LVP',
+        MoveType: 'M',
+        MoveZone: 'LON'
+    },
+    {
+        UnitType: 'A',
+        CurrentZone: 'BOT',
+        MoveType: 'S',
+        InitialSupportZone:"LVP",
+        FinalSupportZone:"LON"
+    }
+    ]
+},
+{
+    username: "c",
+    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    orders: [
+        {
+            UnitType: 'A',
+            CurrentZone: 'ADR',
+            MoveType: 'M',
+            MoveZone: 'LON'
+        }]
+}]
+
+
 
 function gamePoster(submission) {
 
@@ -112,10 +346,13 @@ function gamePoster(submission) {
 //         console.log(err);
 //     })
 var counter = 100;
-submissions.forEach(function (submission) {
+
+// holds.forEach(function (submission) {
+//     setTimeout(gamePoster, counter, submission);
+//     counter += counter;
+// })
+
+submission1.forEach(function (submission) {
     setTimeout(gamePoster, counter, submission);
     counter += counter;
 })
-
-
-
