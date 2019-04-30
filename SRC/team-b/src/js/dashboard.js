@@ -153,8 +153,8 @@ function createAndAssignTerrtories(players) {
         3: [["Austria", "England", "Germany"], ["Turkey", "France"], ["Russia", "Italy"]],
         2: [["Austria", "Turkey", "Germany"], ["England", "France", "Russia"]],
     }
-    let colors = ["#327AB5","#82cacf","#71b188","#db878b","#d5cd6c","#c8c8c8","#969696"];
-    let hoverColors = ["#6fa1cb", "#a7d9dd", "#9bc8ab", "#e5abad", "#e1dc98", "#d8d8d8", "#b5b5b5"];
+    let colors = ["#327AB5","#82cacf","#71b188","#6c74d5","#d5cd6c","#db878b","#969696"];
+    let hoverColors = ["#6fa1cb", "#a7d9dd", "#9bc8ab", "#989de1", "#e1dc98", "#e5abad", "#b5b5b5"];
     let powers = {
         Austria: { VIE: { forceType: "A" }, BUD: { forceType: "A" }, TRI: { forceType: "F" } },
         England: { LON: { forceType: "F" }, EDI: { forceType: "F" }, LVP: { forceType: "A" } },
@@ -197,12 +197,12 @@ function createAndAssignTerrtories(players) {
             terr.forEach(function (pow) {
                 temp = Object.assign(temp, powers[pow]);
             });
-            playerTerritories[players[i]] = { territories: temp, color: tempColor, hoverColors: tempHoverColor, country: result, supplyCenters: temp};
+            playerTerritories[players[i]] = { territories: temp, color: tempColor, hoverColor: tempHoverColor, country: result, supplyCenters: temp};
         }
         else {
             // Austria = Austria-Hungary
             let temp = terr === "Austria" ? "Austria-Hungary" : terr;
-            playerTerritories[players[i]] = { territories: powers[terr], color: tempColor, hoverColors: tempHoverColor, country: temp, supplyCenters: powers[terr]};
+            playerTerritories[players[i]] = { territories: powers[terr], color: tempColor, hoverColor: tempHoverColor, country: temp, supplyCenters: powers[terr]};
         }
 
     }
