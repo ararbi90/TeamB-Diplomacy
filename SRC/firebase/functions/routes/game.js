@@ -182,13 +182,13 @@ function addPowers(allOrder) {
     // Update powers for each location: by subtracting cutoff support and failed moves.
     allOrder.forEach(function (currentOrder) {
         // Find all attackers for a currentOrder
-        if (currentOrder.attackSupportPowerList != null) {
+        if (currentOrder.attackSupportPowerList !== undefined) {
             Object.keys(currentOrder.attackSupportPowerList).forEach(function (currentAttackSupport) {
                 allOrder.forEach(function (potentialAttackerSupporter) {
                     // Find the support of the attacker
                     if (currentAttackSupport == potentialAttackerSupporter.CurrentZone) {
                         // Check if the support is cut
-                        if (potentialAttackerSupporter.attackPowerList != null) {
+                        if (potentialAttackerSupporter.attackPowerList !== undefined) {
                             // The support is cut so we delete it from the support list
                             delete currentOrder.attackSupportPowerList[potentialAttackerSupporter.CurrentZone];
                         }
@@ -199,7 +199,7 @@ function addPowers(allOrder) {
 
 
         // Find all supporters for the current order
-        if (currentOrder.supportPowerList != null) {
+        if (currentOrder.supportPowerList !== undefined) {
 
             // Get all the locations where support is comming from
             Object.keys(currentOrder.supportPowerList).forEach(function (currentSupport) {
@@ -209,7 +209,7 @@ function addPowers(allOrder) {
 
                     // If the order found is a supporter to the currentOrder then check if it is cut off
                     if (currentSupport == potentialSupporter.CurrentZone) {
-                        if (potentialSupporter.attackPowerList != null) {
+                        if (potentialSupporter.attackPowerList !== undefined) {
                             // If Cuttoff remove from list
                             delete currentOrder.supportPowerList[potentialSupporter.CurrentZone];
                         }
@@ -259,7 +259,7 @@ function addPowers(allOrder) {
                 strongHold = filter;
                 if (filter.MoveType === 'H') {
                     // Testing disbanding
-                    if (filter.attackSupportPowerList != undefined) {
+                    if (filter.attackSupportPowerList !== undefined) {
                         Object.keys(filter.attackSupportPowerList).forEach(supportSource => {
                             console.log(supportSource)
                             console.log(supportSource.supportLocation)
@@ -275,7 +275,7 @@ function addPowers(allOrder) {
 
                 } else if (filter.MoveType === 'S') {
                     // Testing Disbanding
-                    if (filter.attackSupportPowerList != undefined) {
+                    if (filter.attackSupportPowerList !== undefined) {
                         Object.keys(filter.attackSupportPowerList).forEach(supportSource => {
                             console.log(supportSource)
                             console.log(supportSource.supportLocation)
@@ -319,7 +319,7 @@ function addPowers(allOrder) {
                 let standOff = false;
                 currentLocationAttackers.forEach(att => {
 
-                    if (att.supportPowerList != undefined) {
+                    if (att.supportPowerList !== undefined) {
                         if (att.supportPowerList.length > highestAttackStrength) {
 
                             standOff = true;
@@ -375,7 +375,7 @@ function addPowers(allOrder) {
                 // Find strongest attacker or test standoff
                 currentLocationAttackers.forEach(att => {
 
-                    if (att.supportPowerList != undefined) {
+                    if (att.supportPowerList !== undefined) {
                         if (att.supportPowerList.length > highestAttackStrength) {
 
                             standOff = true;
@@ -411,7 +411,7 @@ function addPowers(allOrder) {
                 if (standOff) {
                     // There is a standoff between people moving in
                     currentLocation.forEach(finder => {
-                        if (filter.CurrentZone != strongHold.CurrentZone) {
+                        if (filter.CurrentZone !== strongHold.CurrentZone) {
                             finder.resolved = true;
                             finder.outcome = 'failed';
                         }
@@ -424,7 +424,7 @@ function addPowers(allOrder) {
                     
                     // No stand off have to check who can move in or if the holder can stay there
                     console.log(strongHold)
-                    if (strongHold.supportPowerList != undefined) {
+                    if (strongHold.supportPowerList !== undefined) {
                         
                         if (highestAttackStrength > Object.keys(strongHold.supportPowerList).length + 1) {
                             // Attack worked and disband location
@@ -462,7 +462,7 @@ function addPowers(allOrder) {
     }
 
     console.log("region hash table");
-    console.log(JSON.stringify(regionHashTable, null, 2));
+    console.log(JSON.stringify(regionHashTable, undefined, 2));
 
 
     // Loop over all orders: add all powers for each location in the regions hash table
