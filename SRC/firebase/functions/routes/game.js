@@ -186,7 +186,7 @@ function addPowers(allOrder) {
             Object.keys(currentOrder.attackSupportPowerList).forEach(function (currentAttackSupport) {
                 allOrder.forEach(function (potentialAttackerSupporter) {
                     // Find the support of the attacker
-                    if (currentAttackSupport == potentialAttackerSupporter.CurrentZone) {
+                    if (currentAttackSupport === potentialAttackerSupporter.CurrentZone) {
                         // Check if the support is cut
                         if (potentialAttackerSupporter.attackPowerList !== undefined) {
                             // The support is cut so we delete it from the support list
@@ -208,7 +208,7 @@ function addPowers(allOrder) {
                 allOrder.forEach(function (potentialSupporter) {
 
                     // If the order found is a supporter to the currentOrder then check if it is cut off
-                    if (currentSupport == potentialSupporter.CurrentZone) {
+                    if (currentSupport === potentialSupporter.CurrentZone) {
                         if (potentialSupporter.attackPowerList !== undefined) {
                             // If Cuttoff remove from list
                             delete currentOrder.supportPowerList[potentialSupporter.CurrentZone];
