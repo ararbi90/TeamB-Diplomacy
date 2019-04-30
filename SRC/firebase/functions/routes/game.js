@@ -12,7 +12,7 @@ var router = express.Router();
 
 
 let moveKeys = ["UnitType", "CurrentZone", "MoveType", "MoveZone"];
-let supportKeys = ["UnitType", "CurrentZone", "MoveType", "InitalSupportZone", "FinalSupportZone"];
+let supportKeys = ["UnitType", "CurrentZone", "MoveType", "InitialSupportZone", "FinalSupportZone"];
 let convoryKeys = ["UnitType", "CurrentZone", "MoveType", "InitalConvoyZone", "FinalConvoyZone"];
 
 
@@ -132,7 +132,7 @@ function addPowers(allOrder) {
                     // Find all supporters for the attacker (nextOrder) and make a list called attackSupportPowerList
                     allOrder.forEach(function (supporter) {
 
-                        if (supporter.InitalSupportZone === nextOrder.CurrentZone && supporter.FinalSupportZone === nextOrder.MoveZone) {
+                        if (supporter.InitialSupportZone === nextOrder.CurrentZone && supporter.FinalSupportZone === nextOrder.MoveZone) {
                             if (currentOrder.attackSupportPowerList === undefined) {
                                 currentOrder.attackSupportPowerList = {};
                                 currentOrder.attackSupportPowerList[supporter.CurrentZone] = { power: -1, supportLocation: nextOrder.CurrentZone };
@@ -147,16 +147,18 @@ function addPowers(allOrder) {
 
             // Find all supporters for the currentOrder and make a list supportPowerList
             if (nextOrder.MoveType === "S") {
+                console.log("=================================================")
+                console.log(nextOrder)
 
-
-                if (nextOrder.InitalSupportZone === currentOrder.CurrentZone && nextOrder.FinalSupportZone === currentOrder.MoveZone
-                    || nextOrder.InitalSupportZone === currentOrder.CurrentZone && nextOrder.FinalSupportZone === currentOrder.CurrentZone) {
+                if (nextOrder.InitialSupportZone === currentOrder.CurrentZone && nextOrder.FinalSupportZone === currentOrder.MoveZone
+                    || nextOrder.InitialSupportZone === currentOrder.CurrentZone && nextOrder.FinalSupportZone === currentOrder.CurrentZone) {
                     if (currentOrder.support === undefined) {
                         currentOrder.supportPowerList = {};
                         currentOrder.supportPowerList[nextOrder.CurrentZone] = 1;
                     } else {
                         currentOrder.supportPowerList[nextOrder.CurrentZone] = 1;
                     }
+
                 }
             }
 
@@ -320,7 +322,7 @@ function addPowers(allOrder) {
                 currentLocationAttackers.forEach(att => {
 
                     if (att.supportPowerList !== undefined) {
-                        if (att.supportPowerList.length > highestAttackStrength) {
+                        if (Object.keys(att.supportPowerList).length === highestAttackStrength) {
 
                             standOff = true;
                         }
@@ -376,7 +378,7 @@ function addPowers(allOrder) {
                 currentLocationAttackers.forEach(att => {
 
                     if (att.supportPowerList !== undefined) {
-                        if (att.supportPowerList.length > highestAttackStrength) {
+                        if (Object.keys(att.supportPowerList).length === highestAttackStrength) {
 
                             standOff = true;
                         }
@@ -391,8 +393,14 @@ function addPowers(allOrder) {
                 if (standOff || highestAttacker === undefined) {
                     currentLocation.forEach(finder => {
 
-                        finder.resolved = true;
-                        finder.outcome = 'failed';
+                        if (finder.CurrentZone !== strongHold.CurrentZone) {
+                            finder.resolved = true;
+                            finder.outcome = 'failed';
+                        }
+                        if (finder.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H') {
+                            finder.resolved = true;
+                            finder.outcome = 'success';
+                        }
 
                     })
                 } else {
@@ -411,21 +419,21 @@ function addPowers(allOrder) {
                 if (standOff) {
                     // There is a standoff between people moving in
                     currentLocation.forEach(finder => {
-                        if (filter.CurrentZone !== strongHold.CurrentZone) {
+                        if (finder.CurrentZone !== strongHold.CurrentZone) {
                             finder.resolved = true;
                             finder.outcome = 'failed';
                         }
-                        if (filter.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H'){
+                        if (finder.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H') {
                             finder.resolved = true;
                             finder.outcome = 'success';
                         }
                     })
                 } else {
-                    
+
                     // No stand off have to check who can move in or if the holder can stay there
                     console.log(strongHold)
                     if (strongHold.supportPowerList !== undefined) {
-                        
+
                         if (highestAttackStrength > Object.keys(strongHold.supportPowerList).length + 1) {
                             // Attack worked and disband location
                             currentLocation.forEach(finder => {
@@ -441,7 +449,7 @@ function addPowers(allOrder) {
                         } else {
                             // Attack did not work
                             currentLocation.forEach(finder => {
-                                
+
                                 if (strongHold.CurrentZone === finder.CurrentZone && strongHold.MoveType === 'H') {
                                     console.log("Worked Standoff =========================================")
                                     finder.resolved = true;
