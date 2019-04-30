@@ -78,9 +78,7 @@ ColorScale.prototype = {
 var JQVMap = function (params) {
   params = params || {};
   var map = this;
-  console.log(params.map);
   var mapData = JQVMap.maps[params.map];
-  console.log(mapData);
   var mapPins;
 
   if( !mapData){
@@ -212,36 +210,36 @@ var JQVMap = function (params) {
     }
 
     if ( !mapClickEvent.isDefaultPrevented()) {
-      if (map.isSelected(code)) {
-        map.deselect(code, targetPath);
-        console.log("deselect");
-      } else {
-        map.select(code, targetPath);
-        console.log("select");
-        //testLogic(code); 
-        //document.getElementById('armySelected').innerHTML = code;
-        if (!windowOpen)
-        {
-          //let win = new BrowserWindow({ width: 800, height: 800 });
-          let win = new BrowserWindow({ width: 500, height: 400 });
+        if (!windowOpen) {
+            if (map.isSelected(code)) {
+                map.deselect(code, targetPath);
+            } else {
+                map.select(code, targetPath);
+            
+                //testLogic(code); 
+                //document.getElementById('armySelected').innerHTML = code;
 
-          win.loadURL(`file://${__dirname}/../html/build.html`);
-          //win.loadURL(`file://${__dirname}/../html/retreatDisband.html`);
-          //win.loadURL(`file://${__dirname}/../html/addRemove.html`);
+                //let win = new BrowserWindow({ width: 800, height: 800 });
+                let win = new BrowserWindow({ width: 500, height: 400 });
 
-          //win.webContents.openDevTools();
+                win.loadURL(`file://${__dirname}/../html/build.html`);
+                //win.loadURL(`file://${__dirname}/../html/retreatDisband.html`);
+                //win.loadURL(`file://${__dirname}/../html/addRemove.html`);
 
-          win.webContents.on('did-finish-load', () => {
-            win.webContents.send('message', code + ' ' + username + ' ' + gameID);
-          });
-          windowOpen = true;
+                //win.webContents.openDevTools();
 
-          win.on('closed', () => {
-            win = null;
-            windowOpen = false;
-          })
+                win.webContents.on('did-finish-load', () => {
+                    win.webContents.send('message', code + ' ' + username + ' ' + gameID);
+                });
+                windowOpen = true;
+
+                win.on('closed', () => {
+                    map.deselect(code, targetPath);
+                    win = null;
+                    windowOpen = false;
+                })
+            }
         }
-      }
     }
   });
 
@@ -615,7 +613,6 @@ JQVMap.prototype.deselect = function (cc, path) {
     jQuery(this.container).trigger('regionDeselect.jqvmap', [cc]);
     path.currentFillColor = path.getOriginalFill();
     path.setFill(path.getOriginalFill());
-    console.log("here");
   } else {
     for (var key in this.countries) {
       this.selectedRegions.splice(this.selectedRegions.indexOf(key), 1);
@@ -902,7 +899,6 @@ JQVMap.prototype.positionPins = function(){
 };
 
 JQVMap.prototype.removePin = function(cc) {
-  cc = cc.toLowerCase();
   jQuery('#' + this.getPinId(cc)).remove();
 };
 
@@ -958,7 +954,6 @@ JQVMap.prototype.select = function (cc, path) {
 };
 
 JQVMap.prototype.selectIndex = function (cc) {
-  cc = cc.toLowerCase();
   for (var i = 0; i < this.selectedRegions.length; i++) {
     if (cc === this.selectedRegions[i]) {
       return i;
@@ -1174,7 +1169,6 @@ VectorCanvas.prototype.createPath = function (config) {
     node.appendChild(fill);
 
     node.setFill = function (color) {
-      console.log("here5");
       this.getElementsByTagName('fill')[0].color = color;
       if (this.getAttribute('original') === null) {
         this.setAttribute('original', color);
