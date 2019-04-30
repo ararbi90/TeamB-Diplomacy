@@ -352,7 +352,7 @@ var counter = 100;
 //     counter += counter;
 // })
 
-submission1.forEach(function (submission) {
+submissions5.forEach(function (submission) {
     setTimeout(gamePoster, counter, submission);
     counter += counter;
 })
