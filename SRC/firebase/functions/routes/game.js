@@ -96,7 +96,50 @@ function resolveGame(game) {
             })
         })
     })
-    addPowers(allOrder);
+    let passFails = getPassFails(allOrder);
+
+    let pass = {}
+    let retreat = {}
+    let fail = {}
+
+
+    Object.keys(passFails).forEach(locationKey => {
+        // Test retreat
+
+        let currentLocation = passFails[locationKey];
+        currentLocation.forEach(current => {
+            if (current.MoveType === 'H' && current.outcome === 'fail') {
+                retreat[current.CurrentZone] = current;
+                fail[current.CurrentZone] = current;
+            } else if ((current.MoveType === 'M' || current.MoveType === 'S') && current.outcome === 'fail') {
+                fail[current.CurrentZone] = current;
+                currentLocation.forEach(winner =>{
+                    if(winner.outcome === "success"){
+                        retreat[current.CurrentZone] = current;
+                    }
+                })
+
+            }
+
+            if ((current.MoveType === 'H' || current.MoveType === 'S' || current.MoveType === 'H') && current.outcome === 'success') {
+                pass[current.CurrentZone] - current;
+            } 
+
+            if (current.MoveType === 'S'  && current.outcome === 'na') {
+                pass[current.CurrentZone] = current;
+            } 
+        })
+
+    })
+
+    console.log("Pass ------------------------------")
+    console.log(pass)
+    console.log("Fail --------------------------------")
+    console.log(fail)
+    console.log("Retreat --------------------------------")
+    console.log(retreat)
+
+
 }
 
 /* Resolution logic
@@ -109,7 +152,7 @@ function resolveGame(game) {
  
 */
 var regions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
-function addPowers(allOrder) {
+function getPassFails(allOrder) {
 
     // Loop over all the orders and assign a currentOrder
     allOrder.forEach(function (currentOrder) {
@@ -345,7 +388,7 @@ function addPowers(allOrder) {
                     currentLocation.forEach(finder => {
                         if (highestAttacker.CurrentZone === finder.CurrentZone) {
                             finder.resolved = true;
-                            finder.outcome = 'sucess';
+                            finder.outcome = 'success';
                         } else {
                             finder.resolved = true;
                             finder.outcome = 'failed';
@@ -407,7 +450,7 @@ function addPowers(allOrder) {
                     currentLocation.forEach(finder => {
                         if (highestAttacker.CurrentZone === finder.CurrentZone) {
                             finder.resolved = true;
-                            finder.outcome = 'sucess';
+                            finder.outcome = 'success';
                         } else {
                             finder.resolved = true;
                             finder.outcome = 'failed';
@@ -439,7 +482,7 @@ function addPowers(allOrder) {
                             currentLocation.forEach(finder => {
                                 if (highestAttacker.CurrentZone === finder.CurrentZone) {
                                     finder.resolved = true;
-                                    finder.outcome = 'sucess';
+                                    finder.outcome = 'success';
                                 } else {
                                     finder.resolved = true;
                                     finder.outcome = 'failed';
@@ -453,7 +496,7 @@ function addPowers(allOrder) {
                                 if (strongHold.CurrentZone === finder.CurrentZone && strongHold.MoveType === 'H') {
                                     console.log("Worked Standoff =========================================")
                                     finder.resolved = true;
-                                    finder.outcome = 'sucess';
+                                    finder.outcome = 'success';
                                 } else {
                                     finder.resolved = true;
                                     finder.outcome = 'failed';
@@ -470,7 +513,8 @@ function addPowers(allOrder) {
     }
 
     console.log("region hash table");
-    console.log(JSON.stringify(regionHashTable, undefined, 2));
+    //console.log(JSON.stringify(regionHashTable, undefined, 2));
+    return regionHashTable;
 
 
     // Loop over all orders: add all powers for each location in the regions hash table
