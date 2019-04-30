@@ -828,6 +828,25 @@ JQVMap.prototype.makeDraggable = function () {
   });
 };
 
+// vincent code
+var supplyCountries = ["ANK", "BEL", "BER", "BRE", "BUD", "BUL", "CON", "DEN", "EDI", "GRE", "HOL", "KIE", "LVP", 
+"LON", "MAR", "MOS", "MUN", "NAP", "NOR", "PAR", "POR", "ROM",
+"RUM", "SER", "SEV", "SMY", "SPA", "STP", "SWE", "TRI", "TUN", "VEN",
+"VIE", "WAR", ];
+// places supply centers in addition to the label for countries with a supply center
+JQVMap.prototype.placeSupplyCenters = function(pinIndex, index, pin) {
+  var map = this;
+  map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin label" style="position:absolute;">' + pin + '</div>');
+  map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin ' + index + '" ' + 'style="position:absolute">' + 
+  '<img src="..\\..\\images\\supply-center.png">' + '</div>');
+};
+
+// places only labels for countries that don't have a supply center
+JQVMap.prototype.placePin = function(pinIndex, index, pin) {
+  var map = this;
+  map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin" style="position:absolute">' + pin + '</div>');
+};
+
 JQVMap.prototype.placePins = function(pins, pinMode){
   var map = this;
 
@@ -846,7 +865,11 @@ JQVMap.prototype.placePins = function(pins, pinMode){
       if($pin.length > 0){
         $pin.remove();
       }
-      map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin" style="position:absolute">' + pin + '</div>');
+      if (!supplyCountries.includes(index))
+          map.placePin(pinIndex, index, pin);
+      else {
+          map.placeSupplyCenters(pinIndex, index, pin);
+      }
     });
   } else { //treat pin as id of an html content
     jQuery.each(pins, function(index, pin){
@@ -895,10 +918,20 @@ JQVMap.prototype.positionPins = function(){
     var middleX = (bbox.x * scale) + ((bbox.width * scale) / 2);
     var middleY = (bbox.y * scale) + ((bbox.height * scale) / 2);
 
-    pinObj.css({
-      left: coords.left + middleX - (pinObj.width() / 2),
-      top: coords.top + middleY - (pinObj.height() / 2)
-    });
+    // checks if a country has a supply center or not. If it does have a supply center then shift the label
+    // pin a bit from the label pin so they do not overlap.
+    if (pinObj.hasClass("label")) {
+      //console.log(coords.left + middleX - (pinObj.width() / 2));
+      pinObj.css({
+        left: coords.left + middleX - (pinObj.width() / 2),
+        top: coords.top + middleY - (pinObj.height() / 2)
+      });
+    } else {
+      pinObj.css({
+        left: coords.left + middleX - (pinObj.width() / 2),
+        top: coords.top + middleY - (pinObj.height() / 2)
+      });
+    }
   });
 };
 
@@ -908,6 +941,7 @@ JQVMap.prototype.removePin = function(cc) {
 };
 
 JQVMap.prototype.removePins = function(){
+  console.log("test");
   this.container.find('.jqvmap-pin').remove();
 };
 
