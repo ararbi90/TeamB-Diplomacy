@@ -22,7 +22,7 @@ router.post('/Info', function (req, res, next) {
     //console.log(gameId);
     admin.database().ref('/games').child(gameId).once('value').then(snapshot => {
         data = {};
-        console.log(snapshot.child("players").val());
+        // console.log(snapshot.child("players").val());
         res.send(snapshot.val());
         return true;
     }).catch(error => { console.log(error) });
@@ -60,7 +60,7 @@ router.post('/submitOrder', function (req, res, next) {
                         resolveGame(updated, gameId);
                         res.send("Resolve");
                     } else {
-                        console.log("Submitted");
+                        // console.log("Submitted");
                         res.send("Submitted");
                     }
                     //console.log("Done");
@@ -84,7 +84,7 @@ function resolveGame(game, gameId) {
     let orders = game.order;
     let allOrder = [];
     Object.keys(orders).forEach(function (seasonYear, index) {
-        console.log(seasonYear)
+        // console.log(seasonYear)
         Object.keys(orders[seasonYear]).forEach(function (playerId, index) {
             Object.keys(orders[seasonYear][playerId]).forEach(function (eachOrder) {
                 let temp = orders[seasonYear][playerId][eachOrder];
@@ -138,12 +138,12 @@ function resolveGame(game, gameId) {
     failUsers = {}
     retreatUsers = {}
 
-    console.log("pass")
-    console.log(pass);
-    console.log("fail")
-    console.log(fail);
-    console.log("retreat")
-    console.log(retreat);
+    // console.log("pass")
+    // console.log(pass);
+    // console.log("fail")
+    // console.log(fail);
+    // console.log("retreat")
+    // console.log(retreat);
 
     // Create for db
     Object.keys(pass).forEach(location =>{
@@ -170,7 +170,7 @@ function resolveGame(game, gameId) {
     roundResultKey = game.turn_status.current_season + game.turn_status.current_year;
     roundResult = {pass : passUsers, fail: failUsers, retreat: retreatUsers};
     
-    console.log(JSON.stringify(roundResult, undefined, 2));
+    //console.log(JSON.stringify(roundResult, undefined, 2));
     
     phaseChage(game, roundResult, roundResultKey, gameId);
     
@@ -184,18 +184,18 @@ function resolveGame(game, gameId) {
 
 function phaseChage(game, roundResult, roundResultKey, gameId){
 
-    console.log(Object.keys(roundResult['retreat']).length);
+    // console.log(Object.keys(roundResult['retreat']).length);
     if(Object.keys(roundResult['retreat']).length === 0){
         // No retreats all go to orders or build for the next round
-        console.log("IN order spring ----------------------------------------------")
-        console.log(game.turn_status.current_phase);
+        // console.log("IN order spring ----------------------------------------------")
+        // console.log(game.turn_status.current_phase);
         if(game.turn_status.current_phase === "order"){
             // In order move to build or change season
             if(game.turn_status.current_season === "spring"){
                 // No build go to fall
                 // update players for all the success moves
-                console.log("IN order spring ----------------------------------------------")
-                updatePlayers(game, gameId, roundResult, roundResultKey);
+                // console.log("IN order spring ----------------------------------------------")
+                //updatePlayers(game, gameId, roundResult, roundResultKey);
 
             }else{
                 // Build
@@ -204,10 +204,21 @@ function phaseChage(game, roundResult, roundResultKey, gameId){
     }
     else{
         //There are are retreats go to retreats
-        admin.database().ref('/games').child(gameId).child('resolution').child(roundResultKey).set(roundResult,
+        admin.database().ref('/games').child(gameId).child('resolution').child(roundResultKey).set(
+            roundResult,
             function(err){
-                admin.database().ref('/games').child(gameId).child('turn_status').child('current_phase').set('retreat')
-            });
+                if(err){
+                    console.log("Error");
+                }
+                admin.database().ref('/games').child(gameId).child('turn_status').child('current_phase').set(
+                    'retreat', function(err){
+                        if(err){
+                            console.log("Error");
+                        }
+
+                }).catch(error => { console.log(error) });
+                
+            }).catch(error => { console.log(error) });
     }
 
 }
@@ -228,12 +239,12 @@ function updatePlayers(game, gameId, roundResult, roundResultKey){
         })
 
     }
-    console.log(gameId);
-    console.log('players')
-    console.log(allPlayers);
-    admin.database().ref('/games').child(gameId).child('players').set(allPlayers, function(err){
-        console.log("Works!!")
-    });
+    // console.log(gameId);
+    // console.log('players')
+    // console.log(allPlayers);
+    // admin.database().ref('/games').child(gameId).child('players').set(allPlayers, function(err){
+    //     console.log("Works!!")
+    // });
 
 }
 
