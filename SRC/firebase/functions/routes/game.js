@@ -155,19 +155,43 @@ function resolveGame(game) {
     roundResult[roundResultKey] = {pass : passUsers, fail: failUsers, retreat: retreatUsers};
     
     console.log(JSON.stringify(roundResult, undefined, 2));
-    if(Object.keys(retreatUsers).length === 0){
-        // No retreats all go to orders or build for the next round
-    }
-    else{
-        //There are
-    }
-
+    
+    phaseChage(game, roundResult, roundResultKey);
     
 
 
 
 
 }
+
+
+
+function phaseChage(game, roundResult, roundResultKey){
+
+
+    if(Object.keys(roundResult[roundResultKey]['retreat']).length === 0){
+        // No retreats all go to orders or build for the next round
+        if(game.turn_status.current_phase === 'order'){
+            // In order move to build or change season
+            if(game.turn_status.current_season === 'spring'){
+                // No build go to fall
+                // update players for all the success moves
+
+            }else{
+                // Build
+            }
+        }
+    }
+    else{
+        //There are are retreats go to retreats
+    }
+
+}
+
+function updatePlayersDB(){
+    
+}
+
 
 /* Resolution logic
     i) Loop all players orders of current season and put them in one list
