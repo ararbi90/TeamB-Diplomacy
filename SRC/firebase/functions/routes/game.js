@@ -57,7 +57,7 @@ router.post('/submitOrder', function (req, res, next) {
                         //console.log("Resolve");
                         //Call resolve function
                         console.log("Going into resolve");
-                        resolveGame(updated);
+                        resolveGame(updated, gameId);
                         res.send("Resolve");
                     } else {
                         console.log("Submitted");
@@ -79,7 +79,7 @@ router.post('/submitOrder', function (req, res, next) {
     return true;
 });
 
-function resolveGame(game) {
+function resolveGame(game, gameId) {
     //console.log(game);
     let orders = game.order;
     let allOrder = [];
@@ -152,11 +152,11 @@ function resolveGame(game) {
 
     roundResult = {}
     roundResultKey = game.turn_status.current_season + game.turn_status.current_year;
-    roundResult[roundResultKey] = {pass : passUsers, fail: failUsers, retreat: retreatUsers};
+    roundResult = {pass : passUsers, fail: failUsers, retreat: retreatUsers};
     
     console.log(JSON.stringify(roundResult, undefined, 2));
     
-    phaseChage(game, roundResult, roundResultKey);
+    phaseChage(game, roundResult, roundResultKey, gameId);
     
 
 
@@ -166,16 +166,20 @@ function resolveGame(game) {
 
 
 
-function phaseChage(game, roundResult, roundResultKey){
+function phaseChage(game, roundResult, roundResultKey, gameId){
 
-
-    if(Object.keys(roundResult[roundResultKey]['retreat']).length === 0){
+    console.log(Object.keys(roundResult['retreat']).length);
+    if(Object.keys(roundResult['retreat']).length === 0){
         // No retreats all go to orders or build for the next round
-        if(game.turn_status.current_phase === 'order'){
+        console.log("IN order spring ----------------------------------------------")
+        console.log(game.turn_status.current_phase);
+        if(game.turn_status.current_phase === "order"){
             // In order move to build or change season
-            if(game.turn_status.current_season === 'spring'){
+            if(game.turn_status.current_season === "spring"){
                 // No build go to fall
                 // update players for all the success moves
+                console.log("IN order spring ----------------------------------------------")
+                updatePlayers(game, gameId, roundResult, roundResultKey);
 
             }else{
                 // Build
@@ -184,13 +188,39 @@ function phaseChage(game, roundResult, roundResultKey){
     }
     else{
         //There are are retreats go to retreats
+        admin.database().ref('/games').child(gameId).child('resolution').child(roundResultKey).set(roundResult,
+            function(err){
+                admin.database().ref('/games').child(gameId).child('turn_status').child('current_phase').set('retreat')
+            });
     }
 
 }
 
-function updatePlayersDB(){
+
+function updatePlayers(game, gameId, roundResult, roundResultKey){
     
+    let allPlayers = game.players;
+    let passedPlayers = Object.keys(roundResult['pass']);
+    let passMoves = roundResult['pass'];
+
+    for(var i = 0; i < passedPlayers.length; i++){
+        let currentPlayerTerritories = allPlayers[passedPlayers[i]].territories;
+        Object.keys(passMoves).forEach(index =>{
+            let temp = currentPlayerTerritories[passMoves[index].CurrentZone];
+            delete currentPlayerTerritories[passMoves[index].CurrentZone];
+            allPlayers[passedPlayers[i]].territories[passMoves[index].CurrentZone] = temp;
+        })
+
+    }
+    console.log(gameId);
+    console.log('players')
+    console.log(allPlayers);
+    admin.database().ref('/games').child(gameId).child('players').set(allPlayers, function(err){
+        console.log("Works!!")
+    });
+
 }
+
 
 
 /* Resolution logic
