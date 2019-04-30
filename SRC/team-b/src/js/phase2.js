@@ -127,6 +127,21 @@ function nextPhase()
     window.location.href = link;
 }
 
+// // Change phase
+// gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
+//     var phase = snapshot.val();
+
+//     if (phase === "order")
+//     {
+//         let link = "game.html?gameID=" + gameID + "&username=" + username;
+//         window.location.href = link;
+//     }
+//     else if (phase === "build")
+//     {
+//         let link = "phase3.html?gameID=" + gameID + "&username=" + username;
+//         window.location.href = link;
+//     }
+// })
 
 function submitOrders(res)
 {
