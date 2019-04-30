@@ -197,7 +197,7 @@ function createAndAssignTerrtories(players) {
             terr.forEach(function (pow) {
                 temp = Object.assign(temp, powers[pow]);
             });
-            playerTerritories[players[i]] = { territories: temp, color: tempColor, country: result, supplyCenters: temp};
+            playerTerritories[players[i]] = { territories: temp, color: tempColor, hoverColors: tempHoverColor, country: result, supplyCenters: temp};
         }
         else {
             // Austria = Austria-Hungary
