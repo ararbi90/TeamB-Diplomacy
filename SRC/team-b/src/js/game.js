@@ -154,6 +154,17 @@ gameRef.child(gameID).child("players").child(username).child("orders_temp").on("
     }
 })
 
+// // Change phase
+// gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
+//     var phase = snapshot.val();
+
+//     if (phase === "retreat")
+//     {
+//         let link = "phase2.html?gameID=" + gameID + "&username=" + username;
+//         window.location.href = link;
+//     }
+// })
+
 function submitOrders(res)
 {
     var submission = {};

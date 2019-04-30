@@ -216,15 +216,28 @@ var JQVMap = function (params) {
             } else {
                 map.select(code, targetPath);
             
-                //testLogic(code); 
                 //document.getElementById('armySelected').innerHTML = code;
 
                 //let win = new BrowserWindow({ width: 800, height: 800 });
                 let win = new BrowserWindow({ width: 500, height: 400 });
 
-                win.loadURL(`file://${__dirname}/../html/build.html`);
-                //win.loadURL(`file://${__dirname}/../html/retreatDisband.html`);
-                //win.loadURL(`file://${__dirname}/../html/addRemove.html`);
+                gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
+                  var phase = snapshot.val();
+                  console.log(phase);
+          
+                  if (phase === "order")
+                  {
+                      win.loadURL(`file://${__dirname}/../html/build.html`);
+                  }
+                  else if (phase === "retreat")
+                  {
+                      win.loadURL(`file://${__dirname}/../html/retreatDisband.html`);
+                  }
+                  else if (phase === "build")
+                  {
+                      win.loadURL(`file://${__dirname}/../html/addRemove.html`);
+                  }
+                })
 
                 //win.webContents.openDevTools();
 

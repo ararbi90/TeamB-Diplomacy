@@ -111,17 +111,27 @@ function autoDecline(gameId) {
 }
 
 function reJoinGame(event) {
-    // Need to make updates here
-    // Create on value promises
+    var gameID = this.id;
 
-    // **TESTING:
+    gameRef.child(this.id).child("turn_status").child("current_phase").on("value", function (snapshot) {
+        var phase = snapshot.val();
 
-    let link = "game.html?gameID=" + this.id + "&username=" + username;
-    //let link = "phase2.html?gameID=" + this.id + "&username=" + username;
-    //let link = "phase3.html?gameID=" + this.id + "&username=" + username;
-    console.log(link);
-    window.location.href = link;
-
+        if (phase === "order")
+        {
+            let link = "game.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
+        }
+        else if (phase === "retreat")
+        {
+            let link = "phase2.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
+        }
+        else if (phase === "build")
+        {
+            let link = "phase3.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
+        }
+    })
 }
 
 
