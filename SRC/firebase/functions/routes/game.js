@@ -117,10 +117,7 @@ function resolveGame(game) {
 
                     if (winner.outcome === "success" && winner.MoveZone === current.CurrentZone) {
                         retreat[current.CurrentZone] = current;
-                        // console.log("REtreat===========================================")
-                        // console.log(current)
-                        // console.log(winner)
-                        // console.log()
+
                     }
                 })
 
@@ -136,18 +133,12 @@ function resolveGame(game) {
         })
 
     })
-    // console.log("All locations -------------------------")
-    // console.log(passFails)
-    // console.log("Pass ------------------------------")
-    // console.log(pass)
-    // console.log("Fail --------------------------------")
-    // console.log(fail)
-    // console.log("Retreat --------------------------------")
-    // console.log(retreat)
 
     passUsers = {}
     failUsers = {}
     retreatUsers = {}
+
+    // Create for db
     Object.keys(pass).forEach(location =>{
         passUsers[pass[location].playerId] = pass[location]
     })
@@ -159,12 +150,21 @@ function resolveGame(game) {
         retreatUsers[retreat[location].playerId] = retreat[location]
     })
 
-    console.log("Pass ------------------------------")
-    console.log(passUsers)
-    console.log("Fail --------------------------------")
-    console.log(failUsers)
-    console.log("Retreat --------------------------------")
-    console.log(retreatUsers)
+    roundResult = {}
+    roundResultKey = game.turn_status.current_season + game.turn_status.current_year;
+    roundResult[roundResultKey] = {pass : passUsers, fail: failUsers, retreat: retreatUsers};
+    
+    console.log(JSON.stringify(roundResult, undefined, 2));
+    if(Object.keys(retreatUsers).length === 0){
+        // No retreats all go to orders or build for the next round
+    }
+    else{
+        //There are
+    }
+
+    
+
+
 
 
 }
