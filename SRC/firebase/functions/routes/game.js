@@ -138,16 +138,32 @@ function resolveGame(game, gameId) {
     failUsers = {}
     retreatUsers = {}
 
+    console.log("pass")
+    console.log(pass);
+    console.log("fail")
+    console.log(fail);
+    console.log("retreat")
+    console.log(retreat);
+
     // Create for db
     Object.keys(pass).forEach(location =>{
-        passUsers[pass[location].playerId] = pass[location]
+        if(passUsers[pass[location].playerId] === undefined){
+            passUsers[pass[location].playerId] = [];
+        }
+        passUsers[pass[location].playerId].push(pass[location]);
     })
     Object.keys(fail).forEach(location =>{
-        failUsers[fail[location].playerId] = fail[location]
+        if(failUsers[fail[location].playerId] === undefined){
+            failUsers[fail[location].playerId] = [];
+        }
+        failUsers[fail[location].playerId].push(fail[location]);
     })
 
-    Object.keys(retreat).forEach(location =>{       
-        retreatUsers[retreat[location].playerId] = retreat[location]
+    Object.keys(retreat).forEach(location =>{
+        if(retreatUsers[retreat[location].playerId] === undefined){
+            retreatUsers[retreat[location].playerId] = [];
+        }       
+        retreatUsers[retreat[location].playerId].push(retreat[location]);
     })
 
     roundResult = {}

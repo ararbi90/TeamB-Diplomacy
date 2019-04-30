@@ -1,4 +1,4 @@
-
+//tue 5/7 2:20-2:40
 const fs = require('fs');
 var jsdom = require("jsdom");
 const { JSDOM } = jsdom;
@@ -36,10 +36,10 @@ let diagram_1 = rule_diagram_orders[0];
 */
 
 
-// everything is a hold workds
+// everything is a hold works
 let holds = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
@@ -54,7 +54,7 @@ let holds = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LVP',
@@ -64,7 +64,7 @@ let holds = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [
         {
             UnitType: 'A',
@@ -76,12 +76,12 @@ let holds = [{
 
 
 //  one or more players are attepting to a vacat location --------------------works 
-// a moves to mos  fail    correct  --but shows up twice in filed list
-// b moves to mos  fail    correct  --but shows up twice in filed list
+// a moves to mos  fail    correct  
+// b moves to mos  fail    correct
 // c holds in syr  pass
-let submission1 = [{
+let submissions1 = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'RUM',
@@ -92,7 +92,7 @@ let submission1 = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LVP',
@@ -103,7 +103,7 @@ let submission1 = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [
         {
             UnitType: 'A',
@@ -113,13 +113,13 @@ let submission1 = [{
 }]
 
 // CASE 2
-// a hold in lon
-// a mov syr to eas
-// b mov lvp to mos
-// c hold in adr
+// a hold lon             pass          correct
+// a mov syr to eas       pass          not in pass/fail/retreat lists
+// b mov lvp to mos       pass          correct
+// c hold adr             pass          correct
 let submissions2 = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
@@ -135,7 +135,7 @@ let submissions2 = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LVP',
@@ -146,7 +146,7 @@ let submissions2 = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [
         {
             UnitType: 'A',
@@ -155,10 +155,14 @@ let submissions2 = [{
         }]
 }]
 
-// CASE 4 WORKS
+// CASE 4 WORKS 
+// a: hold lon                     fail/retreat          
+// b: move lvp - lon               pass
+// b: sup  lvp - lon   from ion     
+// c: mov  adr - lon               fail 
 let submissions3 = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
@@ -169,7 +173,7 @@ let submissions3 = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LVP',
@@ -186,7 +190,7 @@ let submissions3 = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [
         {
             UnitType: 'A',
@@ -204,7 +208,7 @@ let submissions3 = [{
 // P2/P3 should fail
 let submissions4 = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
@@ -215,7 +219,7 @@ let submissions4 = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LVP',
@@ -226,7 +230,7 @@ let submissions4 = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [
         {
             UnitType: 'A',
@@ -244,7 +248,7 @@ let submissions4 = [{
 // b's move and support is accepted
 let submissions5 = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
@@ -255,7 +259,7 @@ let submissions5 = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LVP',
@@ -273,7 +277,7 @@ let submissions5 = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [
         {
             UnitType: 'A',
@@ -291,7 +295,7 @@ let submissions5 = [{
 // b's move and support is accepted
 let submissions6 = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
@@ -302,7 +306,7 @@ let submissions6 = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LVP',
@@ -320,7 +324,7 @@ let submissions6 = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [
         {
             UnitType: 'A',
@@ -352,6 +356,13 @@ var counter = 100;
 //     counter += counter;
 // })
 
+<<<<<<< HEAD
+=======
+
+// holds
+// submissions1 to 6
+
+>>>>>>> michael
 submissions2.forEach(function (submission) {
     setTimeout(gamePoster, counter, submission);
     counter += counter;
