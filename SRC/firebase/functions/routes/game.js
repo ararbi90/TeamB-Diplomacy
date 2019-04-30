@@ -117,10 +117,10 @@ function resolveGame(game) {
 
                     if (winner.outcome === "success" && winner.MoveZone === current.CurrentZone) {
                         retreat[current.CurrentZone] = current;
-                        console.log("REtreat===========================================")
-                        console.log(current)
-                        console.log(winner)
-                        console.log()
+                        // console.log("REtreat===========================================")
+                        // console.log(current)
+                        // console.log(winner)
+                        // console.log()
                     }
                 })
 
@@ -136,14 +136,35 @@ function resolveGame(game) {
         })
 
     })
-    console.log("All locations -------------------------")
-    console.log(passFails)
+    // console.log("All locations -------------------------")
+    // console.log(passFails)
+    // console.log("Pass ------------------------------")
+    // console.log(pass)
+    // console.log("Fail --------------------------------")
+    // console.log(fail)
+    // console.log("Retreat --------------------------------")
+    // console.log(retreat)
+
+    passUsers = {}
+    failUsers = {}
+    retreatUsers = {}
+    Object.keys(pass).forEach(location =>{
+        passUsers[pass[location].playerId] = pass[location]
+    })
+    Object.keys(fail).forEach(location =>{
+        failUsers[fail[location].playerId] = fail[location]
+    })
+
+    Object.keys(retreat).forEach(location =>{       
+        retreatUsers[retreat[location].playerId] = retreat[location]
+    })
+
     console.log("Pass ------------------------------")
-    console.log(pass)
+    console.log(passUsers)
     console.log("Fail --------------------------------")
-    console.log(fail)
+    console.log(failUsers)
     console.log("Retreat --------------------------------")
-    console.log(retreat)
+    console.log(retreatUsers)
 
 
 }
