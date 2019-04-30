@@ -32,11 +32,12 @@ let diagram_1 = rule_diagram_orders[0];
 4) Two or more players are are moving to a location without someone present and one has greater support than the rest ----------Done
 5) Two or more Players are trying to move to a location without support and an other player is there----------------------------Done
 6) Two or more Players are trying to move to a location with one player having greatest support and an other player is there----Done
-
+7) Two players are moving into a location that is holding and has support for the hold----------done
 */
 
 
-// everything is a hold works
+// everything is a hold     - works
+// All orders in pass list 
 let holds = [{
     username: "a",
     gameId: "-LdjyWdw3whWtnBFrZul",
@@ -78,7 +79,7 @@ let holds = [{
 //  one or more players are attepting to a vacat location --------------------works 
 // a moves to mos  fail    correct  
 // b moves to mos  fail    correct
-// c holds in syr  pass
+// c holds in syr  pass    correct
 let submissions1 = [{
     username: "a",
     gameId: "-LdjyWdw3whWtnBFrZul",
@@ -114,7 +115,7 @@ let submissions1 = [{
 
 // CASE 2
 // a hold lon             pass          correct
-// a mov syr to eas       pass          not in pass/fail/retreat lists
+// a mov syr to eas       pass          correct
 // b mov lvp to mos       pass          correct
 // c hold adr             pass          correct
 let submissions2 = [{
@@ -156,11 +157,11 @@ let submissions2 = [{
 }]
 
 // CASE 4 WORKS 
-// a: hold lon                     fail/retreat          
-// b: move lvp - lon               pass
-// b: sup  lvp - lon   from ion     
-// c: mov  adr - lon               fail 
-let submissions3 = [{
+// a: hold lon                     fail/retreat      correct           
+// b: move lvp - lon               pass              correct
+// b: sup  lvp - lon   from ion    pass              correct
+// c: mov  adr - lon               fail              correct
+let submissions4 = [{
     username: "a",
     gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
@@ -202,11 +203,10 @@ let submissions3 = [{
 
 
 // CASE 5
-// P1 is holding with no support
-// P2 and P3 are moving into where P1 is holding
-// P1's hold should be accepted,
-// P2/P3 should fail
-let submissions4 = [{
+// a: hold lon           pass          correct          
+// b: move lvp to lon    fail          correct
+// c: move adr to lon    fail          correct
+let submissions5 = [{
     username: "a",
     gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
@@ -243,10 +243,11 @@ let submissions4 = [{
 
 
 // CASE 6
-// a's hold fails
-// c's move fails
-// b's move and support is accepted
-let submissions5 = [{
+// a: hold lon                       fail/retreat        correct
+// b: move lvp lon                   pass                correct
+// b: support lvp to lon from bot    pass                correct
+// c: move adr to lon                fail                correct
+let submissions6 = [{
     username: "a",
     gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
@@ -289,11 +290,14 @@ let submissions5 = [{
 
 
 
-// CASE 6
-// a's hold fails
-// c's move fails
-// b's move and support is accepted
-let submissions6 = [{
+// CASE 7
+// a: hold lon                        pass              correct                        
+// a: IRI support lon                 pass              correct
+// a: MID support lon                 pass              correct
+// b: move lvp lon                    fail              correct
+// b: support lvp to lon from bot     fail              in pass list 
+// c: move adr to lon                 fail              correct
+let submissions7 = [{
     username: "a",
     gameId: "-LdjyWdw3whWtnBFrZul",
     orders: [{
@@ -301,6 +305,20 @@ let submissions6 = [{
         CurrentZone: 'LON',
         MoveType: 'H'
 
+    },
+    {
+        UnitType: 'A',
+        CurrentZone: 'IRI',
+        MoveType: 'S',
+        InitialSupportZone:"LON",
+        FinalSupportZone:"LON"
+    },
+    {
+        UnitType: 'A',
+        CurrentZone: 'MID',
+        MoveType: 'S',
+        InitialSupportZone:"LON",
+        FinalSupportZone:"LON"
     }
     ]
 },
@@ -356,7 +374,7 @@ var counter = 100;
 //     counter += counter;
 // })
 
-submissions2.forEach(function (submission) {
+submissions7.forEach(function (submission) {
     setTimeout(gamePoster, counter, submission);
     counter += counter;
 })
