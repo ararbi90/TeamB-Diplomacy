@@ -19,7 +19,7 @@ let convoryKeys = ["UnitType", "CurrentZone", "MoveType", "InitalConvoyZone", "F
 
 router.post('/Info', function (req, res, next) {
     let gameId = req.body.gameId;
-    console.log(gameId);
+    //console.log(gameId);
     admin.database().ref('/games').child(gameId).once('value').then(snapshot => {
         data = {};
         console.log(snapshot.child("players").val());
@@ -108,30 +108,36 @@ function resolveGame(game) {
 
         let currentLocation = passFails[locationKey];
         currentLocation.forEach(current => {
-            if (current.MoveType === 'H' && current.outcome === 'fail') {
+            if (current.MoveType === 'H' && current.outcome === 'failed') {
                 retreat[current.CurrentZone] = current;
                 fail[current.CurrentZone] = current;
-            } else if ((current.MoveType === 'M' || current.MoveType === 'S') && current.outcome === 'fail') {
+            } else if ((current.MoveType === 'M' || current.MoveType === 'S') && current.outcome === 'failed') {
                 fail[current.CurrentZone] = current;
-                currentLocation.forEach(winner =>{
-                    if(winner.outcome === "success"){
+                currentLocation.forEach(winner => {
+
+                    if (winner.outcome === "success" && winner.MoveZone === current.CurrentZone) {
                         retreat[current.CurrentZone] = current;
+                        console.log("REtreat===========================================")
+                        console.log(current)
+                        console.log(winner)
+                        console.log()
                     }
                 })
 
             }
 
-            if ((current.MoveType === 'H' || current.MoveType === 'S' || current.MoveType === 'H') && current.outcome === 'success') {
-                pass[current.CurrentZone] - current;
-            } 
-
-            if (current.MoveType === 'S'  && current.outcome === 'na') {
+            if (current.outcome === 'success') {
                 pass[current.CurrentZone] = current;
-            } 
+            }
+
+            if (current.MoveType === 'S' && current.outcome === 'na') {
+                pass[current.CurrentZone] = current;
+            }
         })
 
     })
-
+    console.log("All locations -------------------------")
+    console.log(passFails)
     console.log("Pass ------------------------------")
     console.log(pass)
     console.log("Fail --------------------------------")
@@ -190,8 +196,7 @@ function getPassFails(allOrder) {
 
             // Find all supporters for the currentOrder and make a list supportPowerList
             if (nextOrder.MoveType === "S") {
-                console.log("=================================================")
-                console.log(nextOrder)
+
 
                 if (nextOrder.InitialSupportZone === currentOrder.CurrentZone && nextOrder.FinalSupportZone === currentOrder.MoveZone
                     || nextOrder.InitialSupportZone === currentOrder.CurrentZone && nextOrder.FinalSupportZone === currentOrder.CurrentZone) {
@@ -280,7 +285,7 @@ function getPassFails(allOrder) {
 
         // If the current type is a Move then we must add it to the list for that location
         if (currentOrder.MoveType === "M") {
-            console.log(currentOrder);
+
             regionHashTable[currentOrder.MoveZone].push(currentOrder);
         }
     })
@@ -306,8 +311,7 @@ function getPassFails(allOrder) {
                     // Testing disbanding
                     if (filter.attackSupportPowerList !== undefined) {
                         Object.keys(filter.attackSupportPowerList).forEach(supportSource => {
-                            console.log(supportSource)
-                            console.log(supportSource.supportLocation)
+
 
                             if (locationApposition[supportSource.supportLocation] === undefined) {
                                 locationApposition[supportSource.supportLocation] = 2;
@@ -322,8 +326,7 @@ function getPassFails(allOrder) {
                     // Testing Disbanding
                     if (filter.attackSupportPowerList !== undefined) {
                         Object.keys(filter.attackSupportPowerList).forEach(supportSource => {
-                            console.log(supportSource)
-                            console.log(supportSource.supportLocation)
+
                             if (locationApposition[supportSource.supportLocation] === undefined) {
                                 locationApposition[supportSource.supportLocation] = 2;
                             }
@@ -474,7 +477,7 @@ function getPassFails(allOrder) {
                 } else {
 
                     // No stand off have to check who can move in or if the holder can stay there
-                    console.log(strongHold)
+
                     if (strongHold.supportPowerList !== undefined) {
 
                         if (highestAttackStrength > Object.keys(strongHold.supportPowerList).length + 1) {
@@ -494,7 +497,7 @@ function getPassFails(allOrder) {
                             currentLocation.forEach(finder => {
 
                                 if (strongHold.CurrentZone === finder.CurrentZone && strongHold.MoveType === 'H') {
-                                    console.log("Worked Standoff =========================================")
+
                                     finder.resolved = true;
                                     finder.outcome = 'success';
                                 } else {
@@ -512,7 +515,7 @@ function getPassFails(allOrder) {
 
     }
 
-    console.log("region hash table");
+
     //console.log(JSON.stringify(regionHashTable, undefined, 2));
     return regionHashTable;
 
