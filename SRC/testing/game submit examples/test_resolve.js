@@ -356,13 +356,6 @@ var counter = 100;
 //     counter += counter;
 // })
 
-<<<<<<< HEAD
-=======
-
-// holds
-// submissions1 to 6
-
->>>>>>> michael
 submissions2.forEach(function (submission) {
     setTimeout(gamePoster, counter, submission);
     counter += counter;
