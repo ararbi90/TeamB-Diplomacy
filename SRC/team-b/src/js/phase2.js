@@ -121,10 +121,10 @@ function controllerTimer() {
 }
 
 // Change phase
-gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
-    var phase = snapshot.val();
+gameRef.child(gameID).child("turn_status").on("child_changed", function (snapshot) {
+    var data = snapshot.val();
 
-    if (phase === "order")
+    if (data === "order")
     {
         if (gameRef.child(gameID).child("players").child(username).child("orders_temp") !== undefined)
         {
@@ -142,7 +142,7 @@ gameRef.child(gameID).child("turn_status").child("current_phase").on("value", fu
         let link = "game.html?gameID=" + gameID + "&username=" + username;
         window.location.href = link;
     }
-    else if (phase === "build")
+    else if (data === "build")
     {
         if (gameRef.child(gameID).child("players").child(username).child("orders_temp") !== undefined)
         {
