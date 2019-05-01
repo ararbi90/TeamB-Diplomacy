@@ -56,7 +56,7 @@ router.post('/submitOrder', function (req, res, next) {
                     if (numberOfPlayers === numberOfSubmits) {
                         //console.log("Resolve");
                         //Call resolve function
-                        console.log("Going into resolve");
+                        //console.log("Going into resolve");
                         resolveGame(updated, gameId);
                         res.send("Resolve");
                     } else {
@@ -216,28 +216,38 @@ function phaseChage(game, roundResult, roundResultKey, gameId) {
                 supplyCountries.forEach(location => {
                     supplyCountriesHash[location] = 0;
                 })
-                console.log("Check build")
+                //console.log("Check build")
                 // Adding supple centers
                 let build = false;
+                let addedSupplyCenter = {};
                 Object.keys(updatedList).forEach(player => {
                     Object.keys(updatedList[player].territories).forEach(sc => {
                         if (supplyCountriesHash[sc] !== undefined) {
                             if (updatedList[player].supplyCenters[sc] === undefined) {
-                                console.log("Adding supple Center");
+                                //console.log("Adding supple Center");
                                 updatedList[player].supplyCenters[sc] = updatedList[player].territories[sc];
+                                if (addedSupplyCenter[player] === undefined) {
+                                    addedSupplyCenter[player] = [];
+                                    addedSupplyCenter[player].push(sc);
+                                }
+                                else {
+                                    addedSupplyCenter[player].push(sc);
+                                }
                             }
                         }
                     })
                     let territoryCount = Object.keys(updatedList[player].territories).length;
                     let supplyCenterCount = Object.keys(updatedList[player].supplyCenters).length;
-                    if ( supplyCenterCount > territoryCount) {
+                    if (supplyCenterCount > territoryCount) {
                         build = true;
                     }
 
                 })
 
-                console.log(JSON.stringify(updatedList, undefined, 2));
+                //console.log(JSON.stringify(updatedList, undefined, 2));
                 if (build === true) {
+                    // Switch to build
+                    console.log("Build ---------------------------------------")
                     admin.database().ref('/games').child(gameId).child('players').set(
                         updatedList,
                         function (err) {
@@ -249,12 +259,39 @@ function phaseChage(game, roundResult, roundResultKey, gameId) {
                                     if (err) {
                                         console.log("Error");
                                     }
+                                    admin.database().ref('/games').child(gameId).child('buildOrder').child(roundResultKey).set(
+                                        addedSupplyCenter, function (err) {
+                                            if (err) {
+                                                console.log("Error");
+                                            }
+
+                                        }).catch(error => { console.log(error) });
 
                                 }).catch(error => { console.log(error) });
 
                         }).catch(error => { console.log(error) });
-                }
+                } else {
+                    // No build just change to order spring and increment year stay in order
+                    console.log("No Build ---------------------------------------")
+                    let newYeay = parseInt(game.turn_status.current_year, 10) + 1;
+                    admin.database().ref('/games').child(gameId).child('turn_status').child('current_season').set(
+                        'spring', function (err) {
+                            if (err) {
+                                console.log("Error");
+                            }
+                            admin.database().ref('/games').child(gameId).child('turn_status').child('current_year').set(
+                                newYeay, function (err) {
+                                    if (err) {
+                                        console.log("Error");
+                                    }
 
+                                }).catch(error => { console.log(error) });
+
+
+                        }).catch(error => { console.log(error) });
+
+
+                }
 
 
             }
