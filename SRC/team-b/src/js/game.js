@@ -154,16 +154,16 @@ gameRef.child(gameID).child("players").child(username).child("orders_temp").on("
     }
 })
 
-// // Change phase
-// gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
-//     var phase = snapshot.val();
+// Change phase
+gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
+    var phase = snapshot.val();
 
-//     if (phase === "retreat")
-//     {
-//         let link = "phase2.html?gameID=" + gameID + "&username=" + username;
-//         window.location.href = link;
-//     }
-// })
+    if (phase === "retreat")
+    {
+        let link = "phase2.html?gameID=" + gameID + "&username=" + username;
+        window.location.href = link;
+    }
+})
 
 function submitOrders(res)
 {
@@ -235,7 +235,7 @@ function submitOrders(res)
         {
             order.UnitType = data[0];
 
-            data2 = data[1].split("-");
+            var data2 = data[1].split("-");
 
             order.CurrentZone = data2[0];
 
@@ -255,7 +255,7 @@ function submitOrders(res)
             order.CurrentZone = data[1];
             order.MoveType = data[2];
 
-            data2 = data[4].split("-");
+            var data2 = data[4].split("-");
 
             if (data2[1].length === 3)
             {

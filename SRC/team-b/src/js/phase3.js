@@ -177,15 +177,15 @@ gameRef.child(gameID).child("players").child(username).child("territories").on("
 })
 
 // // Change phase
-// gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
-//     var phase = snapshot.val();
+gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
+    var phase = snapshot.val();
 
-//     if (phase === "order")
-//     {
-//         let link = "game.html?gameID=" + gameID + "&username=" + username;
-//         window.location.href = link;
-//     }
-// })
+    if (phase === "order")
+    {
+        let link = "game.html?gameID=" + gameID + "&username=" + username;
+        window.location.href = link;
+    }
+})
 
 
 $("document").ready(function () {

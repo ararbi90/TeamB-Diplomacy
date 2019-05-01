@@ -144,13 +144,52 @@ function submitOrder()
 
     if (validOrder)
     {
-        // pass
+        
+        var ref = gameRef.child(gameID).child("players").child(username);
+
+        ref.child("retreat_orders_temp").child(thisUnit).set({
+            order: order
+        });
+
+        ref.child("retreat_units_temp").child(thisUnit).remove();
+
         window.close();
     }
 }
 
 function disband()
 {
-    // pass
-    window.close();
+    var label = document.getElementById("label");
+    var x = label.innerHTML.split(" ");
+    var thisUnit = x[0] + "_" + x[1];
+
+    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
+        var orders_t = res.players[username].orders_temp;
+
+        var keys = Object.keys(orders_t);
+
+        var order = "";
+    
+        for (var i = 0; i < keys.length; i++)
+        {
+            if (keys[i] === thisUnit)
+            {
+                order = orders_t[keys[i]].order;
+            }
+        }
+        console.log(order);
+
+        var ref = gameRef.child(gameID).child("players").child(username);
+
+        ref.child("retreat_orders_temp").child(thisUnit).set({
+            order: order
+        });
+    
+        ref.child("retreat_units_temp").child(thisUnit).remove();
+
+        window.close();
+
+    }).fail(function (err) {
+        console.log(err);
+    })
 }

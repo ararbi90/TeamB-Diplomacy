@@ -218,8 +218,8 @@ var JQVMap = function (params) {
             
                 //document.getElementById('armySelected').innerHTML = code;
 
-                //let win = new BrowserWindow({ width: 800, height: 800 });
-                let win = new BrowserWindow({ width: 500, height: 400 });
+                let win = new BrowserWindow({ width: 800, height: 800 });
+                //let win = new BrowserWindow({ width: 500, height: 400 });
 
                 gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
                   var phase = snapshot.val();
@@ -239,7 +239,7 @@ var JQVMap = function (params) {
                   }
                 })
 
-                //win.webContents.openDevTools();
+                win.webContents.openDevTools();
 
                 win.webContents.on('did-finish-load', () => {
                     win.webContents.send('message', code + ' ' + username + ' ' + gameID);

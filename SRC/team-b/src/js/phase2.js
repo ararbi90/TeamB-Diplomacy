@@ -1,6 +1,6 @@
 $ = require("jquery");
 
-console.log("phase2");
+//console.log("phase2");
 
 var urlParams = new URLSearchParams(location.search);
 let username = urlParams.get("username");
@@ -120,142 +120,315 @@ function controllerTimer() {
     }
 }
 
-function nextPhase()
-{
-    let link = "phase3.html?gameID=" + gameID + "&username=" + username;
+// Change phase
+gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
+    var phase = snapshot.val();
 
-    window.location.href = link;
+    if (phase === "order")
+    {
+        let link = "game.html?gameID=" + gameID + "&username=" + username;
+        window.location.href = link;
+    }
+    else if (phase === "build")
+    {
+        let link = "phase3.html?gameID=" + gameID + "&username=" + username;
+        window.location.href = link;
+    }
+})
+
+// Add retreat/disband
+gameRef.child(gameID).child("players").child(username).child("retreat_units_temp").on("value", function (snapshot) {
+    $("#retreats").empty();
+    let retreats = new Array();
+
+    snapshot.forEach(element => {
+        retreats.push(element.val().value);
+    });
+
+    if (retreats.length > 0)
+    {
+        document.getElementById("no_retreats").hidden = true;
+        document.getElementById("retreats").hidden = false;
+    }
+    else
+    {
+        document.getElementById("no_retreats").hidden = false;
+        document.getElementById("retreats").hidden = true;
+    }
+
+    for (var i = 0; i < retreats.length; i++)
+    {
+        var node = document.createElement("LI");
+        var textnode = document.createTextNode(retreats[i]);
+        node.appendChild(textnode);
+        document.getElementById("retreats").appendChild(node);
+    }
+})
+
+// Add results
+function addResults(res)
+{
+    var key = res.turn_status.current_season + res.turn_status.current_year;
+
+    var fail = res.resolution[key].fail[username];
+    var pass = res.resolution[key].pass[username];
+
+    var ordersTemp = res.players[username].orders_temp;
+
+    if (fail !== undefined)
+    {
+        for (var i = 0; i < fail.length; i++)
+        {
+            order = fail[i];
+
+            var key = order.UnitType + "_" + order.CurrentZone;
+
+            // Keep track of units still needing orders
+            var ref = gameRef.child(gameID).child("players").child(username).child("retreat_units_temp");
+
+            if (res.players[username].retreat_orders_temp === undefined)
+            {
+                ref.child(key).set({
+                    value: order.UnitType + " " + order.CurrentZone
+                })
+            }
+            else if (res.players[username].retreat_orders_temp[key] === undefined)
+            {
+                ref.child(key).set({
+                    value: order.UnitType + " " + order.CurrentZone
+                })
+            }
+
+            var output = ordersTemp[key].order;
+
+            var node = document.createElement("LI");
+            var textnode = document.createTextNode(output);
+            node.appendChild(textnode);
+            node.style.color = "red";
+            document.getElementById("results").appendChild(node);
+        }
+    }
+    if (pass !== undefined)
+    {
+        for (var i = 0; i < pass.length; i++)
+        {
+            order = pass[i];
+
+            var key = order.UnitType + "_" + order.CurrentZone;
+
+            var output = ordersTemp[key].order;
+
+            var node = document.createElement("LI");
+            var textnode = document.createTextNode(output);
+            node.appendChild(textnode);
+            node.style.color = "green";
+            document.getElementById("results").appendChild(node);
+        }
+    }
 }
 
-// // Change phase
-// gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
-//     var phase = snapshot.val();
+// Disband if no orders
+function disband(res)
+{
+    // Get all orders in orders_temp
+    let orders = {};
+    var keys = Object.keys(res.players[username].orders_temp);
 
-//     if (phase === "order")
-//     {
-//         let link = "game.html?gameID=" + gameID + "&username=" + username;
-//         window.location.href = link;
-//     }
-//     else if (phase === "build")
-//     {
-//         let link = "phase3.html?gameID=" + gameID + "&username=" + username;
-//         window.location.href = link;
-//     }
-// })
+    for (var i = 0; i < keys.length; i++)
+    {
+        orders[keys[i]] = res.players[username].orders_temp[keys[i]].order;
+    }
+    
+    var retreatUnits = res.players[username].retreat_units_temp;
+
+    if (retreatUnits !== undefined)
+    {
+        var retreatKeys = Object.keys(retreatUnits);
+
+        for (var i = 0; i < retreatKeys.length; i++)
+        {
+            var ref = gameRef.child(gameID).child("players").child(username);
+
+            ref.child("retreat_orders_temp").child(retreatKeys[i]).set({
+                order: orders[retreatKeys[i]]
+            });
+        
+            ref.child("retreat_units_temp").child(retreatKeys[i]).remove();
+        }
+    }
+}
 
 function submitOrders(res)
 {
     var submission = {};
 
     // Get all orders in orders_temp
-    let orders = new Array();
-    if (res.players[username].orders_temp != undefined)
+    let orders = {};
+    var keys = Object.keys(res.players[username].orders_temp);
+
+    for (var i = 0; i < keys.length; i++)
     {
-        var keys = Object.keys(res.players[username].orders_temp);
-        for (var i = 0; i < keys.length; i++)
+        orders[keys[i]] = res.players[username].orders_temp[keys[i]].order;
+    }
+
+    var key = res.turn_status.current_season + res.turn_status.current_year;
+    var fail = res.resolution[key].fail[username];
+    
+    var failedOrders = new Array();
+
+    if (fail !== undefined)
+    {
+        for (var i = 0; i < fail.length; i++)
         {
-            var order = res.players[username].orders_temp[keys[i]].order;
-            orders.push(order);
+            var orderKey = fail[i].UnitType + "_" + fail[i].CurrentZone;
+            failedOrders.push(orderKey);
         }
     }
 
-    userTerrs = res.players[username].territories;
-
-    let terrs = new Array();
-    for (var t in userTerrs)
-    {
-        terrs.push([res.players[username].territories[t].forceType, t]);
-    }
-
-    for (var i = 0; i < terrs.length; i++)
-    {
-        var key = terrs[i][0] + '_' + terrs[i][1];
-        var data = terrs[i][0] + ' ' + terrs[i][1];
-
-        var inOrders = false
-
-        for (var j = 0; j < orders.length; j++)
-        {
-            if (orders[j].slice(0, 5) === data)
-            {
-                inOrders = true;
-            }
-        }
-
-        if (!inOrders)
-        {
-            // Submit hold order
-            var order = data + "-HOLDS";
-
-            orders.push(order);
-
-            var ref = gameRef.child(gameID).child("players").child(username).child("orders_temp");
-
-            ref.child(key).set({
-                order: order
-            });
-        }
-    }
-
-    // Build submission
+    // Build submission for non retreats
     submission.username = username;
     submission.gameId = gameID;
     submission.orders = [];
 
-    for (var i = 0; i < orders.length; i++)
+    for (var i = 0; i < keys.length; i++)
     {
-        var o = orders[i];
+        var key = keys[i];
+        var o = orders[key];
         var data = o.split(" ");
 
-        var order = {};
+        var orderKey = data[0] + "_";
 
-        if (data.length === 2)
+        if (data.length == 2)
         {
-            order.UnitType = data[0];
-
-            data2 = data[1].split("-");
-
-            order.CurrentZone = data2[0];
-
-            if (data2[1].length === 3)
-            {
-                order.MoveType = "M";
-                order.MoveZone = data2[1];
-            }
-            else
-            {
-                order.MoveType = "H";
-            }
+            var data2 = data[1].split("-");
+            orderKey += data2[0];
         }
         else
         {
-            order.UnitType = data[0];
-            order.CurrentZone = data[1];
-            order.MoveType = data[2];
+            orderKey += data[1];
+        }
 
-            data2 = data[4].split("-");
+        var failed = false;
 
-            if (data2[1].length === 3)
+
+        for (var j = 0; j < failedOrders.length; j++)
+        {
+            if (failedOrders[j] === orderKey)
             {
-                if (data[2] === "C")
+                failed = true;
+            }
+
+        }
+
+        if (!failed)
+        {
+            var order = {};
+
+            if (data.length === 2)
+            {
+                order.UnitType = data[0];
+
+                var data2 = data[1].split("-");
+
+                order.CurrentZone = data2[0];
+
+                if (data2[1].length === 3)
                 {
-                    order.InitialConvoyZone = data2[0];
-                    order.FinalConvoyZone = data2[1];
+                    order.MoveType = "M";
+                    order.MoveZone = data2[1];
+                }
+                else
+                {
+                    order.MoveType = "H";
+                }
+            }
+            else
+            {
+                order.UnitType = data[0];
+                order.CurrentZone = data[1];
+                order.MoveType = data[2];
+
+                var data2 = data[4].split("-");
+
+                if (data2[1].length === 3)
+                {
+                    if (data[2] === "C")
+                    {
+                        order.InitialConvoyZone = data2[0];
+                        order.FinalConvoyZone = data2[1];
+                    }
+                    else
+                    {
+                        order.InitialSupportZone = data2[0];
+                        order.FinalSupportZone = data2[1];
+                    }
                 }
                 else
                 {
                     order.InitialSupportZone = data2[0];
-                    order.FinalSupportZone = data2[1];
+                    order.FinalSupportZone = data2[0];
+                }
+            }
+
+            order.Retreat = "false";
+
+            submission.orders.push(order);
+        }
+        else
+        {
+            var order = {};
+            data = res.players[username].retreat_orders_temp[orderKey].order.split(" ");
+
+            if (data.length === 2)
+            {
+                order.UnitType = data[0];
+
+                var data2 = data[1].split("-");
+
+                order.CurrentZone = data2[0];
+
+                if (data2[1].length === 3)
+                {
+                    order.MoveType = "M";
+                    order.MoveZone = data2[1];
+                }
+                else
+                {
+                    order.MoveType = "H";
                 }
             }
             else
             {
-                order.InitialSupportZone = data2[0];
-                order.FinalSupportZone = data2[0];
-            }
-        }
+                order.UnitType = data[0];
+                order.CurrentZone = data[1];
+                order.MoveType = data[2];
 
-        submission.orders.push(order);
+                var data2 = data[4].split("-");
+
+                if (data2[1].length === 3)
+                {
+                    if (data[2] === "C")
+                    {
+                        order.InitialConvoyZone = data2[0];
+                        order.FinalConvoyZone = data2[1];
+                    }
+                    else
+                    {
+                        order.InitialSupportZone = data2[0];
+                        order.FinalSupportZone = data2[1];
+                    }
+                }
+                else
+                {
+                    order.InitialSupportZone = data2[0];
+                    order.FinalSupportZone = data2[0];
+                }
+            }
+
+            order.Retreat = "true";
+
+            submission.orders.push(order);
+        }
     }
 
     return submission;
@@ -267,14 +440,22 @@ $("document").ready(function () {
     $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
         // loop through each player
         mapsLogic(res);
+        addResults(res);
         //addOrders(res['players']['orders_temp'])
         $("#roundSubmissionForm").submit(function () {
 
             $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2) {
-                var submission = submitOrders(res2);
-                //console.log(submission);
-                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res3) {
-                    console.log(res3);
+                disband(res2);
+
+                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res3) {
+                    var submission = submitOrders(res3);
+                    console.log(submission);
+
+                    // $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res4) {
+                    //     console.log(res4);
+                    // }).fail(function (err) {
+                    //     console.log(err);
+                    // })
                 }).fail(function (err) {
                     console.log(err);
                 })
