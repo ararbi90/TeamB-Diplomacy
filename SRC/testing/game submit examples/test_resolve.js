@@ -349,6 +349,55 @@ let submissions7 = [{
 }]
 
 
+// CASE 8
+// a: move lon nwy                 pass                                      
+// a: iri convoy lon nwy              pass                      
+// b: move lvp lon                 pass                            
+// c: hold adr                     fail              
+let submissions8 = [{
+    username: "a",
+    gameId: "-LdjyWdw3whWtnBFrZul",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'LON',
+        MoveType: 'M',
+        MoveZone: 'NWY'
+
+    },
+    {
+        UnitType: 'F',
+        CurrentZone: 'IRI',
+        MoveType: 'C',
+        InitialConvoyZone:"LON",
+        FinalConvoyZone:"NWY"
+    }
+    ]
+},
+{
+    username: "b",
+    gameId: "-LdjyWdw3whWtnBFrZul",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'BOT',
+        MoveType: 'S',
+        InitialSupportZone:"LON",
+        FinalSupportZone:"NWY"
+    }
+    ]
+},
+{
+    username: "c",
+    gameId: "-LdjyWdw3whWtnBFrZul",
+    orders: [
+        {
+            UnitType: 'A',
+            CurrentZone: 'ADR',
+            MoveType: 'M',
+            MoveZone: 'NWY'
+        }]
+}]
+
+
 
 function gamePoster(submission) {
 

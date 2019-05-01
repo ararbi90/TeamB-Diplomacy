@@ -325,6 +325,7 @@ $("document").ready(function () {
 
     $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
         // loop through each player
+        console.log("done");
         mapsLogic(res);
         addTitle(res);
         //addOrders(res['players']['orders_temp'])
