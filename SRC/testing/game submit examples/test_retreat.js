@@ -14,47 +14,76 @@ var $ = jQuery = require('jquery')(window);
 2) 
 */
 
+let testGameId = "-LdjyWdw3whWtnBFrZul";
 
-// everything is a hold     - works
-// All orders in pass list 
-let holds = [{
-    username: "a",
-    gameId: "-LdjyWdw3whWtnBFrZul",
-    orders: [{
-        UnitType: 'A',
-        CurrentZone: 'LON',
-        MoveType: 'H'
-
-    }, {
-        UnitType: 'A',
-        CurrentZone: 'RUM',
-        MoveType: 'H',
-    }
-    ]
-},
-{
-    username: "b",
-    gameId: "-LdjyWdw3whWtnBFrZul",
-    orders: [{
-        UnitType: 'A',
-        CurrentZone: 'LVP',
-        MoveType: 'H'
-    }
-    ]
-},
-{
+let retreatOrder_test_0 = [
+    {
+        username: "a",
+        gameId: testGameId,
+        orders: [
+            {
+                UnitType: 'A',
+                CurrentZone: 'MOS',
+                MoveType: 'H',
+                Retreat: 'false'
+            },
+            {
+                UnitType: 'A',
+                CurrentZone: 'MOS',
+                MoveType: 'M',
+                MoveZone: 'BLA',
+                Retreat:'true'
+            }]
+        },
+        {
+            username: "b",
+            gameId: testGameId,
+            orders: [
+                {
+                    UnitType: 'A',
+                    CurrentZone: 'MOS',
+                    MoveType: 'H',
+                    Retreat: 'false'
+                },
+                {
+                    UnitType: 'A',
+                    CurrentZone: 'MOS',
+                    MoveType: 'M',
+                    MoveZone: 'BLA',
+                    Retreat:'true'
+                }]
+            },
+    {
     username: "c",
-    gameId: "-LdjyWdw3whWtnBFrZul",
+    gameId: testGameId,
     orders: [
         {
             UnitType: 'A',
             CurrentZone: 'MOS',
-            MoveType: 'H'
+            MoveType: 'H',
+            Retreat: 'false'
+        },
+        {
+            UnitType: 'A',
+            CurrentZone: 'MOS',
+            MoveType: 'M',
+            MoveZone: 'BLA',
+            Retreat:'true'
         }]
-}]
+    }
+]
 
 
-
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+//
+//                                           PHASE INTEGRATION TESTING                 
+//                 Below are the test cases that will be used for testing all the phases working together
+//
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
 
 function retreatSubmit(submission) {
 

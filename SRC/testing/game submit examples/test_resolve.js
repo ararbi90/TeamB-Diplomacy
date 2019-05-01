@@ -36,11 +36,13 @@ let diagram_1 = rule_diagram_orders[0];
 */
 
 
+let testGameId = "-LdjyWdw3whWtnBFrZul";
+
 // everything is a hold     - works
 // All orders in pass list 
 let holds = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'BER',
@@ -51,7 +53,7 @@ let holds = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'BUL',
@@ -61,7 +63,7 @@ let holds = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [
         {
             UnitType: 'A',
@@ -78,7 +80,7 @@ let holds = [{
 // c holds in syr  pass    correct
 let submissions1 = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'RUM',
@@ -89,7 +91,7 @@ let submissions1 = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LVP',
@@ -100,7 +102,7 @@ let submissions1 = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [
         {
             UnitType: 'A',
@@ -116,7 +118,7 @@ let submissions1 = [{
 // c hold adr             pass          correct
 let submissions2 = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
@@ -132,7 +134,7 @@ let submissions2 = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LVP',
@@ -143,7 +145,7 @@ let submissions2 = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [
         {
             UnitType: 'A',
@@ -159,7 +161,7 @@ let submissions2 = [{
 // c: mov  adr - lon               fail              correct
 let submissions4 = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
@@ -170,7 +172,7 @@ let submissions4 = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LVP',
@@ -187,7 +189,7 @@ let submissions4 = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [
         {
             UnitType: 'A',
@@ -204,7 +206,7 @@ let submissions4 = [{
 // c: move adr to lon    fail          correct
 let submissions5 = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
@@ -215,7 +217,7 @@ let submissions5 = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LVP',
@@ -226,7 +228,7 @@ let submissions5 = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [
         {
             UnitType: 'A',
@@ -245,7 +247,7 @@ let submissions5 = [{
 // c: move adr to lon                fail                correct
 let submissions6 = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
@@ -256,7 +258,7 @@ let submissions6 = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LVP',
@@ -274,7 +276,7 @@ let submissions6 = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [
         {
             UnitType: 'A',
@@ -295,7 +297,7 @@ let submissions6 = [{
 // c: move adr to lon                 fail              correct
 let submissions7 = [{
     username: "a",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
@@ -320,7 +322,7 @@ let submissions7 = [{
 },
 {
     username: "b",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LVP',
@@ -338,7 +340,7 @@ let submissions7 = [{
 },
 {
     username: "c",
-    gameId: "-LdW62ST8C_INLjZJ1gQ",
+    gameId: testGameId,
     orders: [
         {
             UnitType: 'A',
@@ -399,6 +401,70 @@ let submissions8 = [{
 
 
 
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+//
+//                                           PHASE INTEGRATION TESTING                 
+//                 Below are the test cases that will be used for testing all the phases working together
+//
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+
+// a: move lon nwy                 pass                                      
+// a: iri convoy lon nwy              pass                      
+// b: move lvp lon                 pass                            
+// c: hold adr                     fail              
+let moveOrder_test_1 = [{
+    username: "a",
+    gameId: "-LdjyWdw3whWtnBFrZul",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'LON',
+        MoveType: 'M',
+        MoveZone: 'NWY'
+
+    },
+    {
+        UnitType: 'F',
+        CurrentZone: 'IRI',
+        MoveType: 'C',
+        InitialConvoyZone:"LON",
+        FinalConvoyZone:"NWY"
+    }
+    ]
+},
+{
+    username: "b",
+    gameId: "-LdjyWdw3whWtnBFrZul",
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'BOT',
+        MoveType: 'S',
+        InitialSupportZone:"LON",
+        FinalSupportZone:"NWY"
+    }
+    ]
+},
+{
+    username: "c",
+    gameId: "-LdjyWdw3whWtnBFrZul",
+    orders: [
+        {
+            UnitType: 'A',
+            CurrentZone: 'ADR',
+            MoveType: 'M',
+            MoveZone: 'NWY'
+        }]
+}]
+
+
+
+
+
 function gamePoster(submission) {
 
     $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/submitorder", { submission }, function (res) {
@@ -423,3 +489,5 @@ holds.forEach(function (submission) {
     setTimeout(gamePoster, counter, submission);
     counter += counter;
 })
+
+
