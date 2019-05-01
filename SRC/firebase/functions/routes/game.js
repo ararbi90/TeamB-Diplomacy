@@ -444,8 +444,27 @@ function phaseChageOrders(game, roundResult, roundResultKey, gameId) {
 //--------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------
 function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails) {
+    // I get pass fail for the retreat phase. Okay
+    // I need previous pass and fails and retreats
+    // I have all the pass and fails from the order
 
-    Object.keys(passFails).forEach()
+    let roundsResolution = game.resolution;
+    let disband = [];
+    let canMove = [];
+
+    Object.keys(passFails).forEach(loc =>{
+        if(passFails[loc].Retreat === 'true'){
+            if(passFails[loc].outcome === 'fail'){
+                disband.push(passFails[loc]);
+            }else if(passFails[loc].outcome === 'success'){
+                canMove.push(passFails[loc]);
+            } 
+        }
+    })
+
+    // Update players
+
+    
 
 
 
