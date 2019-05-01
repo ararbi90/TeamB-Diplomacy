@@ -14,46 +14,56 @@ var $ = jQuery = require('jquery')(window);
 2) 
 */
 
+let testGameId = "-LdjyWdw3whWtnBFrZul";
 
-// everything is a hold     - works
-// All orders in pass list 
-let holds = [{
+let buildOrders_test_0 = [{
     username: "a",
-    gameId: "-LdjyWdw3whWtnBFrZul",
-    orders: [{
-        UnitType: 'A',
-        CurrentZone: 'LON',
-        MoveType: 'H'
-
-    }, {
-        UnitType: 'A',
-        CurrentZone: 'RUM',
-        MoveType: 'H',
-    }
-    ]
+    gameId: testGameId,
+    orders: [
+      {territory: "SEV",
+       command: "BUILD",
+       buildType: "A"
+      },
+      {territory: "MOS",
+       command: "REMOVE"
+      }]
 },
 {
     username: "b",
-    gameId: "-LdjyWdw3whWtnBFrZul",
-    orders: [{
-        UnitType: 'A',
-        CurrentZone: 'LVP',
-        MoveType: 'H'
-    }
-    ]
+    gameId: testGameId,
+    orders: [
+      {territory: "SEV",
+       command: "BUILD",
+       buildType: "A"
+      },
+      {territory: "MOS",
+       command: "REMOVE"
+      }]
 },
 {
     username: "c",
-    gameId: "-LdjyWdw3whWtnBFrZul",
+    gameId: testGameId,
     orders: [
-        {
-            UnitType: 'A',
-            CurrentZone: 'MOS',
-            MoveType: 'H'
-        }]
+      {territory: "SEV",
+       command: "BUILD",
+       buildType: "A"
+      },
+      {territory: "MOS",
+       command: "REMOVE"
+      }]
 }]
 
 
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+//
+//                                           PHASE INTEGRATION TESTING                 
+//                 Below are the test cases that will be used for testing all the phases working together
+//
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
 
 function buildSubmit(submission) {
 
