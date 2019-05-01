@@ -172,7 +172,9 @@ function resolveGame(game, gameId) {
 
     //console.log(JSON.stringify(roundResult, undefined, 2));
 
-    phaseChage(game, roundResult, roundResultKey, gameId);
+    if (game.turn_status.current_phase === 'order') {
+        phaseChage(game, roundResult, roundResultKey, gameId);
+    }
 
 
 
@@ -180,6 +182,11 @@ function resolveGame(game, gameId) {
 
 }
 
+
+var supplyCountries = ["ANK", "BEL", "BER", "BRE", "BUD", "BUL", "CON", "DEN", "EDI", "GRE", "HOL", "KIE", "LVP",
+    "LON", "MAR", "MOS", "MUN", "NAP", "NOR", "PAR", "POR", "ROM",
+    "RUM", "SER", "SEV", "SMY", "SPA", "STP", "SWE", "TRI", "TUN", "VEN",
+    "VIE", "WAR"];
 
 
 function phaseChage(game, roundResult, roundResultKey, gameId) {
@@ -191,18 +198,70 @@ function phaseChage(game, roundResult, roundResultKey, gameId) {
         // console.log(game.turn_status.current_phase);
         if (game.turn_status.current_phase === "order") {
             // In order move to build or change season
+            let updatedList = updatePlayers(game, gameId, roundResult, roundResultKey);
             if (game.turn_status.current_season === "spring") {
                 // No build go to fall
                 // update players for all the success moves
-                // console.log("IN order spring ----------------------------------------------")
-                updatePlayers(game, gameId, roundResult, roundResultKey);
+                admin.database().ref('/games').child(gameId).child('turn_status').child('current_season').set(
+                    'fall', function (err) {
+                        if (err) {
+                            console.log("Error");
+                        }
+
+                    }).catch(error => { console.log(error) });
 
             } else {
-                // Build
+                // fall check for builds
+                supplyCountriesHash = {};
+                supplyCountries.forEach(location => {
+                    supplyCountriesHash[location] = 0;
+                })
+                console.log("Check build")
+                // Adding supple centers
+                let build = false;
+                Object.keys(updatedList).forEach(player => {
+                    Object.keys(updatedList[player].territories).forEach(sc => {
+                        if (supplyCountriesHash[sc] !== undefined) {
+                            if (updatedList[player].supplyCenters[sc] === undefined) {
+                                console.log("Adding supple Center");
+                                updatedList[player].supplyCenters[sc] = updatedList[player].territories[sc];
+                            }
+                        }
+                    })
+                    let territoryCount = Object.keys(updatedList[player].territories).length;
+                    let supplyCenterCount = Object.keys(updatedList[player].supplyCenters).length;
+                    if ( supplyCenterCount > territoryCount) {
+                        build = true;
+                    }
+
+                })
+
+                console.log(JSON.stringify(updatedList, undefined, 2));
+                if (build === true) {
+                    admin.database().ref('/games').child(gameId).child('players').set(
+                        updatedList,
+                        function (err) {
+                            if (err) {
+                                console.log("Error");
+                            }
+                            admin.database().ref('/games').child(gameId).child('turn_status').child('current_phase').set(
+                                'build', function (err) {
+                                    if (err) {
+                                        console.log("Error");
+                                    }
+
+                                }).catch(error => { console.log(error) });
+
+                        }).catch(error => { console.log(error) });
+                }
+
+
+
             }
         }
     }
     else {
+
         //There are are retreats go to retreats
         admin.database().ref('/games').child(gameId).child('resolution').child(roundResultKey).set(
             roundResult,
@@ -219,6 +278,7 @@ function phaseChage(game, roundResult, roundResultKey, gameId) {
                     }).catch(error => { console.log(error) });
 
             }).catch(error => { console.log(error) });
+
     }
 
 }
@@ -235,23 +295,15 @@ function updatePlayers(game, gameId, roundResult, roundResultKey) {
         temp.forEach(location => {
             //console.log(location.CurrentZone)
             if (location.MoveType === 'M') {
-                
-                
-                if (allPlayers[passedPlayers[i]].territories[location.MoveZone] === undefined) {
-                    allPlayers[passedPlayers[i]].territories[location.MoveZone] = allPlayers[passedPlayers[i]].territories[location.CurrentZone]
-                    delete allPlayers[passedPlayers[i]].territories[location.CurrentZone]
-                }
+
+                allPlayers[passedPlayers[i]].territories[location.MoveZone] = allPlayers[passedPlayers[i]].territories[location.CurrentZone]
+                delete allPlayers[passedPlayers[i]].territories[location.CurrentZone]
+
             }
         })
-        // allPlayers[passedPlayers[i]].territories[passMoves[passedPlayers[i]].CurrentZone];
-        // console.log(allPlayers[passedPlayers[i]].territories[passMoves[passedPlayers[i]].CurrentZone]);
-
-
-
     }
-    // console.log(gameId);
-    // console.log('players')
-    console.log(JSON.stringify(allPlayers, undefined, 2));
+
+    //console.log(JSON.stringify(allPlayers, undefined, 2));
 
 
     admin.database().ref('/games').child(gameId).child('players').set(
@@ -262,6 +314,8 @@ function updatePlayers(game, gameId, roundResult, roundResultKey) {
             }
 
         }).catch(error => { console.log(error) });
+
+    return allPlayers;
 
 
 }

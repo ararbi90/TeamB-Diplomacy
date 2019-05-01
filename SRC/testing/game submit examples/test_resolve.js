@@ -42,13 +42,9 @@ let holds = [{
     gameId: "-LdW62ST8C_INLjZJ1gQ",
     orders: [{
         UnitType: 'A',
-        CurrentZone: 'LON',
+        CurrentZone: 'BER',
         MoveType: 'H'
 
-    }, {
-        UnitType: 'A',
-        CurrentZone: 'RUM',
-        MoveType: 'H',
     }
     ]
 },
@@ -57,7 +53,7 @@ let holds = [{
     gameId: "-LdW62ST8C_INLjZJ1gQ",
     orders: [{
         UnitType: 'A',
-        CurrentZone: 'LVP',
+        CurrentZone: 'BUL',
         MoveType: 'H'
     }
     ]
@@ -68,7 +64,7 @@ let holds = [{
     orders: [
         {
             UnitType: 'A',
-            CurrentZone: 'MOS',
+            CurrentZone: 'TRI',
             MoveType: 'H'
         }]
 }]
@@ -356,7 +352,7 @@ var counter = 100;
 //     counter += counter;
 // })
 
-submissions2.forEach(function (submission) {
+holds.forEach(function (submission) {
     setTimeout(gamePoster, counter, submission);
     counter += counter;
 })
