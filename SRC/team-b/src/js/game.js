@@ -133,6 +133,22 @@ function controllerTimer() {
     }
 }
 
+function addTitle(res)
+{
+    var title = "Order Placing Phase - ";
+    if (res.turn_status.current_season === "spring")
+    {
+        title += "Spring";
+    }
+    else
+    {
+        title += "Fall";
+    }
+    title += " ";
+    title += res.turn_status.current_year;
+    document.getElementById("seasonTitle").innerHTML = title;
+}
+
 // Add moves
 gameRef.child(gameID).child("players").child(username).child("orders_temp").on("value", function (snapshot) {
     $("#orders").empty();
@@ -155,22 +171,36 @@ gameRef.child(gameID).child("players").child(username).child("orders_temp").on("
 })
 
 // Change phase
-gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
-    var phase = snapshot.val();
+gameRef.child(gameID).child("turn_status").on("child_changed", function (snapshot) {
+    var data = snapshot.val();
 
-    if (phase === "retreat")
+    if (privateChatRef.child(gameID) !== undefined)
     {
-        if (privateChatRef.child(gameID) !== undefined)
-        {
-            privateChatRef.child(gameID).remove();
-        }
-        if (publicChatRef.child(gameID) != undefined)
-        {
-            publicChatRef.child(gameID).remove();
-        }
+        privateChatRef.child(gameID).remove();
+    }
+    if (publicChatRef.child(gameID) != undefined)
+    {
+        publicChatRef.child(gameID).remove();
+    }
+
+    if (data === "retreat")
+    {
         let link = "phase2.html?gameID=" + gameID + "&username=" + username;
         window.location.href = link;
     }
+    if (data === "build")
+    {
+        let link = "phase3.html?gameID=" + gameID + "&username=" + username;
+        window.location.href = link;
+    }
+
+    if (gameRef.child(gameID).child("players").child(username).child("orders_temp") !== undefined)
+    {
+        gameRef.child(gameID).child("players").child(username).child("orders_temp").remove();
+    }
+
+    let link = "game.html?gameID=" + gameID + "&username=" + username;
+    window.location.href = link;
 })
 
 function submitOrders(res)
@@ -296,6 +326,7 @@ $("document").ready(function () {
     $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
         // loop through each player
         mapsLogic(res);
+        addTitle(res);
         //addOrders(res['players']['orders_temp'])
         $("#roundSubmissionForm").submit(function () {
 
