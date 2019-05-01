@@ -146,34 +146,34 @@ function resolveGame(game, gameId) {
     // console.log(retreat);
 
     // Create for db
-    Object.keys(pass).forEach(location =>{
-        if(passUsers[pass[location].playerId] === undefined){
+    Object.keys(pass).forEach(location => {
+        if (passUsers[pass[location].playerId] === undefined) {
             passUsers[pass[location].playerId] = [];
         }
         passUsers[pass[location].playerId].push(pass[location]);
     })
-    Object.keys(fail).forEach(location =>{
-        if(failUsers[fail[location].playerId] === undefined){
+    Object.keys(fail).forEach(location => {
+        if (failUsers[fail[location].playerId] === undefined) {
             failUsers[fail[location].playerId] = [];
         }
         failUsers[fail[location].playerId].push(fail[location]);
     })
 
-    Object.keys(retreat).forEach(location =>{
-        if(retreatUsers[retreat[location].playerId] === undefined){
+    Object.keys(retreat).forEach(location => {
+        if (retreatUsers[retreat[location].playerId] === undefined) {
             retreatUsers[retreat[location].playerId] = [];
-        }       
+        }
         retreatUsers[retreat[location].playerId].push(retreat[location]);
     })
 
     roundResult = {}
     roundResultKey = game.turn_status.current_season + game.turn_status.current_year;
-    roundResult = {pass : passUsers, fail: failUsers, retreat: retreatUsers};
-    
+    roundResult = { pass: passUsers, fail: failUsers, retreat: retreatUsers };
+
     //console.log(JSON.stringify(roundResult, undefined, 2));
-    
+
     phaseChage(game, roundResult, roundResultKey, gameId);
-    
+
 
 
 
@@ -182,69 +182,87 @@ function resolveGame(game, gameId) {
 
 
 
-function phaseChage(game, roundResult, roundResultKey, gameId){
+function phaseChage(game, roundResult, roundResultKey, gameId) {
 
     // console.log(Object.keys(roundResult['retreat']).length);
-    if(Object.keys(roundResult['retreat']).length === 0){
+    if (Object.keys(roundResult['retreat']).length === 0) {
         // No retreats all go to orders or build for the next round
         // console.log("IN order spring ----------------------------------------------")
         // console.log(game.turn_status.current_phase);
-        if(game.turn_status.current_phase === "order"){
+        if (game.turn_status.current_phase === "order") {
             // In order move to build or change season
-            if(game.turn_status.current_season === "spring"){
+            if (game.turn_status.current_season === "spring") {
                 // No build go to fall
                 // update players for all the success moves
                 // console.log("IN order spring ----------------------------------------------")
-                //updatePlayers(game, gameId, roundResult, roundResultKey);
+                updatePlayers(game, gameId, roundResult, roundResultKey);
 
-            }else{
+            } else {
                 // Build
             }
         }
     }
-    else{
+    else {
         //There are are retreats go to retreats
         admin.database().ref('/games').child(gameId).child('resolution').child(roundResultKey).set(
             roundResult,
-            function(err){
-                if(err){
+            function (err) {
+                if (err) {
                     console.log("Error");
                 }
                 admin.database().ref('/games').child(gameId).child('turn_status').child('current_phase').set(
-                    'retreat', function(err){
-                        if(err){
+                    'retreat', function (err) {
+                        if (err) {
                             console.log("Error");
                         }
 
-                }).catch(error => { console.log(error) });
-                
+                    }).catch(error => { console.log(error) });
+
             }).catch(error => { console.log(error) });
     }
 
 }
 
 
-function updatePlayers(game, gameId, roundResult, roundResultKey){
-    
+function updatePlayers(game, gameId, roundResult, roundResultKey) {
+
     let allPlayers = game.players;
-    let passedPlayers = Object.keys(roundResult['pass']);
+    let passedPlayers = Object.keys(roundResult['pass']); // keys of players in the pass
     let passMoves = roundResult['pass'];
 
-    for(var i = 0; i < passedPlayers.length; i++){
-        let currentPlayerTerritories = allPlayers[passedPlayers[i]].territories;
-        Object.keys(passMoves).forEach(index =>{
-            let temp = currentPlayerTerritories[passMoves[index].CurrentZone];
-            delete currentPlayerTerritories[passMoves[index].CurrentZone];
-            allPlayers[passedPlayers[i]].territories[passMoves[index].CurrentZone] = temp;
+    for (var i = 0; i < passedPlayers.length; i++) {
+        let temp = passMoves[passedPlayers[i]]
+        temp.forEach(location => {
+            //console.log(location.CurrentZone)
+            if (location.MoveType === 'M') {
+                
+                
+                if (allPlayers[passedPlayers[i]].territories[location.MoveZone] === undefined) {
+                    allPlayers[passedPlayers[i]].territories[location.MoveZone] = allPlayers[passedPlayers[i]].territories[location.CurrentZone]
+                    delete allPlayers[passedPlayers[i]].territories[location.CurrentZone]
+                }
+            }
         })
+        // allPlayers[passedPlayers[i]].territories[passMoves[passedPlayers[i]].CurrentZone];
+        // console.log(allPlayers[passedPlayers[i]].territories[passMoves[passedPlayers[i]].CurrentZone]);
+
+
 
     }
     // console.log(gameId);
     // console.log('players')
-    // console.log(allPlayers);
-    // admin.database().ref('/games').child(gameId).child('players').set(allPlayers, function(err){
-    //     console.log("Works!!")
-    // });
+    console.log(JSON.stringify(allPlayers, undefined, 2));
+
+
+    admin.database().ref('/games').child(gameId).child('players').set(
+        allPlayers,
+        function (err) {
+            if (err) {
+                console.log("Error");
+            }
+
+        }).catch(error => { console.log(error) });
+
 
 }
 

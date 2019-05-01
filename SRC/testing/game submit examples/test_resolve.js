@@ -356,7 +356,7 @@ var counter = 100;
 //     counter += counter;
 // })
 
-submissions6.forEach(function (submission) {
+submissions2.forEach(function (submission) {
     setTimeout(gamePoster, counter, submission);
     counter += counter;
 })
