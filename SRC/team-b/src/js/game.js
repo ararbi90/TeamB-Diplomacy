@@ -160,6 +160,14 @@ gameRef.child(gameID).child("turn_status").child("current_phase").on("value", fu
 
     if (phase === "retreat")
     {
+        if (privateChatRef.child(gameID) !== undefined)
+        {
+            privateChatRef.child(gameID).remove();
+        }
+        if (publicChatRef.child(gameID) != undefined)
+        {
+            publicChatRef.child(gameID).remove();
+        }
         let link = "phase2.html?gameID=" + gameID + "&username=" + username;
         window.location.href = link;
     }

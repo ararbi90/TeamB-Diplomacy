@@ -126,11 +126,37 @@ gameRef.child(gameID).child("turn_status").child("current_phase").on("value", fu
 
     if (phase === "order")
     {
+        if (gameRef.child(gameID).child("players").child(username).child("orders_temp") !== undefined)
+        {
+            gameRef.child(gameID).child("players").child(username).child("orders_temp").remove();
+        }
+        if (gameRef.child(gameID).child("players").child(username).child("retreat_units_temp") != undefined)
+        {
+            gameRef.child(gameID).child("players").child(username).child("retreat_units_temp").remove();
+        }
+        if (gameRef.child(gameID).child("players").child(username).child("retreat_orders_temp") != undefined)
+        {
+            gameRef.child(gameID).child("players").child(username).child("retreat_orders_temp").remove();
+        }
+
         let link = "game.html?gameID=" + gameID + "&username=" + username;
         window.location.href = link;
     }
     else if (phase === "build")
     {
+        if (gameRef.child(gameID).child("players").child(username).child("orders_temp") !== undefined)
+        {
+            gameRef.child(gameID).child("players").child(username).child("orders_temp").remove();
+        }
+        if (gameRef.child(gameID).child("players").child(username).child("retreat_units_temp") != undefined)
+        {
+            gameRef.child(gameID).child("players").child(username).child("retreat_units_temp").remove();
+        }
+        if (gameRef.child(gameID).child("players").child(username).child("retreat_orders_temp") != undefined)
+        {
+            gameRef.child(gameID).child("players").child(username).child("retreat_orders_temp").remove();
+        }
+        
         let link = "phase3.html?gameID=" + gameID + "&username=" + username;
         window.location.href = link;
     }
