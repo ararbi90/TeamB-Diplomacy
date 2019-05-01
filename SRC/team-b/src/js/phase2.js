@@ -451,11 +451,11 @@ $("document").ready(function () {
                     var submission = submitOrders(res3);
                     console.log(submission);
 
-                    // $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res4) {
-                    //     console.log(res4);
-                    // }).fail(function (err) {
-                    //     console.log(err);
-                    // })
+                    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitretreatorder", { submission }, function (res4) {
+                        console.log(res4);
+                    }).fail(function (err) {
+                        console.log(err);
+                    })
                 }).fail(function (err) {
                     console.log(err);
                 })
