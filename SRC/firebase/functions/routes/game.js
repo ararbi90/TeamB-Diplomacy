@@ -463,10 +463,26 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
     })
 
     // Update players
+    let fails = game.resolution.fail;
+    let pass = game.resolution.pass;
+    let retreat = game.resolution.retreat;
 
+    disband.forEach(dis =>{
+        delete game.players[dis.playerId]['territories'][dis.CurrentZone];
+    })
+
+    canMove.forEach(move =>{
+        pass[move.playerId] = move;
+    })
     
+    game.resolution.pass = pass;
+
+    updateRetreatPlayers(game, gameId, game.resolution, roundResultKey)
 
 
+}
+
+function updateRetreatPlayers(game, gameId, roundResult, roundResultKey){
 
 }
 
@@ -523,7 +539,7 @@ function updatePlayers(game, gameId, roundResult, roundResultKey) {
 //--------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------
-var regions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
+givar regions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
 function getPassFails(allOrder) {
 
     // Loop over all the orders and assign a currentOrder
