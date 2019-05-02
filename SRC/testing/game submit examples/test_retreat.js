@@ -14,7 +14,7 @@ var $ = jQuery = require('jquery')(window);
 2) 
 */
 
-let testGameId = "-LdjyWdw3whWtnBFrZul";
+let testGameId = "-LdptNNGiYdaQIgFRY3t";
 
 let retreatOrder_test_0 = [
     {
@@ -73,7 +73,7 @@ let retreatOrder_test_0 = [
 
 function retreatSubmit(submission) {
 
-    let url = "";
+    let url = "http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/submitretreatorder";
     //http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/submitorder
     $.post(url, { submission }, function (res) {
         console.log(res);
@@ -83,8 +83,8 @@ function retreatSubmit(submission) {
 }
 
 
-
-holds.forEach(function (submission) {
+var counter  = 100;
+retreatOrder_test_0.forEach(function (submission) {
     setTimeout(retreatSubmit, counter, submission);
     counter += counter;
 })

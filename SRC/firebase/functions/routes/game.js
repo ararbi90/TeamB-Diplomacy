@@ -45,8 +45,9 @@ router.post('/submitOrder', function (req, res, next) {
     admin.database().ref('/games').child(gameId).once('value').then(game => {
         let gameInfo = game.val();
         //console.log(gameInfo);
+        console.log(gameId)
         let roundName = gameInfo.turn_status.current_season + gameInfo.turn_status.current_year;
-        //console.log(roundName)
+        console.log(roundName)
         // Submit game
         admin.database().ref('/games').child(gameId).child('order').child(roundName).child(username).set(
             order,
@@ -58,6 +59,8 @@ router.post('/submitOrder', function (req, res, next) {
                     let updated = updatedGame.val();
                     let numberOfPlayers = Object.keys(updated.players).length;
                     let numberOfSubmits = Object.keys(updated.order[roundName]).length;
+                    //console.log(numberOfPlayers);
+                    //console.log(numberOfSubmits);
                     if (numberOfPlayers === numberOfSubmits) {
                         resolveGame(updated, gameId);
                         res.send("Resolve");
@@ -91,6 +94,7 @@ router.post('/submitretreatorder', function (req, res, next) {
     let gameId = data.gameId;
     let username = data.username;
     let order = data.orders;
+    //console.log(JSON.stringify(order, undefined, 2));
     //console.log(order);
     // Get gameinfo
     admin.database().ref('/games').child(gameId).once('value').then(game => {
@@ -138,6 +142,11 @@ router.post('/submitretreatorder', function (req, res, next) {
 function resolveGame(game, gameId) {
     //console.log(game);
     let orders = game.order;
+
+    if (game.turn_status.current_phase === 'retreat') {
+        orders = game.retreatOrder;
+    }
+
     let allOrder = [];
     Object.keys(orders).forEach(function (seasonYear, index) {
         // console.log(seasonYear)
@@ -293,9 +302,9 @@ function phaseChageOrders(game, roundResult, roundResultKey, gameId) {
                             console.log("Adding supple Center------------------------------");
                             addedCenter = true;
                             // Delete if any one else is controlling the
-                            Object.keys(updatedList).forEach(findLooser =>{
-                               
-                                if(updatedList[findLooser].supplyCenters[sc] !== undefined){
+                            Object.keys(updatedList).forEach(findLooser => {
+
+                                if (updatedList[findLooser].supplyCenters[sc] !== undefined) {
                                     console.log("Found " + findLooser);
                                     delete updatedList[findLooser].supplyCenters[sc];
                                 }
@@ -318,7 +327,7 @@ function phaseChageOrders(game, roundResult, roundResultKey, gameId) {
                 // console.log("Supply Center length: " + supplyCenterCount)
                 // if (supplyCenterCount > territoryCount) {
                 //     console.log("Cheking if build is needed----------------------------");
-                    
+
                 //     if (addedSupplyCenter[player] === undefined) {
                 //         addedSupplyCenter[player] = [];
                 //         addedSupplyCenter[player].push(player);
@@ -333,13 +342,13 @@ function phaseChageOrders(game, roundResult, roundResultKey, gameId) {
 
             // Check all updated list
 
-            Object.keys(updatedList).forEach(player =>{
+            Object.keys(updatedList).forEach(player => {
                 let territoryCount = Object.keys(updatedList[player].territories).length;
                 let supplyCenterCount = Object.keys(updatedList[player].supplyCenters).length;
                 // Add functionality to to to build if supplyCenters < territories
                 if (supplyCenterCount != territoryCount) {
                     //console.log("Cheking if build is needed----------------------------");
-                    
+
                     if (addedSupplyCenter[player] === undefined) {
                         addedSupplyCenter[player] = [];
                         addedSupplyCenter[player].push(player);
@@ -353,7 +362,7 @@ function phaseChageOrders(game, roundResult, roundResultKey, gameId) {
             })
 
             //console.log(JSON.stringify(updatedList, undefined, 2));
-            
+
             if (build === true) {
                 // Switch to build
                 //console.log("Build ---------------------------------------")
@@ -452,41 +461,55 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
     let disband = [];
     let canMove = [];
 
-    Object.keys(passFails).forEach(loc =>{
-        if(passFails[loc].Retreat === 'true'){
-            if(passFails[loc].outcome === 'fail'){
-                disband.push(passFails[loc]);
-            }else if(passFails[loc].outcome === 'success'){
-                canMove.push(passFails[loc]);
-            } 
-        }
+    //console.log(JSON.stringify(passFails, undefined, 2));
+    Object.keys(passFails).forEach(loc => {
+        passFails[loc].forEach(PForder => {
+            if (PForder.Retreat === 'true') {
+                //console.log("FOUND A retre")
+                if (PForder.outcome === 'failed') {
+                    disband.push(PForder);
+                } else if (passFails[loc].outcome === 'success') {
+                    canMove.push(PForder);
+                }
+            }
+
+        })
+
     })
+
+    // console.log("This is dispand");
+    // console.log(disband)
 
     // Update players
     let fails = game.resolution[roundResultKey].fail;
     let pass = game.resolution[roundResultKey].pass;
     let retreat = game.resolution[roundResultKey].retreat;
 
-    disband.forEach(dis =>{
+    disband.forEach(dis => {
         delete game.players[dis.playerId]['territories'][dis.CurrentZone];
     })
 
-    canMove.forEach(move =>{
+    //console.log(passFails)
+
+
+    canMove.forEach(move => {
         pass[move.playerId] = move;
         delete fails[move.playerId][move.CurrentZone]
         delete retreat[move.playerId][move.CurrentZone]
     })
-    
+
     game.resolution.pass = pass;
-    game.resolution.fail = pass;
-    game.resolution.retreat = pass;
+    //console.log(game.resolution);
+    //console.log(JSON.stringify(game.resolution, undefined, 2));
+
+
 
     updateRetreatPlayers(game, gameId, game.resolution, roundResultKey)
 
 
 }
 
-function updateRetreatPlayers(game, gameId, roundResult, roundResultKey){
+function updateRetreatPlayers(game, gameId, roundResult, roundResultKey) {
     let allPlayers = game.players;
     let passedPlayers = Object.keys(roundResult['pass']); // keys of players in the pass
     let passMoves = roundResult['pass'];
@@ -506,7 +529,7 @@ function updateRetreatPlayers(game, gameId, roundResult, roundResultKey){
 
     console.log(JSON.stringify(allPlayers, undefined, 2));
 
-    
+
     // admin.database().ref('/games').child(gameId).child('players').set(
     //     allPlayers,
     //     function (err) {
@@ -544,7 +567,7 @@ function updatePlayers(game, gameId, roundResult, roundResultKey) {
 
     //console.log(JSON.stringify(allPlayers, undefined, 2));
 
-    
+
     admin.database().ref('/games').child(gameId).child('players').set(
         allPlayers,
         function (err) {
@@ -573,7 +596,7 @@ function updatePlayers(game, gameId, roundResult, roundResultKey) {
 //--------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------
-givar regions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
+var regions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
 function getPassFails(allOrder) {
 
     // Loop over all the orders and assign a currentOrder

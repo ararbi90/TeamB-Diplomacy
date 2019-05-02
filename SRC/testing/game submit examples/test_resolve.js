@@ -36,7 +36,7 @@ let diagram_1 = rule_diagram_orders[0];
 */
 
 
-let testGameId = testGameId;
+let testGameId = "-LdptNNGiYdaQIgFRY3t";
 
 // everything is a hold     - works
 // All orders in pass list 
@@ -582,7 +582,7 @@ var counter = 100;
 //     counter += counter;
 // })
 
-holds.forEach(function (submission) {
+moveOrder_test_1.forEach(function (submission) {
     setTimeout(gamePoster, counter, submission);
     counter += counter;
 })
