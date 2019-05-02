@@ -36,7 +36,7 @@ let diagram_1 = rule_diagram_orders[0];
 */
 
 
-let testGameId = "-LdjyWdw3whWtnBFrZul";
+let testGameId = testGameId;
 
 // everything is a hold     - works
 // All orders in pass list 
@@ -358,7 +358,7 @@ let submissions7 = [{
 // c: hold adr                     fail              
 let submissions8 = [{
     username: "a",
-    gameId: "-LdjyWdw3whWtnBFrZul",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'LON',
@@ -377,7 +377,7 @@ let submissions8 = [{
 },
 {
     username: "b",
-    gameId: "-LdjyWdw3whWtnBFrZul",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
         CurrentZone: 'BOT',
@@ -389,7 +389,7 @@ let submissions8 = [{
 },
 {
     username: "c",
-    gameId: "-LdjyWdw3whWtnBFrZul",
+    gameId: testGameId,
     orders: [
         {
             UnitType: 'A',
@@ -409,53 +409,150 @@ let submissions8 = [{
 //                                           PHASE INTEGRATION TESTING                 
 //                 Below are the test cases that will be used for testing all the phases working together
 //
+//          All tests use 3 players: a,b,c with territories shown below. -LdptNNGiYdaQIgFRY3t
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// -LdptNNGiYdaQIgFRY3t
+/* Player a:
+      "territories" : {
+        "BER" : {
+          "forceType" : "A"
+        },
+        "BUD" : {
+          "forceType" : "A"
+        },
+        "EDI" : {
+          "forceType" : "F"
+        },
+        "KIE" : {
+          "forceType" : "F"
+        },
+        "LON" : {
+          "forceType" : "F"
+        },
+        "LVP" : {
+          "forceType" : "A"
+        },
+        "MUN" : {
+          "forceType" : "A"
+        },
+        "TRI" : {
+          "forceType" : "F"
+        },
+        "VIE" : {
+          "forceType" : "A"
+        }
+      }
+    },
 
-// a: move lon nwy                 pass                                      
-// a: iri convoy lon nwy              pass                      
-// b: move lvp lon                 pass                            
-// c: hold adr                     fail              
+    BER  
+    LVP
+    MUN
+*/
+
+
+/* Player b:
+"territories" : {
+        "MOS" : {
+          "forceType" : "A"
+        },
+        "NAP" : {
+          "forceType" : "F"
+        },
+        "ROM" : {
+          "forceType" : "A"
+        },
+        "SEV" : {
+          "forceType" : "F"
+        },
+        "STP" : {
+          "forceType" : "F"
+        },
+        "VEN" : {
+          "forceType" : "A"
+        },
+        "WAR" : {
+          "forceType" : "A"
+        }
+
+        MOS
+        ROM
+        VEN
+*/
+
+/* Player c:
+   "territories" : {
+        "ANK" : {
+          "forceType" : "F"
+        },
+        "BRE" : {
+          "forceType" : "F"
+        },
+        "CON" : {
+          "forceType" : "A"
+        },
+        "MAR" : {
+          "forceType" : "A"
+        },
+        "PAR" : {
+          "forceType" : "A"
+        },
+        "SMY" : {
+          "forceType" : "A"
+        }
+
+        CON
+        MAR
+        SMY
+
+*/
+
+
+// a:   BER  LVP  MUN
+// b:   MOS  ROM  VEN
+// c:   CON  MAR  SMY
+//                                    
+// a: is holding in BER                --fail/retreat
+// b: attacks a in BER with support    --pass         
+// c: con move nwy                     --pass
 let moveOrder_test_1 = [{
     username: "a",
-    gameId: "-LdjyWdw3whWtnBFrZul",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
-        CurrentZone: 'LON',
-        MoveType: 'M',
-        MoveZone: 'NWY'
+        CurrentZone: 'BER',
+        MoveType: 'H',
 
-    },
-    {
-        UnitType: 'F',
-        CurrentZone: 'IRI',
-        MoveType: 'C',
-        InitialConvoyZone:"LON",
-        FinalConvoyZone:"NWY"
     }
     ]
 },
 {
     username: "b",
-    gameId: "-LdjyWdw3whWtnBFrZul",
+    gameId: testGameId,
     orders: [{
         UnitType: 'A',
-        CurrentZone: 'BOT',
+        CurrentZone: 'MOS',
+        MoveType: 'M',
+        MoveZone:"BER",
+    },
+    {
+        UnitType: 'A',
+        CurrentZone: 'ROM',
         MoveType: 'S',
-        InitialSupportZone:"LON",
-        FinalSupportZone:"NWY"
+        InitialSupportZone:"MOS",
+        FinalSupportZone:"BER",
     }
     ]
 },
 {
     username: "c",
-    gameId: "-LdjyWdw3whWtnBFrZul",
+    gameId: testGameId,
     orders: [
         {
             UnitType: 'A',
-            CurrentZone: 'ADR',
+            CurrentZone: 'CON',
             MoveType: 'M',
             MoveZone: 'NWY'
         }]
