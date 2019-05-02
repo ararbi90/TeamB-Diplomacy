@@ -23,15 +23,9 @@ let retreatOrder_test_0 = [
         orders: [
             {
                 UnitType: 'A',
-                CurrentZone: 'MOS',
-                MoveType: 'H',
-                Retreat: 'false'
-            },
-            {
-                UnitType: 'A',
-                CurrentZone: 'MOS',
+                CurrentZone: 'BER',
                 MoveType: 'M',
-                MoveZone: 'BLA',
+                MoveZone: 'NWY',
                 Retreat:'true'
             }]
         },
@@ -41,16 +35,15 @@ let retreatOrder_test_0 = [
             orders: [
                 {
                     UnitType: 'A',
-                    CurrentZone: 'MOS',
+                    CurrentZone: 'BER',
                     MoveType: 'H',
                     Retreat: 'false'
                 },
                 {
                     UnitType: 'A',
-                    CurrentZone: 'MOS',
-                    MoveType: 'M',
-                    MoveZone: 'BLA',
-                    Retreat:'true'
+                    CurrentZone: 'ROM',
+                    MoveType: 'H',
+                    Retreat:'false'
                 }]
             },
     {
@@ -59,16 +52,9 @@ let retreatOrder_test_0 = [
     orders: [
         {
             UnitType: 'A',
-            CurrentZone: 'MOS',
+            CurrentZone: 'NWY',
             MoveType: 'H',
             Retreat: 'false'
-        },
-        {
-            UnitType: 'A',
-            CurrentZone: 'MOS',
-            MoveType: 'M',
-            MoveZone: 'BLA',
-            Retreat:'true'
         }]
     }
 ]
