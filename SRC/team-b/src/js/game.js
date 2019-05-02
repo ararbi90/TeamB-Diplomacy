@@ -183,24 +183,29 @@ gameRef.child(gameID).child("turn_status").on("child_changed", function (snapsho
         publicChatRef.child(gameID).remove();
     }
 
-    if (data === "retreat")
+    if (data === "retreat" || data === "build")
     {
-        let link = "phase2.html?gameID=" + gameID + "&username=" + username;
+        if (data === "retreat")
+        {
+            let link = "phase2.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
+        }
+        else
+        {
+            let link = "phase3.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
+        }
+    }
+    else
+    {
+        if (gameRef.child(gameID).child("players").child(username).child("orders_temp") !== undefined)
+        {
+            gameRef.child(gameID).child("players").child(username).child("orders_temp").remove();
+        }
+
+        let link = "game.html?gameID=" + gameID + "&username=" + username;
         window.location.href = link;
     }
-    if (data === "build")
-    {
-        let link = "phase3.html?gameID=" + gameID + "&username=" + username;
-        window.location.href = link;
-    }
-
-    if (gameRef.child(gameID).child("players").child(username).child("orders_temp") !== undefined)
-    {
-        gameRef.child(gameID).child("players").child(username).child("orders_temp").remove();
-    }
-
-    let link = "game.html?gameID=" + gameID + "&username=" + username;
-    window.location.href = link;
 })
 
 function submitOrders(res)

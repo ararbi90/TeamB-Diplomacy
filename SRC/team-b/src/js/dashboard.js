@@ -178,10 +178,10 @@ function createAndAssignTerrtories(players) {
     // **FOR TESTING:
 
     // let powers = {
-    //     Austria: { BUR: { forceType: "A" }, BUD: { forceType: "A" }, TRI: { forceType: "F" } },
+    //     Austria: { BUR: { forceType: "A" }, BUD: { forceType: "A" }, TYR: { forceType: "F" } },
     //     England: { NTH: { forceType: "F" }, EDI: { forceType: "A" }, LON: { forceType: "A" }, ENG: { forceType: "F" } },
     //     France: { PAR: { forceType: "A" }, MUN: { forceType: "A" }, MID: { forceType: "F" } },
-    //     Russia: { MOS: { forceType: "A" }, SEV: { forceType: "F" }, WAR: { forceType: "A" }, STP: { forceType: "F" } },
+    //     Russia: { GAL: { forceType: "A" }, SEV: { forceType: "F" }, TRI: { forceType: "A" }, STP: { forceType: "F" } },
     //     Turkey: { ANK: { forceType: "F" }, CON: { forceType: "A" }, SMY: { forceType: "A" } },
     //     Germany: { BER: { forceType: "A" }, PRU: { forceType: "A" }, KIE: { forceType: "F" } },
     //     Italy: { ROM: { forceType: "A" }, VEN: { forceType: "A" }, NAP: { forceType: "F" } }
