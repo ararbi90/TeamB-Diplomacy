@@ -54,6 +54,8 @@ function mapsLogic(res) {
         });
     });
 
+    
+    //$('<img />').attr('src',this).appendTo('body').hide();
     var enabledRegions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
     var currentRegion;
     // the initial parameters for the map. Change according to this link to change the look of the map, https://www.10bestdesign.com/jqvmap/documentation/
@@ -70,8 +72,6 @@ function mapsLogic(res) {
         hoverColors: hovercolors,
         selectedColors: hovercolors,
         showLabels: true,
-        pins: { "ADR": "\u003cimg src=\"..\\..\\images\\supply-center.png\" /\u003e" },
-        pinMode: 'content',
         onRegionClick: function (event, code, region) {
             // Check if this is an Enabled Region
             if (clickableRegions.indexOf(code) === -1) {
@@ -92,14 +92,6 @@ function mapsLogic(res) {
             }
         }
     });
-    jQuery('#vmap').bind('resize.jqvmap',
-        function (event, width, height) {
-            // sizeMap();
-            console.log("Width: " + width + " HEIGHT: " + height);
-            console.log("event: " + event.type);
-        }
-    );
-
 }
 
 function nextPhase()

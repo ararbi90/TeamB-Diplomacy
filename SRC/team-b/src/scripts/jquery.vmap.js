@@ -879,10 +879,7 @@ JQVMap.prototype.placePin = function(pinIndex, index, pin) {
   map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin" style="position:absolute; font-weight:bold; font-size: .75rem;">' + pin + '</div>');
 };
 
-JQVMap.prototype.placePins = async function(pins, pinMode){
-  await this.getUnitPins();
-  console.log(supplyCountries);
-  console.log(unitTerritories);
+JQVMap.prototype.placePins = function(pins, pinMode){
   var map = this;
 
   if(!pinMode || (pinMode !== 'content' && pinMode !== 'id')) {
@@ -901,15 +898,12 @@ JQVMap.prototype.placePins = async function(pins, pinMode){
         $pin.remove();
       }
 
-      if(unitTerritories.includes(index)) {
-        map.placeUnits(pinIndex, index, pin);
-      }
+
+      if (!supplyCountries.includes(index))
+          map.placePin(pinIndex, index, pin);
       else {
-        if (!supplyCountries.includes(index))
-            map.placePin(pinIndex, index, pin);
-        else {
-            map.placeSupplyCenters(pinIndex, index, pin);
-        }
+          map.placeSupplyCenters(pinIndex, index, pin);
+        
     }
     });
   } else { //treat pin as id of an html content
@@ -948,7 +942,7 @@ JQVMap.prototype.placePins = async function(pins, pinMode){
 //                  values > 1 shift it to the right while values < 1 shift it left.
 
 // third parameter: should be how much you want to shift up or down the label. (Expressed in decimal like a percent e.g. 95% = 0.95)
-//                  values > 1 shift it to the right while values < 1 shift it left.
+//                  values > 1 shift it down while values < 1 shift it up.
 JQVMap.prototype.positionCertainPin = function(country, shiftFactorX, shiftFactorY) {
   var currentLeft = country.position().left;
   var currentTop = country.position().top;
@@ -999,7 +993,7 @@ JQVMap.prototype.positionPins = function(){
   this.positionCertainPin($('#jqvmap1_MID_pin'), 0.35, 0.98);
 
   // reposition constantinople
-  this.positionCertainPin($('#jqvmap1_MID_pin'), 0.35, 0.98);
+  this.positionCertainPin($('#jqvmap1_CON_pin'), 1.00, 1.02);
 };
 
 JQVMap.prototype.removePin = function(cc) {
