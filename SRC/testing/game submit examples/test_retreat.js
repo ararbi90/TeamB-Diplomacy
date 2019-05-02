@@ -75,7 +75,7 @@ let retreatOrder_test_0 = [
 
 
 // Retreat passes for a because nth is not occupied     correct
-let retreatOrder_test_0 = [
+let retreatOrder_test_2 = [
     {
         username: "a",
         gameId: testGameId,
@@ -94,16 +94,11 @@ let retreatOrder_test_0 = [
             orders: [
                 {
                     UnitType: 'A',
-                    CurrentZone: 'BER',
+                    CurrentZone: 'MOS',
                     MoveType: 'H',
                     Retreat: 'false'
-                },
-                {
-                    UnitType: 'A',
-                    CurrentZone: 'ROM',
-                    MoveType: 'H',
-                    Retreat:'false'
-                }]
+                }
+                ]
             },
     {
     username: "c",
@@ -111,10 +106,17 @@ let retreatOrder_test_0 = [
     orders: [
         {
             UnitType: 'A',
-            CurrentZone: 'NWY',
+            CurrentZone: 'MAR',
             MoveType: 'H',
             Retreat: 'false'
-        }]
+        },
+        {
+            UnitType: 'A',
+            CurrentZone: 'BER',
+            MoveType: 'H',
+            Retreat: 'false'
+        }
+    ]
     }
 ]
 
@@ -133,7 +135,7 @@ function retreatSubmit(submission) {
 
 
 var counter  = 100;
-retreatOrder_test_0.forEach(function (submission) {
+retreatOrder_test_2.forEach(function (submission) {
     setTimeout(retreatSubmit, counter, submission);
     counter += counter;
 })

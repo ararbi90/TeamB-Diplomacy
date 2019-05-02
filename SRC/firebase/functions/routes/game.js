@@ -21,10 +21,8 @@ let convoryKeys = ["UnitType", "CurrentZone", "MoveType", "InitalConvoyZone", "F
 //--------------------------------------------------------------------------------------------------------------------------------
 router.post('/Info', function (req, res, next) {
     let gameId = req.body.gameId;
-    //console.log(gameId);
     admin.database().ref('/games').child(gameId).once('value').then(snapshot => {
         data = {};
-        // console.log(snapshot.child("players").val());
         res.send(snapshot.val());
         return true;
     }).catch(error => { console.log(error) });
@@ -36,15 +34,12 @@ router.post('/Info', function (req, res, next) {
 router.post('/submitOrder', function (req, res, next) {
     // This post handles all the 
     let data = req.body.submission;
-    //console.log(data);
     let gameId = data.gameId;
     let username = data.username;
     let order = data.orders;
-    //console.log(order);
     // Get gameinfo
     admin.database().ref('/games').child(gameId).once('value').then(game => {
         let gameInfo = game.val();
-        //console.log(gameInfo);
         console.log(gameId)
         let roundName = gameInfo.turn_status.current_season + gameInfo.turn_status.current_year;
         console.log(roundName)
@@ -59,23 +54,18 @@ router.post('/submitOrder', function (req, res, next) {
                     let updated = updatedGame.val();
                     let numberOfPlayers = Object.keys(updated.players).length;
                     let numberOfSubmits = Object.keys(updated.order[roundName]).length;
-                    //console.log(numberOfPlayers);
-                    //console.log(numberOfSubmits);
                     if (numberOfPlayers === numberOfSubmits) {
                         resolveGame(updated, gameId);
                         res.send("Resolve");
                     } else {
-                        // console.log("Submitted");
                         res.send("Submitted");
                     }
-                    //console.log("Done");
                     return true;
                 }).catch(error => { console.log(error) });
 
             }
 
         ).catch(error => { console.log(error) });
-        //res.send("Done");
         return true;
     }).catch(error => { console.log(error) });
 
@@ -90,18 +80,13 @@ router.post('/submitOrder', function (req, res, next) {
 router.post('/submitretreatorder', function (req, res, next) {
 
     let data = req.body.submission;
-    //console.log(data);
     let gameId = data.gameId;
     let username = data.username;
     let order = data.orders;
-    //console.log(JSON.stringify(order, undefined, 2));
-    //console.log(order);
     // Get gameinfo
     admin.database().ref('/games').child(gameId).once('value').then(game => {
         let gameInfo = game.val();
-        //console.log(gameInfo);
         let roundName = gameInfo.turn_status.current_season + gameInfo.turn_status.current_year;
-        //console.log(roundName)
         // Submit game
         admin.database().ref('/games').child(gameId).child('retreatOrder').child(roundName).child(username).set(
             order,
@@ -114,23 +99,18 @@ router.post('/submitretreatorder', function (req, res, next) {
                     let numberOfPlayers = Object.keys(updated.players).length;
                     let numberOfSubmits = Object.keys(updated.retreatOrder[roundName]).length;
                     if (numberOfPlayers === numberOfSubmits) {
-                        //console.log("Resolve");
                         //Call resolve function
-                        //console.log("Going into resolve");
                         resolveGame(updated, gameId);
                         res.send("Resolve");
                     } else {
-                        // console.log("Submitted");
                         res.send("Submitted");
                     }
-                    //console.log("Done");
                     return true;
                 }).catch(error => { console.log(error) });
 
             }
 
         ).catch(error => { console.log(error) });
-        //res.send("Done");
         return true;
     }).catch(error => { console.log(error) });
 
@@ -140,7 +120,6 @@ router.post('/submitretreatorder', function (req, res, next) {
 });
 
 function resolveGame(game, gameId) {
-    //console.log(game);
     let orders = game.order;
 
     if (game.turn_status.current_phase === 'retreat') {
@@ -149,7 +128,6 @@ function resolveGame(game, gameId) {
 
     let allOrder = [];
     Object.keys(orders).forEach(function (seasonYear, index) {
-        // console.log(seasonYear)
         Object.keys(orders[seasonYear]).forEach(function (playerId, index) {
             Object.keys(orders[seasonYear][playerId]).forEach(function (eachOrder) {
                 let temp = orders[seasonYear][playerId][eachOrder];
@@ -163,7 +141,6 @@ function resolveGame(game, gameId) {
     })
     // got to logic of game
     let passFails = getPassFails(allOrder);
-
     let pass = {}
     let retreat = {}
     let fail = {}
@@ -174,13 +151,15 @@ function resolveGame(game, gameId) {
 
         let currentLocation = passFails[locationKey];
         currentLocation.forEach(current => {
+
             if (current.MoveType === 'H' && current.outcome === 'failed') {
                 retreat[current.CurrentZone] = current;
                 fail[current.CurrentZone] = current;
             } else if ((current.MoveType === 'M' || current.MoveType === 'S') && current.outcome === 'failed') {
+
                 fail[current.CurrentZone] = current;
                 currentLocation.forEach(winner => {
-
+                    //console.log("In retreat");
                     if (winner.outcome === "success" && winner.MoveZone === current.CurrentZone) {
                         retreat[current.CurrentZone] = current;
 
@@ -229,7 +208,6 @@ function resolveGame(game, gameId) {
     roundResultKey = game.turn_status.current_season + game.turn_status.current_year;
     roundResult = { pass: passUsers, fail: failUsers, retreat: retreatUsers };
 
-    //console.log(JSON.stringify(roundResult, undefined, 2));
 
     if (game.turn_status.current_phase === 'order') {
         phaseChageOrders(game, roundResult, roundResultKey, gameId);
@@ -299,7 +277,6 @@ function phaseChageOrders(game, roundResult, roundResultKey, gameId) {
                 Object.keys(updatedList[player].territories).forEach(sc => {
                     if (supplyCountriesHash[sc] !== undefined) {
                         if (updatedList[player].supplyCenters[sc] === undefined) {
-                            console.log("Adding supple Center------------------------------");
                             addedCenter = true;
                             // Delete if any one else is controlling the
                             Object.keys(updatedList).forEach(findLooser => {
@@ -320,23 +297,6 @@ function phaseChageOrders(game, roundResult, roundResultKey, gameId) {
                         }
                     }
                 })
-                // let territoryCount = Object.keys(updatedList[player].territories).length;
-                // let supplyCenterCount = Object.keys(updatedList[player].supplyCenters).length;
-                // console.log("Player: " + player);
-                // console.log("Territorie lenght: " + territoryCount)
-                // console.log("Supply Center length: " + supplyCenterCount)
-                // if (supplyCenterCount > territoryCount) {
-                //     console.log("Cheking if build is needed----------------------------");
-
-                //     if (addedSupplyCenter[player] === undefined) {
-                //         addedSupplyCenter[player] = [];
-                //         addedSupplyCenter[player].push(player);
-                //     }
-                //     else {
-                //         addedSupplyCenter[player].push(player);
-                //     }
-                //     build = true;
-                // }
 
             })
 
@@ -346,8 +306,7 @@ function phaseChageOrders(game, roundResult, roundResultKey, gameId) {
                 let territoryCount = Object.keys(updatedList[player].territories).length;
                 let supplyCenterCount = Object.keys(updatedList[player].supplyCenters).length;
                 // Add functionality to to to build if supplyCenters < territories
-                if (supplyCenterCount != territoryCount) {
-                    //console.log("Cheking if build is needed----------------------------");
+                if (supplyCenterCount !== territoryCount) {
 
                     if (addedSupplyCenter[player] === undefined) {
                         addedSupplyCenter[player] = [];
@@ -361,11 +320,9 @@ function phaseChageOrders(game, roundResult, roundResultKey, gameId) {
 
             })
 
-            //console.log(JSON.stringify(updatedList, undefined, 2));
 
             if (build === true) {
                 // Switch to build
-                //console.log("Build ---------------------------------------")
                 admin.database().ref('/games').child(gameId).child('players').set(
                     updatedList,
                     function (err) {
@@ -390,7 +347,6 @@ function phaseChageOrders(game, roundResult, roundResultKey, gameId) {
                     }).catch(error => { console.log(error) });
             } else {
                 // No build just change to order spring and increment year stay in order
-                //console.log("No Build ---------------------------------------")
                 let newYeay = parseInt(game.turn_status.current_year, 10) + 1;
                 admin.database().ref('/games').child(gameId).child('turn_status').child('current_season').set(
                     'spring', function (err) {
@@ -409,7 +365,6 @@ function phaseChageOrders(game, roundResult, roundResultKey, gameId) {
                     }).catch(error => { console.log(error) });
 
                 if (addedCenter === true) {
-                    //console.log("Updating players without going to build -----------------------------")
                     admin.database().ref('/games').child(gameId).child('players').set(
                         updatedList,
                         function (err) {
@@ -461,14 +416,13 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
     let disband = [];
     let canMove = [];
 
-    //console.log(JSON.stringify(passFails, undefined, 2));
     Object.keys(passFails).forEach(loc => {
         passFails[loc].forEach(PForder => {
             if (PForder.Retreat === 'true') {
                 //console.log("FOUND A retre")
                 if (PForder.outcome === 'failed') {
                     disband.push(PForder);
-                } else if (passFails[loc].outcome === 'success') {
+                } else if (PForder.outcome === 'success') {
                     canMove.push(PForder);
                 }
             }
@@ -477,8 +431,6 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
 
     })
 
-    // console.log("This is dispand");
-    // console.log(disband)
 
     // Update players
     let fails = game.resolution[roundResultKey].fail;
@@ -489,22 +441,183 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
         delete game.players[dis.playerId]['territories'][dis.CurrentZone];
     })
 
-    //console.log(passFails)
-
-
     canMove.forEach(move => {
-        pass[move.playerId] = move;
-        delete fails[move.playerId][move.CurrentZone]
-        delete retreat[move.playerId][move.CurrentZone]
+
+        if (pass[move.playerId] === undefined) {
+            pass[move.playerId] = [];
+        } else {
+            pass[move.playerId].push(move);
+        }
+        fails[move.playerId].forEach((m, i) => {
+            if (m.CurrentZone === move.CurrentZone) {
+                delete fails[move.playerId][i];
+            }
+        })
+        retreat[move.playerId].forEach((m, i) => {
+            if (m.CurrentZone === move.CurrentZone) {
+                delete retreat[move.playerId][i];
+            }
+        })
     })
 
-    game.resolution.pass = pass;
-    //console.log(game.resolution);
-    //console.log(JSON.stringify(game.resolution, undefined, 2));
+
+    let updatedList = updateRetreatPlayers(game, gameId, game.resolution[roundResultKey], roundResultKey);
 
 
+    if (game.turn_status.current_season === 'spring') {
+        // got to fall and orders
 
-    updateRetreatPlayers(game, gameId, game.resolution, roundResultKey)
+        admin.database().ref('/games').child(gameId).child('turn_status').child('current_season').set(
+            'fall', function (err) {
+                if (err) {
+                    console.log("Error");
+                }
+
+
+            }).catch(error => { console.log(error) });
+
+        admin.database().ref('/games').child(gameId).child('turn_status').child('current_phase').set(
+            'order', function (err) {
+                if (err) {
+                    console.log("Error");
+                }
+
+            }).catch(error => { console.log(error) });
+
+    } else {
+        // check for builds or go to spring and next year
+        // Cases for build and no build
+        // Case 1 add supply centers and if supply center > territories go to buid
+        // Case 2 add supply centers and if supply centers are added commit 
+        // fall check for builds
+
+        supplyCountriesHash = {};
+        supplyCountries.forEach(location => {
+            supplyCountriesHash[location] = 0;
+        })
+
+        // Adding supple centers
+        let build = false;
+        let addedCenter = false;
+        let addedSupplyCenter = {};
+        // Update supply center is a function
+        Object.keys(updatedList).forEach(player => {
+            Object.keys(updatedList[player].territories).forEach(sc => {
+                if (supplyCountriesHash[sc] !== undefined) {
+                    if (updatedList[player].supplyCenters[sc] === undefined) {
+                        addedCenter = true;
+                        // Delete if any one else is controlling the
+                        Object.keys(updatedList).forEach(findLooser => {
+
+                            if (updatedList[findLooser].supplyCenters[sc] !== undefined) {
+                                delete updatedList[findLooser].supplyCenters[sc];
+                            }
+                        });
+                        updatedList[player].supplyCenters[sc] = updatedList[player].territories[sc];
+                        if (addedSupplyCenter[player] === undefined) {
+                            addedSupplyCenter[player] = [];
+                            addedSupplyCenter[player].push(sc);
+                        }
+                        else {
+                            addedSupplyCenter[player].push(sc);
+                        }
+                    }
+                }
+            })
+
+
+        })
+
+        // Check all updated list
+
+        Object.keys(updatedList).forEach(player => {
+            let territoryCount = Object.keys(updatedList[player].territories).length;
+            let supplyCenterCount = Object.keys(updatedList[player].supplyCenters).length;
+            // Add functionality to to to build if supplyCenters < territories
+            if (supplyCenterCount !== territoryCount) {
+
+                if (addedSupplyCenter[player] === undefined) {
+                    addedSupplyCenter[player] = [];
+                    addedSupplyCenter[player].push(player);
+                }
+                else {
+                    addedSupplyCenter[player].push(player);
+                }
+                build = true;
+            }
+
+        })
+
+
+        if (build === true) {
+            // Switch to build
+      
+            admin.database().ref('/games').child(gameId).child('players').set(
+                updatedList,
+                function (err) {
+                    if (err) {
+                        console.log("Error");
+                    }
+
+                }).catch(error => { console.log(error) });
+
+            admin.database().ref('/games').child(gameId).child('turn_status').child('current_phase').set(
+                'build', function (err) {
+                    if (err) {
+                        console.log("Error");
+                    }
+                }).catch(error => { console.log(error) });
+
+            admin.database().ref('/games').child(gameId).child('roundBuilds').child(roundResultKey).set(
+                addedSupplyCenter, function (err) {
+                    if (err) {
+                        console.log("Error");
+                    }
+
+                }).catch(error => { console.log(error) });
+        } else {
+            // No build just change to order spring and increment year stay in order
+            
+            let newYeay = parseInt(game.turn_status.current_year, 10) + 1;
+            admin.database().ref('/games').child(gameId).child('turn_status').child('current_season').set(
+                'spring', function (err) {
+                    if (err) {
+                        console.log("Error");
+                    }
+
+                }).catch(error => { console.log(error) });
+
+            admin.database().ref('/games').child(gameId).child('turn_status').child('current_phase').set(
+                'order', function (err) {
+                    if (err) {
+                        console.log("Error");
+                    }
+
+                }).catch(error => { console.log(error) });
+
+            admin.database().ref('/games').child(gameId).child('turn_status').child('current_year').set(
+                newYeay, function (err) {
+                    if (err) {
+                        console.log("Error");
+                    }
+
+
+                }).catch(error => { console.log(error) });
+
+            if (addedCenter === true) {
+                admin.database().ref('/games').child(gameId).child('players').set(
+                    updatedList,
+                    function (err) {
+                        if (err) {
+                            console.log("Error");
+                        }
+                    }).catch(error => { console.log(error) });
+            }
+
+
+        }
+
+    }
 
 
 }
@@ -517,7 +630,6 @@ function updateRetreatPlayers(game, gameId, roundResult, roundResultKey) {
     for (var i = 0; i < passedPlayers.length; i++) {
         let temp = passMoves[passedPlayers[i]]
         temp.forEach(location => {
-            //console.log(location.CurrentZone)
             if (location.MoveType === 'M') {
 
                 allPlayers[passedPlayers[i]].territories[location.MoveZone] = allPlayers[passedPlayers[i]].territories[location.CurrentZone]
@@ -527,17 +639,16 @@ function updateRetreatPlayers(game, gameId, roundResult, roundResultKey) {
         })
     }
 
-    console.log(JSON.stringify(allPlayers, undefined, 2));
 
 
-    // admin.database().ref('/games').child(gameId).child('players').set(
-    //     allPlayers,
-    //     function (err) {
-    //         if (err) {
-    //             console.log("Error");
-    //         }
+    admin.database().ref('/games').child(gameId).child('players').set(
+        allPlayers,
+        function (err) {
+            if (err) {
+                console.log("Error");
+            }
 
-    //     }).catch(error => { console.log(error) });
+        }).catch(error => { console.log(error) });
 
     return allPlayers;
 
@@ -555,7 +666,6 @@ function updatePlayers(game, gameId, roundResult, roundResultKey) {
     for (var i = 0; i < passedPlayers.length; i++) {
         let temp = passMoves[passedPlayers[i]]
         temp.forEach(location => {
-            //console.log(location.CurrentZone)
             if (location.MoveType === 'M') {
 
                 allPlayers[passedPlayers[i]].territories[location.MoveZone] = allPlayers[passedPlayers[i]].territories[location.CurrentZone]
@@ -565,7 +675,6 @@ function updatePlayers(game, gameId, roundResult, roundResultKey) {
         })
     }
 
-    //console.log(JSON.stringify(allPlayers, undefined, 2));
 
 
     admin.database().ref('/games').child(gameId).child('players').set(
@@ -955,7 +1064,6 @@ function getPassFails(allOrder) {
     }
 
 
-    //console.log(JSON.stringify(regionHashTable, undefined, 2));
     return regionHashTable;
 
 
@@ -966,7 +1074,6 @@ function getPassFails(allOrder) {
 
 
 
-    //console.log(allOrder);
 }
 
 function findLocationWinnner() {

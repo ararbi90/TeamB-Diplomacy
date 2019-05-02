@@ -577,7 +577,7 @@ let moveOrder_test_2 = [{
         UnitType: 'A',
         CurrentZone: 'BER',
         MoveType: 'M',
-        MoveType:'NWY'
+        MoveZone:'NWY'
     }
     ]
 },
@@ -589,7 +589,7 @@ let moveOrder_test_2 = [{
             UnitType: 'A',
             CurrentZone: 'MOS',
             MoveType: 'M',
-            MoveType:'NWY'
+            MoveZone:'NWY'
         }
     ]
 },
@@ -636,7 +636,7 @@ var counter = 100;
 //     counter += counter;
 // })
 
-moveOrder_test_1.forEach(function (submission) {
+moveOrder_test_2.forEach(function (submission) {
     setTimeout(gamePoster, counter, submission);
     counter += counter;
 })
