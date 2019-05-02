@@ -1,0 +1,50 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <!-- <script src="../../node_modules/jquery/dist/jquery.js"></script> -->
+    <link href="../css/game.css" rel="stylesheet" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #273c75;">
+        <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
+        <img height="50" src="../../images/diplomacy_logo.png" />
+    </nav>
+    <div class="col" style="text-align: center; border:1px solid #ccc; padding-top: 10px; padding-bottom: 10px;">
+        <h4 style="text-align: center;">Retreat</h4>
+        <form style="text-align: justify;">
+            <div class="p-3">
+                <label class="p-1" id="label">
+                </label>
+                <select class="firstMoveSelect" id="firstMoveSelect" onchange="firstMoveChoice(this.value)">
+                </select>
+                <select class="locationSelect" id="locationSelect" hidden>
+                </select>
+            </div>
+        </form>
+        <div>
+            <button type="submit" class="btn btn-primary" style="display: block; margin: 0 auto;" id="submit" onClick="submitOrder()">Retreat</button>
+        </div>
+    </div>
+    <div class="col" style="text-align: center; border:1px solid #ccc; padding-top: 10px; padding-bottom: 10px;">
+        <h4 style="text-align: center;">Or Disband</h4>
+        <div>
+            <button type="submit" class="btn btn-primary" style="display: block; margin: 0 auto;" id="disband" onClick="disband()">Disband</button>
+        </div>
+    </div>
+    <div id="snackbar"></div>
+    <div id="gameID" hidden></div>
+    <div id="username" hidden></div>
+
+    <script>
+        window.jQuery = window.$ = require('jquery');
+    </script>
+    <script src="../../node_modules/popper.js/dist/umd/popper.js"></script>
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../js/firebase.js"></script>
+    <script src="../js/systemFirebase.js"></script>
+    <script src="../js/retreatDisband.js"></script>
+</body>
+
+</html>

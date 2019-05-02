@@ -1,0 +1,362 @@
+[
+    {
+        "submissions": [
+            {
+                "username": "a",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "BER",
+                        "MoveType": "M",
+                        "MoveZone": "SIL"
+                    }
+                ]
+            },
+            {
+                "username": "b",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "WAR",
+                        "MoveType": "M",
+                        "MoveZone": "SIL"
+                    }
+                ]
+            }
+        ],
+        "actual": "all orders fail: standoff",
+        "predicted": "",
+        "diagram": "diagram 4"
+    },
+    {
+        "submissions": [
+            {
+                "username": "a",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "KIE",
+                        "MoveType": "M",
+                        "MoveZone": "BER"
+                    },
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "BER",
+                        "MoveType": "M",
+                        "MoveZone": "PRU"
+                    }
+                ]
+            },
+            {
+                "username": "b",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "PRU",
+                        "MoveType": "H"
+                    }
+                ]
+            }
+        ],
+        "actual": "all orders fail except the hold: one unit not moving can stop a series of moves",
+        "predicted": "",
+        "diagram": "diagram 5"
+    },
+    {
+        "submissions": [
+            {
+                "username": "a",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "BER",
+                        "MoveType": "M",
+                        "MoveZone": "PRU"
+                    },
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "PRU",
+                        "MoveType": "M",
+                        "MoveZone": "BER"
+                    }
+                ]
+            }
+        ],
+        "actual": "all orders fail: 2 units can't trade places",
+        "predicted": "",
+        "diagram": "diagram 6"
+    },
+    {
+        "submissions": [
+            {
+                "username": "a",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "HOL",
+                        "MoveType": "M",
+                        "MoveZone": "BEL"
+                    },
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "BEL",
+                        "MoveType": "M",
+                        "MoveZone": "NTH"
+                    },
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "NTH",
+                        "MoveType": "M",
+                        "MoveZone": "HOL"
+                    }
+                ]
+            }
+        ],
+        "actual": "all moves are valid",
+        "predicted": "",
+        "diagram": "diagram 7"
+    },
+    {
+        "submissions": [
+            {
+                "username": "a",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "MAR",
+                        "MoveType": "M",
+                        "MoveZone": "BUR"
+                    },
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "GAS",
+                        "MoveType": "S",
+                        "InitalSupportZone": "MAR",
+                        "FinalSupportZone": "BUR"
+                    }
+                ]
+            },
+            {
+                "username": "b",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "BUR",
+                        "MoveType": "H"
+                    }
+                ]
+            }
+        ],
+        "actual": "A HOLDS BUR fails",
+        "predicted": "",
+        "diagram": "diagram 8"
+    },
+    {
+        "submissions": [
+            {
+                "username": "a",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "GOL",
+                        "MoveType": "M",
+                        "MoveZone": "TYN"
+                    },
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "WES",
+                        "MoveType": "S",
+                        "InitalSupportZone": "GOL",
+                        "FinalSupportZone": "TYN"
+                    }
+                ]
+            },
+            {
+                "username": "b",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "NAP",
+                        "MoveType": "M",
+                        "MoveZone": "TYN"
+                    },
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "ROM",
+                        "MoveType": "S",
+                        "InitalSupportZone": "NAP",
+                        "FinalSupportZone": "TYN"
+                    }
+                ]
+            }
+        ],
+        "actual": "temp",
+        "predicted": "All orders fail: 2unit vs 2unit standoff ",
+        "diagram": "diagram 10"
+    },
+    {
+        "submissions": [
+            {
+                "username": "a",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "LON",
+                        "MoveType": "M",
+                        "MoveZone": "NWY"
+                    },
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "NTH",
+                        "MoveType": "C",
+                        "InitalConvoyZone": "LON",
+                        "FinalConvoyZone": "NWY"
+                    }
+                ]
+            }
+        ],
+        "actual": "temp",
+        "predicted": "Valid convoy order",
+        "diagram": "diagram 19"
+    },
+    {
+        "submissions": [
+            {
+                "username": "a",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "LON",
+                        "MoveType": "M",
+                        "MoveZone": "TUN"
+                    },
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "ENG",
+                        "MoveType": "C",
+                        "InitalConvoyZone": "LON",
+                        "FinalConvoyZone": "TUN"
+                    },
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "MID",
+                        "MoveType": "C",
+                        "InitalConvoyZone": "LON",
+                        "FinalConvoyZone": "TUN"
+                    }
+                ]
+            },
+            {
+                "username": "b",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "WES",
+                        "MoveType": "C",
+                        "InitalConvoyZone": "LON",
+                        "FinalConvoyZone": "TUN"
+                    }
+                ]
+            }
+        ],
+        "actual": "temp",
+        "predicted": "Valid chain convoy",
+        "diagram": "diagram 20"
+    },
+    {
+        "submissions": [
+            {
+                "username": "a",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "SPA",
+                        "MoveType": "M",
+                        "MoveZone": "NAP"
+                    },
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "GOL",
+                        "MoveType": "C",
+                        "InitalConvoyZone": "SPA",
+                        "FinalConvoyZone": "NAP"
+                    },
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "TYN",
+                        "MoveType": "C",
+                        "InitalConvoyZone": "SPA",
+                        "FinalConvoyZone": "NAP"
+                    }
+                ]
+            },
+            {
+                "username": "b",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "LON",
+                        "MoveType": "M",
+                        "MoveZone": "TYN"
+                    },
+                    {
+                        "UnitType": "F",
+                        "CurrentZone": "TUN",
+                        "MoveType": "S",
+                        "InitalSupportZone": "LON",
+                        "FinalSupportZone": "TYN"
+                    }
+                ]
+            }
+        ],
+        "actual": "Disrupted convoy, F TYN is disloged, A SPA MOVE NAP fails",
+        "predicted": "",
+        "diagram": "diagram 21"
+    },
+    {
+        "submissions": [
+            {
+                "username": "a",
+                "gameId": "-LdW62ST8C_INLjZJ1gQ",
+                "orders": [
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "PAR",
+                        "MoveType": "M",
+                        "MoveZone": "BUR"
+                    },
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "MAR",
+                        "MoveType": "S",
+                        "InitalSupportZone": "PAR",
+                        "FinalSupportZone": "BUR"
+                    },
+                    {
+                        "UnitType": "A",
+                        "CurrentZone": "BUR",
+                        "MoveType": "H"
+                    }
+                ]
+            }
+        ],
+        "actual": "A PAR MOVE BUR fails, can't dislog own unit",
+        "predicted": "",
+        "diagram": "diagram 22"
+    }
+]
