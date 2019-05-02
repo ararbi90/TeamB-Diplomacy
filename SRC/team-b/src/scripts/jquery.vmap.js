@@ -292,7 +292,7 @@ var JQVMap = function (params) {
 
   this.bindZoomButtons();
 
-  if(params.pins) {
+/*   if(params.pins) {
     mapPins = {
       pins: params.pins,
       mode: params.pinMode
@@ -300,7 +300,7 @@ var JQVMap = function (params) {
 
     this.pinHandlers = false;
     this.placePins(params.pins, params.pinMode);
-  }
+  } */
 
   if(params.showLabels){
     this.pinHandlers = false;
@@ -836,18 +836,45 @@ var supplyCountries = ["ANK", "BEL", "BER", "BRE", "BUD", "BUL", "CON", "DEN", "
 // places supply centers in addition to the label for countries with a supply center
 JQVMap.prototype.placeSupplyCenters = function(pinIndex, index, pin) {
   var map = this;
-  map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin label" style="position:absolute;">' + pin + '</div>');
+  map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin label" style="position:absolute; font-weight:bold; font-size: .75rem;">' + pin + '</div>');
   map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin ' + index + '" ' + 'style="position:absolute">' + 
-  '<img src="..\\..\\images\\supply-center.png">' + '</div>');
+  '<img src="..\\..\\images\\supply-center-2.png">' + '</div>');
 };
+
+JQVMap.prototype.placeUnits = (pinIndex, index, pin) => {
+  var map = this;
+  map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin label" style="position:absolute; font-weight:bold; font-size: .75rem;">' + pin + '</div>');
+  map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin ' + index + '" ' + 'style="position:absolute">' + 
+  '<img src="..\\..\\images\\supply-center-2.png">' + '</div>');
+  map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin unit' + index + '" ' + 'style="position:absolute">' + 
+  '<img src="..\\..\\images\\unit-2.png">' + '</div>');
+}
+
+let unitTerritories = [];
+JQVMap.prototype.getUnitPins = async function() {
+  gameRef.child(gameID).child("players").once("value").then((snap) => {
+    let players = {};
+    snap.forEach(element => {
+        players[element.key] = element.val();
+    });
+    for (let player in players) {
+      for (let territory in players[player].territories) {
+        unitTerritories.push(territory);
+      }
+    }
+  });
+}
 
 // places only labels for countries that don't have a supply center
 JQVMap.prototype.placePin = function(pinIndex, index, pin) {
   var map = this;
-  map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin" style="position:absolute">' + pin + '</div>');
+  map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin" style="position:absolute; font-weight:bold; font-size: .75rem;">' + pin + '</div>');
 };
 
-JQVMap.prototype.placePins = function(pins, pinMode){
+JQVMap.prototype.placePins = async function(pins, pinMode){
+  await this.getUnitPins();
+  console.log(supplyCountries);
+  console.log(unitTerritories);
   var map = this;
 
   if(!pinMode || (pinMode !== 'content' && pinMode !== 'id')) {
@@ -865,11 +892,17 @@ JQVMap.prototype.placePins = function(pins, pinMode){
       if($pin.length > 0){
         $pin.remove();
       }
-      if (!supplyCountries.includes(index))
-          map.placePin(pinIndex, index, pin);
-      else {
-          map.placeSupplyCenters(pinIndex, index, pin);
+
+      if(unitTerritories.includes(index)) {
+        map.placeUnits(pinIndex, index, pin);
       }
+      else {
+        if (!supplyCountries.includes(index))
+            map.placePin(pinIndex, index, pin);
+        else {
+            map.placeSupplyCenters(pinIndex, index, pin);
+        }
+    }
     });
   } else { //treat pin as id of an html content
     jQuery.each(pins, function(index, pin){
@@ -898,6 +931,25 @@ JQVMap.prototype.placePins = function(pins, pinMode){
   }
 };
 
+
+// to position certain labels that are not correctly positioned on the map initially.
+
+// first parameter: jquery of the country/ocean label you want to move.
+
+// second parameter: should be how much you want to shift left or right the label. (Expressed in decimal like a percent e.g. 95% = 0.95)
+//                  values > 1 shift it to the right while values < 1 shift it left.
+
+// third parameter: should be how much you want to shift up or down the label. (Expressed in decimal like a percent e.g. 95% = 0.95)
+//                  values > 1 shift it to the right while values < 1 shift it left.
+JQVMap.prototype.positionCertainPin = function(country, shiftFactorX, shiftFactorY) {
+  var currentLeft = country.position().left;
+  var currentTop = country.position().top;
+  country.css({
+    left: currentLeft*shiftFactorX,
+    top: currentTop*shiftFactorY
+  });
+}
+
 JQVMap.prototype.positionPins = function(){
   var map = this;
   var pins = this.container.find('.jqvmap-pin');
@@ -918,21 +970,28 @@ JQVMap.prototype.positionPins = function(){
     var middleX = (bbox.x * scale) + ((bbox.width * scale) / 2);
     var middleY = (bbox.y * scale) + ((bbox.height * scale) / 2);
 
+    // shift factor for determing how much to shift the supply icon by.
+    const SHIFT_FACTOR = 0.98;
     // checks if a country has a supply center or not. If it does have a supply center then shift the label
     // pin a bit from the label pin so they do not overlap.
     if (pinObj.hasClass("label")) {
-      //console.log(coords.left + middleX - (pinObj.width() / 2));
       pinObj.css({
         left: coords.left + middleX - (pinObj.width() / 2),
         top: coords.top + middleY - (pinObj.height() / 2)
       });
     } else {
       pinObj.css({
-        left: coords.left + middleX - (pinObj.width() / 2),
-        top: coords.top + middleY - (pinObj.height() / 2)
+        left: (coords.left + middleX - (pinObj.width() / 2))*SHIFT_FACTOR,
+        top: (coords.top + middleY - (pinObj.height() / 2))*SHIFT_FACTOR
       });
     }
   });
+
+  // reposition mid-atlantic ocean
+  this.positionCertainPin($('#jqvmap1_MID_pin'), 0.35, 0.98);
+
+  // reposition constantinople
+  this.positionCertainPin($('#jqvmap1_MID_pin'), 0.35, 0.98);
 };
 
 JQVMap.prototype.removePin = function(cc) {

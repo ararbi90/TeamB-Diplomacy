@@ -288,6 +288,11 @@
       <!-- Initial confiuration for the map-->
       <script>
         jQuery(document).ready(function () {
+          // preload imgs of icons on the map so that bounding boxes can be correctly calculated for placing pins
+          // PRELOAD ICONS BEFORE USING ALWAYS!!!! -VINCENT
+          $('<img />').attr('src', '..\\..\\images\\supply-center-2.png').appendTo('body').hide();
+          $('<img />').attr('src', '..\\..\\images\\unit-2.png').appendTo('body').hide();
+
             // grab data from firebase about the game/game state
             var urlParams = new URLSearchParams(location.search);
             let gameID =urlParams.get("gameID");
@@ -325,8 +330,6 @@
                     hoverColors: hovercolors,
                     selectedColors: hovercolors,
                     showLabels: true,
-                    pins: { "ADR" : "\u003cimg src=\"..\\..\\images\\supply-center.png\" /\u003e"},
-                    pinMode: 'content',
                     onRegionClick: function(event, code, region){
                         // Check if this is an Enabled Region
                         if(enabledRegions.indexOf(code) === -1){
