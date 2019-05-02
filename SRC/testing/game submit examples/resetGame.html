@@ -1,0 +1,186 @@
+
+<script src="firebase.js"></script>
+<script src="systemFirebase.js"></script>
+<script>
+    let gameId = '-LdptNNGiYdaQIgFRY3t';
+    let game = {
+  "TimeLimitDays" : 1,
+  "TimeLimitHours" : 0,
+  "expirationDate" : 1556777737247,
+  "name" : "michael_test_phases_game_abc",
+  "owner" : "a",
+  "players" : {
+    "a" : {
+      "color" : "#327AB5",
+      "country" : "Austria-Hungary_England_Germany",
+      "hoverColor" : "#6fa1cb",
+      "supplyCenters" : {
+        "BER" : {
+          "forceType" : "A"
+        },
+        "BUD" : {
+          "forceType" : "A"
+        },
+        "EDI" : {
+          "forceType" : "F"
+        },
+        "KIE" : {
+          "forceType" : "F"
+        },
+        "LON" : {
+          "forceType" : "F"
+        },
+        "LVP" : {
+          "forceType" : "A"
+        },
+        "MUN" : {
+          "forceType" : "A"
+        },
+        "TRI" : {
+          "forceType" : "F"
+        },
+        "VIE" : {
+          "forceType" : "A"
+        }
+      },
+      "territories" : {
+        "BER" : {
+          "forceType" : "A"
+        },
+        "BUD" : {
+          "forceType" : "A"
+        },
+        "EDI" : {
+          "forceType" : "F"
+        },
+        "KIE" : {
+          "forceType" : "F"
+        },
+        "LON" : {
+          "forceType" : "F"
+        },
+        "LVP" : {
+          "forceType" : "A"
+        },
+        "MUN" : {
+          "forceType" : "A"
+        },
+        "TRI" : {
+          "forceType" : "F"
+        },
+        "VIE" : {
+          "forceType" : "A"
+        }
+      }
+    },
+    "b" : {
+      "color" : "#82cacf",
+      "country" : "Russia_Italy",
+      "hoverColor" : "#a7d9dd",
+      "supplyCenters" : {
+        "MOS" : {
+          "forceType" : "A"
+        },
+        "NAP" : {
+          "forceType" : "F"
+        },
+        "ROM" : {
+          "forceType" : "A"
+        },
+        "SEV" : {
+          "forceType" : "F"
+        },
+        "STP" : {
+          "forceType" : "F"
+        },
+        "VEN" : {
+          "forceType" : "A"
+        },
+        "WAR" : {
+          "forceType" : "A"
+        }
+      },
+      "territories" : {
+        "MOS" : {
+          "forceType" : "A"
+        },
+        "NAP" : {
+          "forceType" : "F"
+        },
+        "ROM" : {
+          "forceType" : "A"
+        },
+        "SEV" : {
+          "forceType" : "F"
+        },
+        "STP" : {
+          "forceType" : "F"
+        },
+        "VEN" : {
+          "forceType" : "A"
+        },
+        "WAR" : {
+          "forceType" : "A"
+        }
+      }
+    },
+    "c" : {
+      "color" : "#71b188",
+      "country" : "Turkey_France",
+      "hoverColor" : "#9bc8ab",
+      "supplyCenters" : {
+        "ANK" : {
+          "forceType" : "F"
+        },
+        "BRE" : {
+          "forceType" : "F"
+        },
+        "CON" : {
+          "forceType" : "A"
+        },
+        "MAR" : {
+          "forceType" : "A"
+        },
+        "PAR" : {
+          "forceType" : "A"
+        },
+        "SMY" : {
+          "forceType" : "A"
+        }
+      },
+      "territories" : {
+        "ANK" : {
+          "forceType" : "F"
+        },
+        "BRE" : {
+          "forceType" : "F"
+        },
+        "CON" : {
+          "forceType" : "A"
+        },
+        "MAR" : {
+          "forceType" : "A"
+        },
+        "PAR" : {
+          "forceType" : "A"
+        },
+        "SMY" : {
+          "forceType" : "A"
+        }
+      }
+    }
+  },
+  "turn_status" : {
+    "current_phase" : "order",
+    "current_season" : "spring",
+    "current_year" : "1901",
+    "phase_expiration_time" : 990099
+  }
+};
+gameRef.child(gameId).set(game)
+
+
+
+
+
+</script>

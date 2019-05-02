@@ -78,9 +78,7 @@ ColorScale.prototype = {
 var JQVMap = function (params) {
   params = params || {};
   var map = this;
-  console.log(params.map);
   var mapData = JQVMap.maps[params.map];
-  console.log(mapData);
   var mapPins;
 
   if( !mapData){
@@ -212,37 +210,48 @@ var JQVMap = function (params) {
     }
 
     if ( !mapClickEvent.isDefaultPrevented()) {
-      if (map.isSelected(code)) {
-        map.deselect(code, targetPath);
-        console.log("deselect");
-      } else {
-        map.select(code, targetPath);
-        console.log("select");
+        if (!windowOpen) {
+            if (map.isSelected(code)) {
+                map.deselect(code, targetPath);
+            } else {
+                map.select(code, targetPath);
+            
+                //document.getElementById('armySelected').innerHTML = code;
 
-        if (!windowOpen)
-        {
-          //console.log(code);
-          var somethingIWantToShare = {
-            myFunction: function() {
-              return code;
+                let win = new BrowserWindow({ width: 800, height: 800 });
+                //let win = new BrowserWindow({ width: 500, height: 400 });
+
+                gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
+                  var phase = snapshot.val();
+          
+                  if (phase === "order")
+                  {
+                      win.loadURL(`file://${__dirname}/../html/build.html`);
+                  }
+                  else if (phase === "retreat")
+                  {
+                      win.loadURL(`file://${__dirname}/../html/retreatDisband.html`);
+                  }
+                  else if (phase === "build")
+                  {
+                      win.loadURL(`file://${__dirname}/../html/addRemove.html`);
+                  }
+                })
+
+                win.webContents.openDevTools();
+
+                win.webContents.on('did-finish-load', () => {
+                    win.webContents.send('message', code + ' ' + username + ' ' + gameID);
+                });
+                windowOpen = true;
+
+                win.on('closed', () => {
+                    map.deselect(code, targetPath);
+                    win = null;
+                    windowOpen = false;
+                })
             }
-          };
-          let win = new BrowserWindow({ width: 1000, height: 600 });
-          win.loadURL(`file://${__dirname}/../html/build.html`, {
-            renderer: somethingIWantToShare
-          });
-          win.webContents.openDevTools();
-          win.webContents.on('did-finish-load', () => {
-            win.webContents.send('message', code);
-          });
-          windowOpen = true;
-
-          win.on('closed', () => {
-            win = null;
-            windowOpen = false;
-          })
         }
-      }
     }
   });
 
@@ -616,7 +625,6 @@ JQVMap.prototype.deselect = function (cc, path) {
     jQuery(this.container).trigger('regionDeselect.jqvmap', [cc]);
     path.currentFillColor = path.getOriginalFill();
     path.setFill(path.getOriginalFill());
-    console.log("here");
   } else {
     for (var key in this.countries) {
       this.selectedRegions.splice(this.selectedRegions.indexOf(key), 1);
@@ -995,7 +1003,6 @@ JQVMap.prototype.positionPins = function(){
 };
 
 JQVMap.prototype.removePin = function(cc) {
-  cc = cc.toLowerCase();
   jQuery('#' + this.getPinId(cc)).remove();
 };
 
@@ -1052,7 +1059,6 @@ JQVMap.prototype.select = function (cc, path) {
 };
 
 JQVMap.prototype.selectIndex = function (cc) {
-  cc = cc.toLowerCase();
   for (var i = 0; i < this.selectedRegions.length; i++) {
     if (cc === this.selectedRegions[i]) {
       return i;
@@ -1268,7 +1274,6 @@ VectorCanvas.prototype.createPath = function (config) {
     node.appendChild(fill);
 
     node.setFill = function (color) {
-      console.log("here5");
       this.getElementsByTagName('fill')[0].color = color;
       if (this.getAttribute('original') === null) {
         this.setAttribute('original', color);

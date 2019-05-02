@@ -2,16 +2,6 @@ const fs = require('fs');
 
 // run by using the command: node construct_order.js
 
-
-// path and filename where you want to save the new orders
-// Change the path/file name to a question
-// let path = "~";
-// let filename = "temp_file_name";
-// let ext = ".txt";
-//let file;
-//let file_body = "file_body never changed";
-
-
 // Readline question and answer example:
 // Source: https://stackoverflow.com/questions/36540996/how-to-take-two-consecutive-input-with-the-readline-module-of-node-js
 // Author: answer by jc1
@@ -23,7 +13,7 @@ const rl = readline.createInterface({
   output: process.stdout
 })
 
-// 
+// All orders
 const file_question = () => {
   return new Promise((resolve, reject) => {
     rl.question('Enter the path/filename where to save the orders: ', (answer) => {
@@ -41,7 +31,16 @@ const username_question = () => {
   });
 }
 
+// All orders
+const gameId_question = () => {
+  return new Promise((resolve, reject) => {
+    rl.question('Enter gameID: ', (answer) => {
+      resolve(answer);
+    });
+  });
+}
 
+// Optional
 const new_order_question = () => {
   return new Promise((resolve, reject) => {
     rl.question('Enter 1 to add a new order \r\nEnter any other int/char to quit  ', (answer) => {
@@ -80,7 +79,7 @@ const current_zone_question = () => {
   });
 }
 
-// move order
+// All orders
 const move_type_question = () => {
   return new Promise((resolve, reject) => {
     rl.question('Enter move_type: ', (answer) => {
@@ -97,7 +96,7 @@ const move_type_question = () => {
   });
 }
 
-// Move order
+// Move order only
 const move_zone_question = () => {
   return new Promise((resolve, reject) => {
     rl.question('Enter move_zone: ', (answer) => {
@@ -106,7 +105,7 @@ const move_zone_question = () => {
   });
 }
 
-// Convoy or Support
+// Convoy or Support only
 const initial_question = () => {
   return new Promise((resolve, reject) => {
     rl.question('Enter inital_location of Support or Convoy: ', (answer) => {
@@ -127,16 +126,12 @@ const final_question = () => {
 
 const main = async () => {
 
-  // unit_type_question
-  // current_zone_question
-  // move_type_question
-  // move_zone_question
-  // inital_question
-  // final_question
+  console.log("\n");
 
   let file = await file_question();
-
   let username = await username_question();
+  let gameId = await  gameId_question();
+
   let order_list = [];
 
   // get new order
@@ -151,19 +146,20 @@ const main = async () => {
     if (order.move_type == "M") {
       order.move_zone = await move_zone_question();
     } else if (order.move_type == "H") {
-      console.log("H move");
+      //console.log("H move");
     } else if (order.move_type == "S") {
-      console.log("S move");
+      //console.log("S move");
       order.inital_support_zone = await initial_question();
       order.final_support_zone = await final_question();
     } else if (order.move_type == "C") {
-      console.log("C move");
+      //console.log("C move");
       order.inital_convoy_zone = await initial_question();
       order.final_convoy_zone = await final_question();
     }
-
+    
     new_order_flag = await new_order_question();
     order_list.push(order);
+    console.log("\n");
 
   }
 
@@ -178,9 +174,9 @@ const main = async () => {
 
   let test_object = {};
   test_object.username = username;
-  test_object.order_list = order_list;
+  test_object.gameId = gameId;
+  test_object.orders = order_list;
 
-  // file_body = username+ " \n\n"+JSON.stringify(order_list,null,1);
   file_body = JSON.stringify(test_object,null,1);
   
   fs.writeFile(file, file_body, function (err) {

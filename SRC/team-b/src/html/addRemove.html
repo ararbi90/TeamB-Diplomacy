@@ -1,0 +1,44 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <!-- <script src="../../node_modules/jquery/dist/jquery.js"></script> -->
+    <link href="../css/game.css" rel="stylesheet" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #273c75;">
+        <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
+        <img height="50" src="../../images/diplomacy_logo.png" />
+    </nav>
+    <div id="add_unit" class="col" style="text-align: center; border:1px solid #ccc; padding-top: 10px; padding-bottom: 10px;">
+        <h4 style="text-align: center;">Add Unit</h4>
+        <form style="text-align: justify;">
+            <div class="p-3" style="text-align: center">
+                <select class="unitSelect" id="unitSelect">
+                </select>
+            </div>
+        </form>
+        <div>
+            <button type="submit" class="btn btn-primary" style="display: block; margin: 0 auto;" id="add" onClick="add()">Add</button>
+        </div>
+    </div>
+    <div id="remove_unit" class="col" style="text-align: center; border:1px solid #ccc; padding-top: 10px; padding-bottom: 10px;" hidden>
+        <h4 style="text-align: center;">Remove Unit</h4>
+        <div>
+            <button type="submit" class="btn btn-primary" style="display: block; margin: 0 auto;" id="remove" onClick="remove()">Remove</button>
+        </div>
+    </div>
+    <div id="snackbar"></div>
+
+    <script>
+        window.jQuery = window.$ = require('jquery');
+    </script>
+    <script src="../../node_modules/popper.js/dist/umd/popper.js"></script>
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../js/firebase.js"></script>
+    <script src="../js/systemFirebase.js"></script>
+    <script src="../js/addRemove.js"></script>
+</body>
+
+</html>

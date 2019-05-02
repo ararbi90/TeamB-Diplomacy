@@ -21,10 +21,6 @@ document.getElementById("logOut").addEventListener("click", function () {
     let link = "../html/index.html";
     window.location.href = link;
 });
-document.getElementById("build").addEventListener("click", function () {
-    let link = "../html/build.html";
-    window.location.href = link;
-});
 
 function accpetGame(event) {
     // Need to make updates here
@@ -115,12 +111,27 @@ function autoDecline(gameId) {
 }
 
 function reJoinGame(event) {
-    // Need to make updates here
-    // Create on value promises
-    let link = "game.html?gameID=" + this.id + "&username=" + username;
-    console.log(link);
-    window.location.href = link;
+    var gameID = this.id;
 
+    gameRef.child(this.id).child("turn_status").child("current_phase").on("value", function (snapshot) {
+        var phase = snapshot.val();
+
+        if (phase === "order")
+        {
+            let link = "game.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
+        }
+        else if (phase === "retreat")
+        {
+            let link = "phase2.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
+        }
+        else if (phase === "build")
+        {
+            let link = "phase3.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
+        }
+    })
 }
 
 
@@ -152,8 +163,8 @@ function createAndAssignTerrtories(players) {
         3: [["Austria", "England", "Germany"], ["Turkey", "France"], ["Russia", "Italy"]],
         2: [["Austria", "Turkey", "Germany"], ["England", "France", "Russia"]],
     }
-    let colors = ["#327AB5","#82cacf","#71b188","#db878b","#d5cd6c","#c8c8c8","#969696"];
-    let hoverColors = ["#6fa1cb", "#a7d9dd", "#9bc8ab", "#e5abad", "#e1dc98", "#d8d8d8", "#b5b5b5"];
+    let colors = ["#327AB5","#82cacf","#71b188","#6c74d5","#d5cd6c","#db878b","#969696"];
+    let hoverColors = ["#6fa1cb", "#a7d9dd", "#9bc8ab", "#989de1", "#e1dc98", "#e5abad", "#b5b5b5"];
     let powers = {
         Austria: { VIE: { forceType: "A" }, BUD: { forceType: "A" }, TRI: { forceType: "F" } },
         England: { LON: { forceType: "F" }, EDI: { forceType: "F" }, LVP: { forceType: "A" } },
@@ -163,6 +174,18 @@ function createAndAssignTerrtories(players) {
         Germany: { BER: { forceType: "A" }, MUN: { forceType: "A" }, KIE: { forceType: "F" } },
         Italy: { ROM: { forceType: "A" }, VEN: { forceType: "A" }, NAP: { forceType: "F" } }
     }
+    
+    // **FOR TESTING:
+
+    // let powers = {
+    //     Austria: { BUR: { forceType: "A" }, BUD: { forceType: "A" }, TYR: { forceType: "F" } },
+    //     England: { NTH: { forceType: "F" }, EDI: { forceType: "A" }, LON: { forceType: "A" }, ENG: { forceType: "F" } },
+    //     France: { PAR: { forceType: "A" }, MUN: { forceType: "A" }, MID: { forceType: "F" } },
+    //     Russia: { GAL: { forceType: "A" }, SEV: { forceType: "F" }, TRI: { forceType: "A" }, STP: { forceType: "F" } },
+    //     Turkey: { ANK: { forceType: "F" }, CON: { forceType: "A" }, SMY: { forceType: "A" } },
+    //     Germany: { BER: { forceType: "A" }, PRU: { forceType: "A" }, KIE: { forceType: "F" } },
+    //     Italy: { ROM: { forceType: "A" }, VEN: { forceType: "A" }, NAP: { forceType: "F" } }
+    // }
 
     let order = getArrayOfRandomNumbers(players.length);
 
@@ -185,12 +208,12 @@ function createAndAssignTerrtories(players) {
             terr.forEach(function (pow) {
                 temp = Object.assign(temp, powers[pow]);
             });
-            playerTerritories[players[i]] = { territories: temp, color: tempColor, country: result, supplyCenters: temp};
+            playerTerritories[players[i]] = { territories: temp, color: tempColor, hoverColor: tempHoverColor, country: result, supplyCenters: temp};
         }
         else {
             // Austria = Austria-Hungary
             let temp = terr === "Austria" ? "Austria-Hungary" : terr;
-            playerTerritories[players[i]] = { territories: powers[terr], color: tempColor, hoverColors: tempHoverColor, country: temp, supplyCenters: powers[terr]};
+            playerTerritories[players[i]] = { territories: powers[terr], color: tempColor, hoverColor: tempHoverColor, country: temp, supplyCenters: powers[terr]};
         }
 
     }

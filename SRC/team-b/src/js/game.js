@@ -1,12 +1,9 @@
 $ = require("jquery");
 
+console.log("refresh");
+
 var urlParams = new URLSearchParams(location.search);
-//console.log(urlParams.get("username"));
 let username = urlParams.get("username");
-
-
-//console.log(urlParams.get("getID"));
-//let gameID = urlParams.get("getID");
 
 document.getElementById("navbarDropdownMenuLink").innerHTML = username;
 
@@ -23,259 +20,346 @@ document.getElementById("logOut").addEventListener("click", function () {
     window.location.href = link;
 });
 
-// NOTES:
+// LOGIC NOTES:
 //     - Denmark is adjacent to Kiel.
 //     - Sweden adjacent to Denmark not Helgoland Bight.
 //     - Baltic Sea not adjacent to Helgoland Bight.
 //     - Skaggerak not adjacent to Helgoland Bight.
 //     - Aegean Sea is not adjacent to Black Sea.
 
+// grab data from firebase about the game/game state
+// var urlParams = new URLSearchParams(location.search);
+// let gameID =urlParams.get("gameID");
+// let username = urlParams.get("username");
+function mapsLogic(res) {
+    // This is benson's code from game.html
+    players = res.players;
+    var clickableRegions = [];
+    $.each(players, function (index, player) {
+        playerName = index;
+        // loop through each supply center the player controls
+        supplyCenters = player.supplyCenters;
+        $.each(supplyCenters, function (index, supplyCenter) {
+            defaultcolors[index] = player.color;
+            hovercolors[index] = player.hoverColor;
+        });
+        // loop through each unit the player controls
+        territories = player.territories;
+        $.each(territories, function (index, territory) {
+            defaultcolors[index] = player.color;
+            hovercolors[index] = player.hoverColor;
+            if (username == playerName) {
+                clickableRegions.push(index);
+            }
+        });
+    });
 
-// Array of moves
-var moves = new Array("Choose...","Hold", "Move", "Convoy", "Support");
-// Array of units (TODO: pull the units from the database)
-var units = new Array("Choose...","A PAR", "A BUR", "A PIC", "F ENG", "A BRE");
-// Array of locations
-var locations = new Array("Choose...","ADR","AEG","ALB","ANK","APU","ARM","BAL","BAR","BEL","BER","BLA","BOH","BRE","BUD",
-    "BUL","BUR","CLY","CON","DEN","EAS","EDI","ENG","FIN","GAL","GAS","GRE","LYO","BOT","HEL","HOL","ION","IRE","IRI","KIE",
-    "LVP","LVN","LON","MAR","MAO","MOS","MUN","NAP","NAO","NAF","NTH","NOR","NWG","PAR","PIC","PIE","POR","PRU","ROM","RUH",
-    "RUM","SER","SEV","SIL","SKA","SMY","SPA","STP","SWE","SWI","SYR","TRI","TUN","TUS","TYR","TYS","UKR","VEN","VIE","WAL",
-    "WAR","WES","YOR");
-
-// Get first move dropdown element from DOM
-var firstMoveDropdowns = document.getElementsByClassName("firstMoveSelect");
-
-// Loop through each first move dropdown
-for (var i = 0; i < firstMoveDropdowns.length; ++i) {
-    var dropdown = firstMoveDropdowns[i];
-    for (var j = 0; j < moves.length; ++j) {
-        // Append the element to the end of Array list for the first move
-        dropdown[dropdown.length] = new Option(moves[j], moves[j]);
-    }
-    dropdown.options[0].hidden = "true";
-}
-
-// https://stackoverflow.com/questions/3364493/how-do-i-clear-all-options-in-a-dropdown-box
-function removeOptions(selectbox)
-{
-    var i;
-    for (i = selectbox.options.length - 1 ; i >= 0 ; i--)
-    {
-        selectbox.remove(i);
-    }
-}
-
-function addUnitsToDropdown(move, unitDropdown)
-{
-    if (move == "Convoy")
-    {
-        for (var i = 0; i < units.length; ++i)
-        {
-            // Add only army units (can't convoy fleet)
-            if (units[i].charAt(0) === "A" || units[i] === "Choose...")
-            {
-                // Append the element to the end of the Array list
-                unitDropdown[unitDropdown.length] = new Option(units[i], units[i]);
+    var enabledRegions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
+    var currentRegion;
+    // the initial parameters for the map. Change according to this link to change the look of the map, https://www.10bestdesign.com/jqvmap/documentation/
+    jQuery('#vmap').vectorMap({
+        map: 'diplomacy',
+        backgroundColor: '#000000',
+        borderColor: '#000000',
+        borderOpacity: .75,
+        borderWidth: 2,
+        enableZoom: true,
+        showTooltip: true,
+        color: "#C7B8A3",
+        colors: defaultcolors,
+        hoverColors: hovercolors,
+        selectedColors: hovercolors,
+        showLabels: true,
+        pins: { "ADR": "\u003cimg src=\"..\\..\\images\\supply-center.png\" /\u003e" },
+        pinMode: 'content',
+        onRegionClick: function (event, code, region) {
+            // Check if this is an Enabled Region
+            if (clickableRegions.indexOf(code) === -1) {
+                // Not an Enabled Region
+                event.preventDefault();
+            }
+        },
+        onRegionOver: function (event, code, region) {
+            // Check if this is an Enabled Region
+            if (enabledRegions.indexOf(code) === -1) {
+                // Not an Enabled Region
+                event.preventDefault();
+            }
+        },
+        onLabelShow: function (event, label, code) {
+            if (enabledRegions.indexOf(code) === -1) {
+                event.preventDefault();
             }
         }
-    }
-    else
-    {
-        // Otherwise add all units
-        for (var j = 0; j < units.length; ++j)
-        {
-            // Append the element to the end of the Array list
-            unitDropdown[unitDropdown.length] = new Option(units[j], units[j]);
+    });
+    jQuery('#vmap').bind('resize.jqvmap',
+        function (event, width, height) {
+            // sizeMap();
+            console.log("Width: " + width + " HEIGHT: " + height);
+            console.log("event: " + event.type);
         }
-    }
+    );
 
-    unitDropdown.options[0].hidden = "true";
 }
 
-function addSecondMovesToDropdown(move, secondMoveDropdown)
+function nextPhase()
 {
-    if (move == "Convoy")
-    {
-        for (var i = 0; i < moves.length; ++i)
-        {
-            // Only valid second move for "Convoy" is "Move"
-            if (moves[i] === "Move" || moves[i] === "Choose...")
-            {
-                // Append the element to the end of Array list for the second move
-                secondMoveDropdown[secondMoveDropdown.length] = new Option(moves[i], moves[i]);
-            }
-        }
-    }
-    else if (move == "Support")
-    {
-        for (var i = 0; i < moves.length; ++i)
-        {
-            // Only valid second moves for "Support" is {"Move", "Hold"}
-            if (moves[i] === "Move" || moves[i] === "Hold" || moves[i] === "Choose...")
-            {
-                // Append the element to the end of Array list for the second move
-                secondMoveDropdown[secondMoveDropdown.length] = new Option(moves[i], moves[i]);
-            }
-        }
-    }
-    else
-    {
-        // Otherwise add all options (it will be hidden)
-        for (var i = 0; i < moves.length; ++i)
-        {
-            // Append the element to the end of Array list for the second move
-            secondMoveDropdown[secondMoveDropdown.length] = new Option(moves[i], moves[i]);
-        }
-    }
+    let link = "phase2.html?gameID=" + gameID + "&username=" + username;
 
-    secondMoveDropdown.options[0].hidden = "true";
+    window.location.href = link;
 }
 
-function addLocationsToDropdown(locationDropdown)
-{   
-    for (var i = 0; i < locations.length; ++i)
-    {
-        // Append the element to the end of Array list
-        locationDropdown[locationDropdown.length] = new Option(locations[i], locations[i]);
-    }
-
-    locationDropdown.options[0].hidden = "true";
-}
-
-function firstMoveChoice(move, index) {
-    var unitDropdown = document.getElementById("unitSelect" + index);
-    var secondMoveDropdown = document.getElementById("secondMoveSelect" + index);
-    var locationDropdown = document.getElementById("locationSelect" + index);
-
-    if (move == "Hold"){
-        // Hide all other dropdowns
-        unitDropdown.hidden = true;
-        secondMoveDropdown.hidden =  true;
-        locationDropdown.hidden = true;
-    } else if (move == "Move"){
-        // Show only location dropdown
-        unitDropdown.hidden = true;
-        secondMoveDropdown.hidden =  true;
-        locationDropdown.hidden = false;
-    } else if (move == "Convoy"){
-        // Show all dropdowns
-        unitDropdown.hidden = false;
-        secondMoveDropdown.hidden =  false;
-        locationDropdown.hidden = false;
-    } else if (move == "Support"){
-        // Show all dropdowns except for location
-        unitDropdown.hidden = false;
-        secondMoveDropdown.hidden =  false;
-        locationDropdown.hidden = true;
-    }
-
-    removeOptions(unitDropdown);
-    removeOptions(secondMoveDropdown);
-    removeOptions(locationDropdown);
-    addUnitsToDropdown(move, unitDropdown);
-    addSecondMovesToDropdown(move, secondMoveDropdown);
-    addLocationsToDropdown(locationDropdown);
-}
-
-function secondMoveChoice(move, index)
-{
-    var locationDropdown = document.getElementById("locationSelect" + index);
-
-    if (move == "Hold")
-    {
-        // Hide location dropdown
-        locationDropdown.hidden = true;
-        
-    } 
-    else if (move == "Move")
-    {
-        // Show location dropdown
-        locationDropdown.hidden = false;
-    }
-
-    removeOptions(locationDropdown);
-    addLocationsToDropdown(locationDropdown);
-}
-
-function controllerTimer(){
+function controllerTimer() {
     let t = $("#timer").html();
     let hr = parseInt(t.substring(0, t.indexOf(":")));
     let min = parseInt(t.substring(t.indexOf(":") + 1));
     let newMin = min - 1;
     let newHr = hr;
-    if(newMin < 0){
+    if (newMin < 0) {
         newHr = hr - 1;
         newMin = 59;
     }
-    if(newMin >= 10 && newHr >= 10){
+    if (newMin >= 10 && newHr >= 10) {
         $("#timer").html(newHr + ":" + newMin);
     }
-    else if(newMin >= 10){
+    else if (newMin >= 10) {
         $("#timer").html("0" + newHr + ":" + newMin);
     }
-    else if(newHr >= 10){
+    else if (newHr >= 10) {
         $("#timer").html(newHr + ":0" + newMin);
     }
-    else{
+    else {
         $("#timer").html("0" + newHr + ":0" + newMin);
     }
 }
 
-function makeToast(territory)
+function addTitle(res)
 {
-    var x = document.getElementById("snackbar");
-  
-    x.className = "show";
-    x.innerHTML = territory;
-  
-    // After 1.5 seconds, remove the show class
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 1500);
-
-    // Get data from JSON
-    $.getJSON("map.json", function(json) {
-        console.log(json[territory]);
-
-        // Outputs name of territory
-        console.log("==============");
-        console.log(json[territory]["name"].toUpperCase());
-        console.log("==============");
-
-        // Outputs names of adjacencies
-        json[territory]["adjacencies"].forEach(function(element) {
-            console.log(json[element]["name"]);
-        });
-
-        // Outputs adjacencies of coasts if they exist
-        if (json[territory]["southCoast"] != undefined)
-        {
-            console.log("............");
-            console.log("SOUTH COAST");
-            console.log("............");
-            json[territory]["southCoast"].forEach(function(element) {
-                console.log(json[element]["name"]);
-            })
-        }
-        if (json[territory]["eastCoast"] != undefined)
-        {
-            console.log("............");
-            console.log("EAST COAST");
-            console.log("............");
-            json[territory]["eastCoast"].forEach(function(element) {
-                console.log(json[element]["name"]);
-            })
-        }
-        if (json[territory]["northCoast"] != undefined)
-        {
-            console.log("............");
-            console.log("NORTH COAST");
-            console.log("............");
-            json[territory]["northCoast"].forEach(function(element) {
-                console.log(json[element]["name"]);
-            })
-        }
-    });
+    var title = "Order Placing Phase - ";
+    if (res.turn_status.current_season === "spring")
+    {
+        title += "Spring";
+    }
+    else
+    {
+        title += "Fall";
+    }
+    title += " ";
+    title += res.turn_status.current_year;
+    document.getElementById("seasonTitle").innerHTML = title;
 }
 
-$("document").ready(function(){
+// Add moves
+gameRef.child(gameID).child("players").child(username).child("orders_temp").on("value", function (snapshot) {
+    $("#orders").empty();
+    let orders = new Array();
+    snapshot.forEach(element => {
+        orders.push(element.val().order);
+    });
+
+    if (orders.length > 0) {
+        document.getElementById("no_orders").hidden = true;
+        document.getElementById("orders").hidden = false;
+    }
+
+    for (var i = 0; i < orders.length; i++) {
+        var node = document.createElement("LI");
+        var textnode = document.createTextNode(orders[i]);
+        node.appendChild(textnode);
+        document.getElementById("orders").appendChild(node);
+    }
+})
+
+// Change phase
+gameRef.child(gameID).child("turn_status").on("child_changed", function (snapshot) {
+    var data = snapshot.val();
+
+    if (privateChatRef.child(gameID) !== undefined)
+    {
+        privateChatRef.child(gameID).remove();
+    }
+    if (publicChatRef.child(gameID) != undefined)
+    {
+        publicChatRef.child(gameID).remove();
+    }
+
+    if (data === "retreat" || data === "build")
+    {
+        if (data === "retreat")
+        {
+            let link = "phase2.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
+        }
+        else
+        {
+            let link = "phase3.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
+        }
+    }
+    else
+    {
+        gameRef.child(gameID).child("players").on("value", function (snapshot) {
+            let players = new Array();
+            snapshot.forEach(element => {
+                players.push(element.key);
+            });
+            
+            for (var i = 0; i < players.length; i++)
+            {
+                if (gameRef.child(gameID).child("players").child(players[i]).child("orders_temp") !== undefined)
+                {
+                    gameRef.child(gameID).child("players").child(players[i]).child("orders_temp").remove();
+                }
+            }
+
+            let link = "game.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
+        })
+    }
+})
+
+function submitOrders(res)
+{
+    var submission = {};
+
+    // Get all orders in orders_temp
+    let orders = new Array();
+    if (res.players[username].orders_temp != undefined)
+    {
+        var keys = Object.keys(res.players[username].orders_temp);
+        for (var i = 0; i < keys.length; i++)
+        {
+            var order = res.players[username].orders_temp[keys[i]].order;
+            orders.push(order);
+        }
+    }
+
+    userTerrs = res.players[username].territories;
+
+    let terrs = new Array();
+    for (var t in userTerrs)
+    {
+        terrs.push([res.players[username].territories[t].forceType, t]);
+    }
+
+    for (var i = 0; i < terrs.length; i++)
+    {
+        var key = terrs[i][0] + '_' + terrs[i][1];
+        var data = terrs[i][0] + ' ' + terrs[i][1];
+
+        var inOrders = false
+
+        for (var j = 0; j < orders.length; j++)
+        {
+            if (orders[j].slice(0, 5) === data)
+            {
+                inOrders = true;
+            }
+        }
+
+        if (!inOrders)
+        {
+            // Submit hold order
+            var order = data + "-HOLDS";
+
+            orders.push(order);
+
+            var ref = gameRef.child(gameID).child("players").child(username).child("orders_temp");
+
+            ref.child(key).set({
+                order: order
+            });
+        }
+    }
+
+    // Build submission
+    submission.username = username;
+    submission.gameId = gameID;
+    submission.orders = [];
+
+    for (var i = 0; i < orders.length; i++)
+    {
+        var o = orders[i];
+        var data = o.split(" ");
+
+        var order = {};
+
+        if (data.length === 2)
+        {
+            order.UnitType = data[0];
+
+            var data2 = data[1].split("-");
+
+            order.CurrentZone = data2[0];
+
+            if (data2[1].length === 3)
+            {
+                order.MoveType = "M";
+                order.MoveZone = data2[1];
+            }
+            else
+            {
+                order.MoveType = "H";
+            }
+        }
+        else
+        {
+            order.UnitType = data[0];
+            order.CurrentZone = data[1];
+            order.MoveType = data[2];
+
+            var data2 = data[4].split("-");
+
+            if (data2[1].length === 3)
+            {
+                if (data[2] === "C")
+                {
+                    order.InitialConvoyZone = data2[0];
+                    order.FinalConvoyZone = data2[1];
+                }
+                else
+                {
+                    order.InitialSupportZone = data2[0];
+                    order.FinalSupportZone = data2[1];
+                }
+            }
+            else
+            {
+                order.InitialSupportZone = data2[0];
+                order.FinalSupportZone = data2[0];
+            }
+        }
+
+        submission.orders.push(order);
+    }
+
+    return submission;
+}
+$("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
+
+    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
+        mapsLogic(res);
+        addTitle(res);
+
+        $("#roundSubmissionForm").submit(function () {
+
+            $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2) {
+                var submission = submitOrders(res2);
+                //console.log(submission);
+                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res3) {
+                    console.log(res3);
+                }).fail(function (err) {
+                    console.log(err);
+                })
+            }).fail(function (err) {
+                console.log(err);
+            })
+        
+            return false;
+        })
+
+    }).fail(function (err) {
+        console.log(err);
+    })
 })
