@@ -463,9 +463,9 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
     })
 
     // Update players
-    let fails = game.resolution.fail;
-    let pass = game.resolution.pass;
-    let retreat = game.resolution.retreat;
+    let fails = game.resolution[roundResultKey].fail;
+    let pass = game.resolution[roundResultKey].pass;
+    let retreat = game.resolution[roundResultKey].retreat;
 
     disband.forEach(dis =>{
         delete game.players[dis.playerId]['territories'][dis.CurrentZone];
@@ -473,9 +473,13 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
 
     canMove.forEach(move =>{
         pass[move.playerId] = move;
+        delete fails[move.playerId][move.CurrentZone]
+        delete retreat[move.playerId][move.CurrentZone]
     })
     
     game.resolution.pass = pass;
+    game.resolution.fail = pass;
+    game.resolution.retreat = pass;
 
     updateRetreatPlayers(game, gameId, game.resolution, roundResultKey)
 
@@ -483,6 +487,36 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
 }
 
 function updateRetreatPlayers(game, gameId, roundResult, roundResultKey){
+    let allPlayers = game.players;
+    let passedPlayers = Object.keys(roundResult['pass']); // keys of players in the pass
+    let passMoves = roundResult['pass'];
+
+    for (var i = 0; i < passedPlayers.length; i++) {
+        let temp = passMoves[passedPlayers[i]]
+        temp.forEach(location => {
+            //console.log(location.CurrentZone)
+            if (location.MoveType === 'M') {
+
+                allPlayers[passedPlayers[i]].territories[location.MoveZone] = allPlayers[passedPlayers[i]].territories[location.CurrentZone]
+                delete allPlayers[passedPlayers[i]].territories[location.CurrentZone]
+
+            }
+        })
+    }
+
+    console.log(JSON.stringify(allPlayers, undefined, 2));
+
+    
+    // admin.database().ref('/games').child(gameId).child('players').set(
+    //     allPlayers,
+    //     function (err) {
+    //         if (err) {
+    //             console.log("Error");
+    //         }
+
+    //     }).catch(error => { console.log(error) });
+
+    return allPlayers;
 
 }
 
@@ -510,7 +544,7 @@ function updatePlayers(game, gameId, roundResult, roundResultKey) {
 
     //console.log(JSON.stringify(allPlayers, undefined, 2));
 
-
+    
     admin.database().ref('/games').child(gameId).child('players').set(
         allPlayers,
         function (err) {
