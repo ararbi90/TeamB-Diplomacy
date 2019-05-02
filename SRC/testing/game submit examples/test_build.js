@@ -65,6 +65,53 @@ let buildOrders_test_0 = [{
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+
+let buildOrder_test_2 = [
+    {
+        username: "a",
+        gameId: testGameId,
+        orders: [
+            {
+                UnitType: 'A',
+                CurrentZone: 'BER',
+                MoveType: 'M',
+                MoveZone: 'NWY',
+                Retreat:'true'
+            }]
+        },
+        {
+            username: "b",
+            gameId: testGameId,
+            orders: [
+                {
+                    UnitType: 'A',
+                    CurrentZone: 'BER',
+                    MoveType: 'H',
+                    Retreat: 'false'
+                },
+                {
+                    UnitType: 'A',
+                    CurrentZone: 'ROM',
+                    MoveType: 'H',
+                    Retreat:'false'
+                }]
+            },
+    {
+    username: "c",
+    gameId: testGameId,
+    orders: [
+        {
+            UnitType: 'A',
+            CurrentZone: 'NWY',
+            MoveType: 'H',
+            Retreat: 'false'
+        }]
+    }
+]
+
+
+
+
 function buildSubmit(submission) {
 
     let url = "";
