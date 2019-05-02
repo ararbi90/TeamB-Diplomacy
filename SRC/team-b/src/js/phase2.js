@@ -120,6 +120,22 @@ function controllerTimer() {
     }
 }
 
+function addTitle(res)
+{
+    var title = "Retreat And Disband Phase - ";
+    if (res.turn_status.current_season === "spring")
+    {
+        title += "Spring";
+    }
+    else
+    {
+        title += "Fall";
+    }
+    title += " ";
+    title += res.turn_status.current_year;
+    document.getElementById("seasonTitle").innerHTML = title;
+}
+
 // Change phase
 gameRef.child(gameID).child("turn_status").on("child_changed", function (snapshot) {
     var data = snapshot.val();
@@ -162,14 +178,83 @@ gameRef.child(gameID).child("turn_status").on("child_changed", function (snapsho
     }
 })
 
+gameRef.child(gameID).child("players").child(username).child("retreat_orders_temp").on("value", function (snapshot)
+{
+    let orders = new Array();
+    snapshot.forEach(element => {
+        orders.push(element.val().order);
+    });
+
+    gameRef.child(gameID).child("players").child(username).child("orders_temp").on("value", function (snapshot) {
+        let ordersTemp = new Array();
+        snapshot.forEach(element => {
+            ordersTemp.push(element.val().order);
+        });
+
+        $("#orders").empty();
+
+        if (orders.length > 0)
+        {
+            document.getElementById("no_orders").hidden = true;
+            document.getElementById("orders").hidden = false;
+        }
+        else
+        {
+            document.getElementById("no_orders").hidden = false;
+            document.getElementById("orders").hidden = true;
+        }
+    
+        for (var i = 0; i < orders.length; i++)
+        {
+            var order = "";
+
+            for (var j = 0; j < ordersTemp.length; j++)
+            {
+                if (orders[i].slice(0, 5) === ordersTemp[j].slice(0, 5))
+                {
+                    if (ordersTemp[j] === orders[i])
+                    {
+                        order += orders[i].slice(0, 5);
+                        order += " DISBANDS"
+                    }
+                    else
+                    {
+                        order += orders[i];
+                        order += " (RETREAT)"
+                    }
+                }
+            }
+
+            var node = document.createElement("LI");
+            var textnode = document.createTextNode(order);
+            node.appendChild(textnode);
+            document.getElementById("orders").appendChild(node);
+        }
+    })
+})
+
+
 // Add retreat/disband
-gameRef.child(gameID).child("players").child(username).child("retreat_units_temp").on("value", function (snapshot) {
+function addRetreats(res)
+{
     $("#retreats").empty();
     let retreats = new Array();
 
-    snapshot.forEach(element => {
-        retreats.push(element.val().value);
-    });
+    var key = res.turn_status.current_season + res.turn_status.current_year;
+
+    if (res.resolution[key].fail[username] !== undefined)
+    {
+        var keys = Object.keys(res.resolution[key].fail[username]);
+
+        for (var i = 0; i < keys.length; i++)
+        {
+            var retreat = "";
+            retreat += res.resolution[key].fail[username][keys[i]].UnitType;
+            retreat += " ";
+            retreat += res.resolution[key].fail[username][keys[i]].CurrentZone;
+            retreats.push(retreat);
+        }
+    }
 
     if (retreats.length > 0)
     {
@@ -189,7 +274,7 @@ gameRef.child(gameID).child("players").child(username).child("retreat_units_temp
         node.appendChild(textnode);
         document.getElementById("retreats").appendChild(node);
     }
-})
+}
 
 // Add results
 function addResults(res)
@@ -464,10 +549,11 @@ $("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
 
     $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
-        // loop through each player
         mapsLogic(res);
         addResults(res);
-        //addOrders(res['players']['orders_temp'])
+        addTitle(res);
+        addRetreats(res);
+
         $("#roundSubmissionForm").submit(function () {
 
             $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2) {

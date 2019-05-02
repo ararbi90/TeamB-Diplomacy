@@ -120,18 +120,25 @@ function controllerTimer() {
     }
 }
 
-function nextPhase()
+function addTitle(res)
 {
-    let link = "game.html?gameID=" + gameID + "&username=" + username;
-
-    window.location.href = link;
+    var title = "Gaining And Losing Units Phase - ";
+    if (res.turn_status.current_season === "spring")
+    {
+        title += "Spring";
+    }
+    else
+    {
+        title += "Fall";
+    }
+    title += " ";
+    title += res.turn_status.current_year;
+    document.getElementById("seasonTitle").innerHTML = title;
 }
 
 // Edit status
 gameRef.child(gameID).child("players").child(username).child("territories").on("value", function (snapshot)
 {
-    $("#num_units").empty();
-
     let terrs = new Array();
     snapshot.forEach(element => {
         terrs.push(element.val().forceType);
@@ -139,6 +146,7 @@ gameRef.child(gameID).child("players").child(username).child("territories").on("
 
     gameRef.child(gameID).child("players").child(username).child("supplyCenters").on("value", function (snapshot)
     {
+        $("#num_units").empty();
         let supps = new Array();
         snapshot.forEach(element => {
             supps.push(element.val().forceType);
@@ -178,7 +186,7 @@ gameRef.child(gameID).child("players").child(username).child("territories").on("
 
 // Change phase
 gameRef.child(gameID).child("turn_status").on("child_changed", function (snapshot) {
-    var dat = snapshot.val();
+    var data = snapshot.val();
 
     if (data === "order")
     {
@@ -194,17 +202,18 @@ $("document").ready(function () {
     $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
         // loop through each player
         mapsLogic(res);
+        addTitle(res);
         //addOrders(res['players']['orders_temp'])
         $("#roundSubmissionForm").submit(function () {
 
             $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2) {
                 var submission = submitOrders(res2);
                 //console.log(submission);
-                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res3) {
-                    console.log(res3);
-                }).fail(function (err) {
-                    console.log(err);
-                })
+                // $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res3) {
+                //     console.log(res3);
+                // }).fail(function (err) {
+                //     console.log(err);
+                // })
             }).fail(function (err) {
                 console.log(err);
             })
