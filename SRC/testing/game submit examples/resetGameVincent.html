@@ -1,0 +1,307 @@
+
+<script src="firebase.js"></script>
+<script src="systemFirebase.js"></script>
+<script>
+    let gameId = '-LduWtvvQeMV-2NszfOx';
+    let game = {
+
+"TimeLimitDays" : 1,
+
+"TimeLimitHours" : 0,
+
+"expirationDate" : 1556855469099,
+
+"name" : "testing-vincent-ab",
+
+"owner" : "a",
+
+"players" : {
+
+  "a" : {
+
+    "color" : "#327AB5",
+
+    "country" : "Austria-Hungary_Turkey_Germany",
+
+    "hoverColor" : "#6fa1cb",
+
+    "supplyCenters" : {
+
+      "ANK" : {
+
+        "forceType" : "F"
+
+      },
+
+      "BER" : {
+
+        "forceType" : "A"
+
+      },
+
+      "BUD" : {
+
+        "forceType" : "A"
+
+      },
+
+      "CON" : {
+
+        "forceType" : "A"
+
+      },
+
+      "KIE" : {
+
+        "forceType" : "F"
+
+      },
+
+      "MUN" : {
+
+        "forceType" : "A"
+
+      },
+
+      "SMY" : {
+
+        "forceType" : "A"
+
+      },
+
+      "TRI" : {
+
+        "forceType" : "F"
+
+      },
+
+      "VIE" : {
+
+        "forceType" : "A"
+
+      }
+
+    },
+
+    "territories" : {
+
+      "ANK" : {
+
+        "forceType" : "F"
+
+      },
+
+      "BER" : {
+
+        "forceType" : "A"
+
+      },
+
+      "BUD" : {
+
+        "forceType" : "A"
+
+      },
+
+      "CON" : {
+
+        "forceType" : "A"
+
+      },
+
+      "KIE" : {
+
+        "forceType" : "F"
+
+      },
+
+      "MUN" : {
+
+        "forceType" : "A"
+
+      },
+
+      "SMY" : {
+
+        "forceType" : "A"
+
+      },
+
+      "TRI" : {
+
+        "forceType" : "F"
+
+      },
+
+      "VIE" : {
+
+        "forceType" : "A"
+
+      }
+
+    }
+
+  },
+
+  "b" : {
+
+    "color" : "#82cacf",
+
+    "country" : "England_France_Russia",
+
+    "hoverColor" : "#a7d9dd",
+
+    "supplyCenters" : {
+
+      "BRE" : {
+
+        "forceType" : "F"
+
+      },
+
+      "EDI" : {
+
+        "forceType" : "F"
+
+      },
+
+      "LON" : {
+
+        "forceType" : "F"
+
+      },
+
+      "LVP" : {
+
+        "forceType" : "A"
+
+      },
+
+      "MAR" : {
+
+        "forceType" : "A"
+
+      },
+
+      "MOS" : {
+
+        "forceType" : "A"
+
+      },
+
+      "PAR" : {
+
+        "forceType" : "A"
+
+      },
+
+      "SEV" : {
+
+        "forceType" : "F"
+
+      },
+
+      "STP" : {
+
+        "forceType" : "F"
+
+      },
+
+      "WAR" : {
+
+        "forceType" : "A"
+
+      }
+
+    },
+
+    "territories" : {
+
+      "BRE" : {
+
+        "forceType" : "F"
+
+      },
+
+      "EDI" : {
+
+        "forceType" : "F"
+
+      },
+
+      "LON" : {
+
+        "forceType" : "F"
+
+      },
+
+      "LVP" : {
+
+        "forceType" : "A"
+
+      },
+
+      "MAR" : {
+
+        "forceType" : "A"
+
+      },
+
+      "MOS" : {
+
+        "forceType" : "A"
+
+      },
+
+      "PAR" : {
+
+        "forceType" : "A"
+
+      },
+
+      "SEV" : {
+
+        "forceType" : "F"
+
+      },
+
+      "STP" : {
+
+        "forceType" : "F"
+
+      },
+
+      "WAR" : {
+
+        "forceType" : "A"
+
+      }
+
+    }
+
+  }
+
+},
+
+"turn_status" : {
+
+  "current_phase" : "order",
+
+  "current_season" : "spring",
+
+  "current_year" : "1901",
+
+  "phase_expiration_time" : 990099
+
+}
+
+};
+
+
+gameRef.child(gameId).set(game)
+
+
+
+
+
+</script>
