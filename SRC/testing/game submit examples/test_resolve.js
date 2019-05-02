@@ -36,7 +36,7 @@ let diagram_1 = rule_diagram_orders[0];
 */
 
 
-let testGameId = testGameId;
+let testGameId = "-LdptNNGiYdaQIgFRY3t";
 
 // everything is a hold     - works
 // All orders in pass list 
@@ -402,17 +402,7 @@ let submissions8 = [{
 
 
 
-// ******************************************************************************************************************
-// ******************************************************************************************************************
-// ******************************************************************************************************************
-//
-//                                           PHASE INTEGRATION TESTING                 
-//                 Below are the test cases that will be used for testing all the phases working together
-//
-//          All tests use 3 players: a,b,c with territories shown below. -LdptNNGiYdaQIgFRY3t
-// ******************************************************************************************************************
-// ******************************************************************************************************************
-// ******************************************************************************************************************
+
 
 // -LdptNNGiYdaQIgFRY3t
 /* Player a:
@@ -514,7 +504,7 @@ let submissions8 = [{
 // b:   MOS  ROM  VEN
 // c:   CON  MAR  SMY
 //                                    
-// a: is holding in BER                --fail/retreat
+// a: is holding in BER                --fail/retreat retreat fails 
 // b: attacks a in BER with support    --pass         
 // c: con move nwy                     --pass
 let moveOrder_test_1 = [{
@@ -555,6 +545,70 @@ let moveOrder_test_1 = [{
             CurrentZone: 'CON',
             MoveType: 'M',
             MoveZone: 'NWY'
+        }]
+}]
+
+
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+//
+//                                           PHASE INTEGRATION TESTING                 
+//                 Below are the test cases that will be used for testing all the phases working together
+//
+//          All tests use 3 players: a,b,c with territories shown above. -LdptNNGiYdaQIgFRY3t
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+
+// a:   BER  LVP  MUN
+// b:   MOS  ROM  VEN
+// c:   CON  MAR  SMY
+//                                    
+// a: BER move NWY                   --fail/retreat
+// b: MOS move NWY                   --fail         
+// c: CON move BER with support      --pass
+let moveOrder_test_2 = [{
+    username: "a",
+    gameId: testGameId,
+    orders: [{
+        UnitType: 'A',
+        CurrentZone: 'BER',
+        MoveType: 'M',
+        MoveType:'NWY'
+    }
+    ]
+},
+{
+    username: "b",
+    gameId: testGameId,
+    orders: [
+        {
+            UnitType: 'A',
+            CurrentZone: 'MOS',
+            MoveType: 'M',
+            MoveType:'NWY'
+        }
+    ]
+},
+{
+    username: "c",
+    gameId: testGameId,
+    orders: [
+        {
+            UnitType: 'A',
+            CurrentZone: 'CON',
+            MoveType: 'M',
+            MoveZone:"BER",
+        },
+        {
+            UnitType: 'A',
+            CurrentZone: 'MAR',
+            MoveType: 'S',
+            InitialSupportZone:"CON",
+            FinalSupportZone:"BER",
         }]
 }]
 

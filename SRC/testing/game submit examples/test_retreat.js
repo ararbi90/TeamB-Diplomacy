@@ -16,6 +16,8 @@ var $ = jQuery = require('jquery')(window);
 
 let testGameId = "-LdjyWdw3whWtnBFrZul";
 
+
+// Retreat fails for a because nwy is occupied     correct
 let retreatOrder_test_0 = [
     {
         username: "a",
@@ -70,6 +72,53 @@ let retreatOrder_test_0 = [
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 // ******************************************************************************************************************
+
+
+// Retreat passes for a because nth is not occupied     correct
+let retreatOrder_test_0 = [
+    {
+        username: "a",
+        gameId: testGameId,
+        orders: [
+            {
+                UnitType: 'A',
+                CurrentZone: 'BER',
+                MoveType: 'M',
+                MoveZone: 'NTH',
+                Retreat:'true'
+            }]
+        },
+        {
+            username: "b",
+            gameId: testGameId,
+            orders: [
+                {
+                    UnitType: 'A',
+                    CurrentZone: 'BER',
+                    MoveType: 'H',
+                    Retreat: 'false'
+                },
+                {
+                    UnitType: 'A',
+                    CurrentZone: 'ROM',
+                    MoveType: 'H',
+                    Retreat:'false'
+                }]
+            },
+    {
+    username: "c",
+    gameId: testGameId,
+    orders: [
+        {
+            UnitType: 'A',
+            CurrentZone: 'NWY',
+            MoveType: 'H',
+            Retreat: 'false'
+        }]
+    }
+]
+
+
 
 function retreatSubmit(submission) {
 
