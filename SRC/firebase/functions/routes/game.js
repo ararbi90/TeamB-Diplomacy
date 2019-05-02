@@ -40,9 +40,7 @@ router.post('/submitOrder', function (req, res, next) {
     // Get gameinfo
     admin.database().ref('/games').child(gameId).once('value').then(game => {
         let gameInfo = game.val();
-        console.log(gameId)
         let roundName = gameInfo.turn_status.current_season + gameInfo.turn_status.current_year;
-        console.log(roundName)
         // Submit game
         admin.database().ref('/games').child(gameId).child('order').child(roundName).child(username).set(
             order,
@@ -159,7 +157,6 @@ function resolveGame(game, gameId) {
 
                 fail[current.CurrentZone] = current;
                 currentLocation.forEach(winner => {
-                    //console.log("In retreat");
                     if (winner.outcome === "success" && winner.MoveZone === current.CurrentZone) {
                         retreat[current.CurrentZone] = current;
 
