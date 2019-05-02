@@ -14,8 +14,8 @@
     <div id="add_unit" class="col" style="text-align: center; border:1px solid #ccc; padding-top: 10px; padding-bottom: 10px;">
         <h4 style="text-align: center;">Add Unit</h4>
         <form style="text-align: justify;">
-            <div class="p-3">
-                <select class="unitSelect" id="unitSelect" onchange="unitChoice(this.value)">
+            <div class="p-3" style="text-align: center">
+                <select class="unitSelect" id="unitSelect">
                 </select>
             </div>
         </form>
@@ -26,12 +26,10 @@
     <div id="remove_unit" class="col" style="text-align: center; border:1px solid #ccc; padding-top: 10px; padding-bottom: 10px;" hidden>
         <h4 style="text-align: center;">Remove Unit</h4>
         <div>
-            <button type="submit" class="btn btn-primary" style="display: block; margin: 0 auto;" id="remove" onClick="remove()">Add</button>
+            <button type="submit" class="btn btn-primary" style="display: block; margin: 0 auto;" id="remove" onClick="remove()">Remove</button>
         </div>
     </div>
     <div id="snackbar"></div>
-    <div id="gameID" hidden></div>
-    <div id="username" hidden></div>
 
     <script>
         window.jQuery = window.$ = require('jquery');

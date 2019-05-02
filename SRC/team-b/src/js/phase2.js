@@ -42,11 +42,23 @@ function mapsLogic(res) {
         $.each(territories, function (index, territory) {
             defaultcolors[index] = player.color;
             hovercolors[index] = player.hoverColor;
-            if (username == playerName) {
-                clickableRegions.push(index);
-            }
         });
     });
+
+    var key = res.turn_status.current_season + res.turn_status.current_year;
+
+    if (res.resolution[key].retreat[username] !== undefined)
+    {
+        var retreat = res.resolution[key].retreat[username];
+        var keys = Object.keys(res.resolution[key].retreat[username]);
+
+        for (var i = 0; i < keys.length; i++)
+        {
+            clickableRegions.push(retreat[keys[i]].CurrentZone);
+        }
+    }
+
+    console.log(clickableRegions);
 
     var enabledRegions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
     var currentRegion;
@@ -308,6 +320,7 @@ function addResults(res)
                 })
             }
 
+            //console.log(key);
             var output = ordersTemp[key].order;
 
             var node = document.createElement("LI");
@@ -324,7 +337,6 @@ function addResults(res)
             order = pass[i];
 
             var key = order.UnitType + "_" + order.CurrentZone;
-            console.log(key);
 
             var output = ordersTemp[key].order;
 

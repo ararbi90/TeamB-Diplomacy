@@ -223,7 +223,6 @@ var JQVMap = function (params) {
 
                 gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
                   var phase = snapshot.val();
-                  console.log(phase);
           
                   if (phase === "order")
                   {

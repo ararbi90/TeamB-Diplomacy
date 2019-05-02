@@ -39,14 +39,94 @@ function mapsLogic(res) {
         });
         // loop through each unit the player controls
         territories = player.territories;
+
         $.each(territories, function (index, territory) {
             defaultcolors[index] = player.color;
             hovercolors[index] = player.hoverColor;
-            if (username == playerName) {
-                clickableRegions.push(index);
-            }
         });
     });
+
+    var terrs = Object.keys(res.players[username].territories);
+    var supps = Object.keys(res.players[username].supplyCenters);
+
+    var terrLength = terrs.length;
+    var suppLength = supps.length;
+
+    var unitsToAdd = suppLength - terrLength;
+
+    if (unitsToAdd < 0)
+    {
+        unitsToAdd = 0;
+    }
+
+    var unitsToRemove = terrLength - suppLength;
+
+    if (unitsToRemove < 0)
+    {
+        unitsToRemove = 0;
+    }
+
+    if (unitsToAdd > 0)
+    {
+        var unitsAdded = 0;
+        var supplyCountries = ["ANK", "BEL", "BER", "BRE", "BUD", "BUL", "CON", "DEN", "EDI", "GRE", "HOL", "KIE", "LVP", "LON", "MAR", "MOS", "MUN", "NAP", "NOR", "PAR", "POR", "ROM", "RUM", "SER", "SEV", "SMY", "SPA", "STP", "SWE", "TRI", "TUN", "VEN", "VIE", "WAR"];
+
+        for (var i = 0; i < supplyCountries.length; i++)
+        {
+            var supplyCountry = supplyCountries[i];
+
+            var inSupps = false;
+
+            for (var j = 0; j < supps.length; j++)
+            {
+                var supp = supps[j];
+
+                if (supp === supplyCountry)
+                {
+                    inSupps = true;
+                }
+            }
+
+            var inTerrs = false;
+
+            for (var j = 0; j < terrs.length; j++)
+            {
+                var terr = terrs[j];
+
+                if (terr === supplyCountry)
+                {
+                    inTerrs = true;
+                }
+            }
+
+            if (inSupps && !inTerrs && (unitsAdded < unitsToAdd))
+            {
+                clickableRegions.push(supplyCountry);
+                unitsAdded += 1;
+            }
+        }
+    }
+    else if (unitsToRemove > 0)
+    {
+        var unitsRemoved = 0;
+        for (var i = 0; i < terrs.length; i++)
+        {
+            if (unitsRemoved < unitsToRemove)
+            {
+                clickableRegions.push(terrs[i]);
+                unitsRemoved += 1;
+            }
+        }
+    }
+
+    for (var i = 0; i < clickableRegions.length; i++)
+    {
+        var region = clickableRegions[i];
+        var node = document.createElement("LI");
+        var textnode = document.createTextNode(region);
+        node.appendChild(textnode);
+        document.getElementById("clickable_areas").appendChild(node);
+    }
 
     var enabledRegions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
     var currentRegion;
@@ -136,6 +216,51 @@ function addTitle(res)
     document.getElementById("seasonTitle").innerHTML = title;
 }
 
+// Add orders
+gameRef.child(gameID).child("players").child(username).child("build_orders_temp").on("value", function (snapshot)
+{
+    let orders = new Array();
+    snapshot.forEach(element =>{
+        var order = "";
+
+        if (element.val().command === "BUILD")
+        {
+            order += "BUILD ";
+            order += element.val().buildType;
+            order += " IN ";
+            order += element.val().territory;
+        }
+        else
+        {
+            order += "REMOVE UNIT IN ";
+            order += element.val().territory;
+        }
+
+        orders.push(order);
+    });
+
+    $("#orders").empty();
+
+    if (orders.length > 0)
+    {
+        document.getElementById("no_orders").hidden = true;
+        document.getElementById("orders").hidden = false;
+    }
+    else
+    {
+        document.getElementById("no_orders").hidden = false;
+        document.getElementById("orders").hidden = true;
+    }
+
+    for (var i = 0; i < orders.length; i++)
+    {
+        var node = document.createElement("LI");
+        var textnode = document.createTextNode(orders[i]);
+        node.appendChild(textnode);
+        document.getElementById("orders").appendChild(node);
+    }
+})
+
 // Edit status
 gameRef.child(gameID).child("players").child(username).child("territories").on("value", function (snapshot)
 {
@@ -155,9 +280,6 @@ gameRef.child(gameID).child("players").child(username).child("territories").on("
         var terrLength = terrs.length;
         var suppLength = supps.length;
 
-        console.log(terrLength);
-        console.log(suppLength);
-
         var unitsToAdd = suppLength - terrLength;
 
         if (unitsToAdd < 0)
@@ -173,12 +295,12 @@ gameRef.child(gameID).child("players").child(username).child("territories").on("
         }
 
         var node = document.createElement("LI");
-        var textnode = document.createTextNode("Number Of Units To Add: " + unitsToAdd);
+        var textnode = document.createTextNode("Num. Units To Add: " + unitsToAdd);
         node.appendChild(textnode);
         document.getElementById("num_units").appendChild(node);
 
         var node = document.createElement("LI");
-        var textnode = document.createTextNode("Number Of Units To Remove: " + unitsToRemove);
+        var textnode = document.createTextNode("Num. Units To Remove: " + unitsToRemove);
         node.appendChild(textnode);
         document.getElementById("num_units").appendChild(node);
     })
@@ -188,32 +310,133 @@ gameRef.child(gameID).child("players").child(username).child("territories").on("
 gameRef.child(gameID).child("turn_status").on("child_changed", function (snapshot) {
     var data = snapshot.val();
 
-    if (data === "order")
-    {
-        let link = "game.html?gameID=" + gameID + "&username=" + username;
-        window.location.href = link;
-    }
+    gameRef.child(gameID).child("players").on("value", function (snapshot) {
+        let players = new Array();
+        snapshot.forEach(element => {
+            players.push(element.key);
+        });
+
+        for (var i = 0; i < players.length; i++)
+        {
+            if (gameRef.child(gameID).child("players").child(players[i]).child("build_orders_temp") != undefined)
+            {
+                gameRef.child(gameID).child("players").child(players[i]).child("build_orders_temp").remove();
+            }
+        }
+
+        if (data === "order")
+        {
+            let link = "game.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
+        }
+    })
+
 })
+
+function remove(res)
+{
+    var terrs = Object.keys(res.players[username].territories);
+    var supps = Object.keys(res.players[username].supplyCenters);
+
+    var terrLength = terrs.length;
+    var suppLength = supps.length;
+
+    var unitsToAdd = suppLength - terrLength;
+
+    if (unitsToAdd < 0)
+    {
+        unitsToAdd = 0;
+    }
+
+    var unitsToRemove = terrLength - suppLength;
+
+    if (unitsToRemove < 0)
+    {
+        unitsToRemove = 0;
+    }
+
+    var builds = new Array();
+    if (res.players[username].build_orders_temp !== undefined)
+    {
+        builds = Object.keys(res.players[username].build_orders_temp);
+    }
+
+    // Remove for them
+    if (builds.length < unitsToRemove)
+    {
+        var unitsStillToRemove = unitsToRemove - builds.length;
+
+        var index = 0;
+        
+        while (unitsStillToRemove > 0)
+        {
+            var ref = gameRef.child(gameID).child("players").child(username);
+
+            ref.child("build_orders_temp").child(terrs[index]).set({
+                territory: terrs[index],
+                command: "REMOVE"
+            });
+
+            index += 1;
+            unitsStillToRemove -= 1;
+        }
+    }
+}
+
+function submitOrders(res)
+{
+    var buildOrders = res.players[username].build_orders_temp;
+    var keys = Object.keys(buildOrders);
+
+    var submission = {};
+
+    // Build submission for non retreats
+    submission.username = username;
+    submission.gameId = gameID;
+    submission.orders = [];
+
+    for (var i = 0; i < keys.length; i++)
+    {
+        var order = {};
+
+        order.territory = buildOrders[keys[i]].territory;
+        order.command = buildOrders[keys[i]].command;
+
+        if (order.command === "BUILD")
+        {
+            order.buildType = buildOrders[keys[i]].buildType;
+        }
+
+        submission.orders.push(order);
+    }
+
+    return submission;
+}
 
 
 $("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
 
     $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
-        // loop through each player
         mapsLogic(res);
         addTitle(res);
-        //addOrders(res['players']['orders_temp'])
+
         $("#roundSubmissionForm").submit(function () {
 
             $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2) {
-                var submission = submitOrders(res2);
-                //console.log(submission);
-                // $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res3) {
-                //     console.log(res3);
-                // }).fail(function (err) {
-                //     console.log(err);
-                // })
+                remove(res2);
+                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res3) {
+
+                    var submission = submitOrders(res3);
+                    console.log(submission);
+                    // $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res4) {
+                    //     console.log(res4);
+                    // }).fail(function (err) {
+                    //     console.log(err);
+                    // })
+                }).fail(function (err) {
+                    console.log(err);
+                })
             }).fail(function (err) {
                 console.log(err);
             })
