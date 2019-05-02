@@ -140,44 +140,42 @@ function addTitle(res)
 gameRef.child(gameID).child("turn_status").on("child_changed", function (snapshot) {
     var data = snapshot.val();
 
-    if (data === "order")
-    {
-        if (gameRef.child(gameID).child("players").child(username).child("orders_temp") !== undefined)
+    gameRef.child(gameID).child("players").on("value", function (snapshot) {
+        let players = new Array();
+        snapshot.forEach(element => {
+            players.push(element.key);
+        });
+        
+        for (var i = 0; i < players.length; i++)
         {
-            gameRef.child(gameID).child("players").child(username).child("orders_temp").remove();
-        }
-        if (gameRef.child(gameID).child("players").child(username).child("retreat_units_temp") != undefined)
-        {
-            gameRef.child(gameID).child("players").child(username).child("retreat_units_temp").remove();
-        }
-        if (gameRef.child(gameID).child("players").child(username).child("retreat_orders_temp") != undefined)
-        {
-            gameRef.child(gameID).child("players").child(username).child("retreat_orders_temp").remove();
+            if (gameRef.child(gameID).child("players").child(players[i]).child("orders_temp") !== undefined)
+            {
+                gameRef.child(gameID).child("players").child(players[i]).child("orders_temp").remove();
+            }
+            if (gameRef.child(gameID).child("players").child(players[i]).child("retreat_units_temp") != undefined)
+            {
+                gameRef.child(gameID).child("players").child(players[i]).child("retreat_units_temp").remove();
+            }
+            if (gameRef.child(gameID).child("players").child(players[i]).child("retreat_orders_temp") != undefined)
+            {
+                gameRef.child(gameID).child("players").child(players[i]).child("retreat_orders_temp").remove();
+            }
         }
 
-        let link = "game.html?gameID=" + gameID + "&username=" + username;
-        window.location.href = link;
-    }
-    else if (data === "build")
-    {
-        if (gameRef.child(gameID).child("players").child(username).child("orders_temp") !== undefined)
+        if (data === "order")
         {
-            gameRef.child(gameID).child("players").child(username).child("orders_temp").remove();
+            let link = "game.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
         }
-        if (gameRef.child(gameID).child("players").child(username).child("retreat_units_temp") != undefined)
-        {
-            gameRef.child(gameID).child("players").child(username).child("retreat_units_temp").remove();
+        else if (data === "build")
+        {   
+            let link = "phase3.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
         }
-        if (gameRef.child(gameID).child("players").child(username).child("retreat_orders_temp") != undefined)
-        {
-            gameRef.child(gameID).child("players").child(username).child("retreat_orders_temp").remove();
-        }
-        
-        let link = "phase3.html?gameID=" + gameID + "&username=" + username;
-        window.location.href = link;
-    }
+    })
 })
 
+// Add orders
 gameRef.child(gameID).child("players").child(username).child("retreat_orders_temp").on("value", function (snapshot)
 {
     let orders = new Array();
@@ -326,6 +324,7 @@ function addResults(res)
             order = pass[i];
 
             var key = order.UnitType + "_" + order.CurrentZone;
+            console.log(key);
 
             var output = ordersTemp[key].order;
 

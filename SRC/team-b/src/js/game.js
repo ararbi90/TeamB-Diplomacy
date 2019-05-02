@@ -198,13 +198,23 @@ gameRef.child(gameID).child("turn_status").on("child_changed", function (snapsho
     }
     else
     {
-        if (gameRef.child(gameID).child("players").child(username).child("orders_temp") !== undefined)
-        {
-            gameRef.child(gameID).child("players").child(username).child("orders_temp").remove();
-        }
+        gameRef.child(gameID).child("players").on("value", function (snapshot) {
+            let players = new Array();
+            snapshot.forEach(element => {
+                players.push(element.key);
+            });
+            
+            for (var i = 0; i < players.length; i++)
+            {
+                if (gameRef.child(gameID).child("players").child(players[i]).child("orders_temp") !== undefined)
+                {
+                    gameRef.child(gameID).child("players").child(players[i]).child("orders_temp").remove();
+                }
+            }
 
-        let link = "game.html?gameID=" + gameID + "&username=" + username;
-        window.location.href = link;
+            let link = "game.html?gameID=" + gameID + "&username=" + username;
+            window.location.href = link;
+        })
     }
 })
 
@@ -329,11 +339,9 @@ $("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
 
     $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
-        // loop through each player
-        console.log("done");
         mapsLogic(res);
         addTitle(res);
-        //addOrders(res['players']['orders_temp'])
+
         $("#roundSubmissionForm").submit(function () {
 
             $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2) {
