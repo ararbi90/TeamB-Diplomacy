@@ -385,8 +385,12 @@ function remove(res)
 
 function submitOrders(res)
 {
+    var keys = new Array();
     var buildOrders = res.players[username].build_orders_temp;
-    var keys = Object.keys(buildOrders);
+    if (keys !== undefined)
+    {
+        keys = Object.keys(buildOrders);
+    }
 
     var submission = {};
 
@@ -406,6 +410,15 @@ function submitOrders(res)
         {
             order.buildType = buildOrders[keys[i]].buildType;
         }
+
+        submission.orders.push(order);
+    }
+
+    if (submission.orders.length === 0)
+    {
+        var order = {};
+
+        order.command = "NONE";
 
         submission.orders.push(order);
     }

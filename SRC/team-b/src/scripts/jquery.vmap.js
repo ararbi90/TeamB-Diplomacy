@@ -221,7 +221,7 @@ var JQVMap = function (params) {
                 let win = new BrowserWindow({ width: 800, height: 800 });
                 //let win = new BrowserWindow({ width: 500, height: 400 });
 
-                gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
+                gameRef.child(gameID).child("turn_status").child("current_phase").once("value").then(function (snapshot) {
                   var phase = snapshot.val();
           
                   if (phase === "order")
