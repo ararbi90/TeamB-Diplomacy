@@ -2,38 +2,122 @@
 <script src="firebase.js"></script>
 <script src="systemFirebase.js"></script>
 <script>
-    let gameId = '-LdptNNGiYdaQIgFRY3t';
+    let gameId = '-LdtUgU2KKw72BYkrPr3';
     let game = {
   "TimeLimitDays" : 1,
   "TimeLimitHours" : 0,
-  "expirationDate" : 1556777737247,
-  "name" : "michael_test_phases_game_abc",
+  "expirationDate" : 1556838112077,
+  "name" : "saved copy",
+  "order" : {
+    "spring1901" : {
+      "a" : [ {
+        "CurrentZone" : "BER",
+        "MoveType" : "M",
+        "MoveZone" : "PRU",
+        "UnitType" : "A"
+      }, {
+        "CurrentZone" : "ANK",
+        "MoveType" : "H",
+        "UnitType" : "F"
+      }, {
+        "CurrentZone" : "BUD",
+        "MoveType" : "H",
+        "UnitType" : "A"
+      }, {
+        "CurrentZone" : "CON",
+        "MoveType" : "H",
+        "UnitType" : "A"
+      }, {
+        "CurrentZone" : "KIE",
+        "MoveType" : "H",
+        "UnitType" : "F"
+      }, {
+        "CurrentZone" : "MUN",
+        "MoveType" : "H",
+        "UnitType" : "A"
+      }, {
+        "CurrentZone" : "SMY",
+        "MoveType" : "H",
+        "UnitType" : "A"
+      }, {
+        "CurrentZone" : "TRI",
+        "MoveType" : "H",
+        "UnitType" : "F"
+      }, {
+        "CurrentZone" : "VIE",
+        "MoveType" : "H",
+        "UnitType" : "A"
+      } ],
+      "b" : [ {
+        "CurrentZone" : "MOS",
+        "MoveType" : "M",
+        "MoveZone" : "LVN",
+        "UnitType" : "A"
+      }, {
+        "CurrentZone" : "BRE",
+        "MoveType" : "H",
+        "UnitType" : "F"
+      }, {
+        "CurrentZone" : "EDI",
+        "MoveType" : "H",
+        "UnitType" : "F"
+      }, {
+        "CurrentZone" : "LON",
+        "MoveType" : "H",
+        "UnitType" : "F"
+      }, {
+        "CurrentZone" : "LVP",
+        "MoveType" : "H",
+        "UnitType" : "A"
+      }, {
+        "CurrentZone" : "MAR",
+        "MoveType" : "H",
+        "UnitType" : "A"
+      }, {
+        "CurrentZone" : "PAR",
+        "MoveType" : "H",
+        "UnitType" : "A"
+      }, {
+        "CurrentZone" : "SEV",
+        "MoveType" : "H",
+        "UnitType" : "F"
+      }, {
+        "CurrentZone" : "STP",
+        "MoveType" : "H",
+        "UnitType" : "F"
+      }, {
+        "CurrentZone" : "WAR",
+        "MoveType" : "H",
+        "UnitType" : "A"
+      } ]
+    }
+  },
   "owner" : "a",
   "players" : {
     "a" : {
       "color" : "#327AB5",
-      "country" : "Austria-Hungary_England_Germany",
+      "country" : "Austria-Hungary_Turkey_Germany",
       "hoverColor" : "#6fa1cb",
       "supplyCenters" : {
+        "ANK" : {
+          "forceType" : "F"
+        },
         "BER" : {
           "forceType" : "A"
         },
         "BUD" : {
           "forceType" : "A"
         },
-        "EDI" : {
-          "forceType" : "F"
+        "CON" : {
+          "forceType" : "A"
         },
         "KIE" : {
           "forceType" : "F"
         },
-        "LON" : {
-          "forceType" : "F"
-        },
-        "LVP" : {
+        "MUN" : {
           "forceType" : "A"
         },
-        "MUN" : {
+        "SMY" : {
           "forceType" : "A"
         },
         "TRI" : {
@@ -44,25 +128,25 @@
         }
       },
       "territories" : {
-        "BER" : {
-          "forceType" : "A"
+        "ANK" : {
+          "forceType" : "F"
         },
         "BUD" : {
           "forceType" : "A"
         },
-        "EDI" : {
-          "forceType" : "F"
+        "CON" : {
+          "forceType" : "A"
         },
         "KIE" : {
           "forceType" : "F"
         },
-        "LON" : {
-          "forceType" : "F"
-        },
-        "LVP" : {
+        "MUN" : {
           "forceType" : "A"
         },
-        "MUN" : {
+        "PRU" : {
+          "forceType" : "A"
+        },
+        "SMY" : {
           "forceType" : "A"
         },
         "TRI" : {
@@ -75,16 +159,28 @@
     },
     "b" : {
       "color" : "#82cacf",
-      "country" : "Russia_Italy",
+      "country" : "England_France_Russia",
       "hoverColor" : "#a7d9dd",
       "supplyCenters" : {
+        "BRE" : {
+          "forceType" : "F"
+        },
+        "EDI" : {
+          "forceType" : "F"
+        },
+        "LON" : {
+          "forceType" : "F"
+        },
+        "LVP" : {
+          "forceType" : "A"
+        },
+        "MAR" : {
+          "forceType" : "A"
+        },
         "MOS" : {
           "forceType" : "A"
         },
-        "NAP" : {
-          "forceType" : "F"
-        },
-        "ROM" : {
+        "PAR" : {
           "forceType" : "A"
         },
         "SEV" : {
@@ -93,21 +189,30 @@
         "STP" : {
           "forceType" : "F"
         },
-        "VEN" : {
-          "forceType" : "A"
-        },
         "WAR" : {
           "forceType" : "A"
         }
       },
       "territories" : {
-        "MOS" : {
-          "forceType" : "A"
-        },
-        "NAP" : {
+        "BRE" : {
           "forceType" : "F"
         },
-        "ROM" : {
+        "EDI" : {
+          "forceType" : "F"
+        },
+        "LON" : {
+          "forceType" : "F"
+        },
+        "LVN" : {
+          "forceType" : "A"
+        },
+        "LVP" : {
+          "forceType" : "A"
+        },
+        "MAR" : {
+          "forceType" : "A"
+        },
+        "PAR" : {
           "forceType" : "A"
         },
         "SEV" : {
@@ -116,67 +221,183 @@
         "STP" : {
           "forceType" : "F"
         },
-        "VEN" : {
-          "forceType" : "A"
-        },
         "WAR" : {
-          "forceType" : "A"
-        }
-      }
-    },
-    "c" : {
-      "color" : "#71b188",
-      "country" : "Turkey_France",
-      "hoverColor" : "#9bc8ab",
-      "supplyCenters" : {
-        "ANK" : {
-          "forceType" : "F"
-        },
-        "BRE" : {
-          "forceType" : "F"
-        },
-        "CON" : {
-          "forceType" : "A"
-        },
-        "MAR" : {
-          "forceType" : "A"
-        },
-        "PAR" : {
-          "forceType" : "A"
-        },
-        "SMY" : {
-          "forceType" : "A"
-        }
-      },
-      "territories" : {
-        "ANK" : {
-          "forceType" : "F"
-        },
-        "BRE" : {
-          "forceType" : "F"
-        },
-        "CON" : {
-          "forceType" : "A"
-        },
-        "MAR" : {
-          "forceType" : "A"
-        },
-        "PAR" : {
-          "forceType" : "A"
-        },
-        "SMY" : {
           "forceType" : "A"
         }
       }
     }
   },
+  "resolution" : {
+    "spring1901" : {
+      "pass" : {
+        "a" : [ {
+          "CurrentZone" : "VIE",
+          "MoveType" : "H",
+          "UnitType" : "A",
+          "outcome" : "success",
+          "playerId" : "a",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "BUD",
+          "MoveType" : "H",
+          "UnitType" : "A",
+          "outcome" : "success",
+          "playerId" : "a",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "TRI",
+          "MoveType" : "H",
+          "UnitType" : "F",
+          "outcome" : "success",
+          "playerId" : "a",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "CON",
+          "MoveType" : "H",
+          "UnitType" : "A",
+          "outcome" : "success",
+          "playerId" : "a",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "ANK",
+          "MoveType" : "H",
+          "UnitType" : "F",
+          "outcome" : "success",
+          "playerId" : "a",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "SMY",
+          "MoveType" : "H",
+          "UnitType" : "A",
+          "outcome" : "success",
+          "playerId" : "a",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "KIE",
+          "MoveType" : "H",
+          "UnitType" : "F",
+          "outcome" : "success",
+          "playerId" : "a",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "BER",
+          "MoveType" : "M",
+          "MoveZone" : "PRU",
+          "UnitType" : "A",
+          "outcome" : "success",
+          "playerId" : "a",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "MUN",
+          "MoveType" : "H",
+          "UnitType" : "A",
+          "outcome" : "success",
+          "playerId" : "a",
+          "resolved" : true,
+          "visited" : true
+        } ],
+        "b" : [ {
+          "CurrentZone" : "EDI",
+          "MoveType" : "H",
+          "UnitType" : "F",
+          "outcome" : "success",
+          "playerId" : "b",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "LVP",
+          "MoveType" : "H",
+          "UnitType" : "A",
+          "outcome" : "success",
+          "playerId" : "b",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "LON",
+          "MoveType" : "H",
+          "UnitType" : "F",
+          "outcome" : "success",
+          "playerId" : "b",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "BRE",
+          "MoveType" : "H",
+          "UnitType" : "F",
+          "outcome" : "success",
+          "playerId" : "b",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "PAR",
+          "MoveType" : "H",
+          "UnitType" : "A",
+          "outcome" : "success",
+          "playerId" : "b",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "MAR",
+          "MoveType" : "H",
+          "UnitType" : "A",
+          "outcome" : "success",
+          "playerId" : "b",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "STP",
+          "MoveType" : "H",
+          "UnitType" : "F",
+          "outcome" : "success",
+          "playerId" : "b",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "MOS",
+          "MoveType" : "M",
+          "MoveZone" : "LVN",
+          "UnitType" : "A",
+          "outcome" : "success",
+          "playerId" : "b",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "WAR",
+          "MoveType" : "H",
+          "UnitType" : "A",
+          "outcome" : "success",
+          "playerId" : "b",
+          "resolved" : true,
+          "visited" : true
+        }, {
+          "CurrentZone" : "SEV",
+          "MoveType" : "H",
+          "UnitType" : "F",
+          "outcome" : "success",
+          "playerId" : "b",
+          "resolved" : true,
+          "visited" : true
+        } ]
+      }
+    }
+  },
   "turn_status" : {
     "current_phase" : "order",
-    "current_season" : "spring",
+    "current_season" : "fall",
     "current_year" : "1901",
     "phase_expiration_time" : 990099
   }
 };
+
+
 gameRef.child(gameId).set(game)
 
 

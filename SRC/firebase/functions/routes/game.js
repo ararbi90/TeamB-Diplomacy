@@ -123,20 +123,21 @@ function resolveGame(game, gameId) {
     if (game.turn_status.current_phase === 'retreat') {
         orders = game.retreatOrder;
     }
-
+    let roundName = game.turn_status.current_season + game.turn_status.current_year;
+    // console.log(JSON.stringify(orders[roundName], undefined, 2));
     let allOrder = [];
-    Object.keys(orders).forEach(function (seasonYear, index) {
-        Object.keys(orders[seasonYear]).forEach(function (playerId, index) {
-            Object.keys(orders[seasonYear][playerId]).forEach(function (eachOrder) {
-                let temp = orders[seasonYear][playerId][eachOrder];
-                temp.playerId = playerId;
-                temp.resolved = false;
-                temp.visited = false;
-                temp.outcome = 'na';
-                allOrder.push(temp);
-            })
+
+    Object.keys(orders[roundName]).forEach(function (playerId, index) {
+        Object.keys(orders[roundName][playerId]).forEach(function (eachOrder) {
+            let temp = orders[roundName][playerId][eachOrder];
+            temp.playerId = playerId;
+            temp.resolved = false;
+            temp.visited = false;
+            temp.outcome = 'na';
+            allOrder.push(temp);
         })
     })
+
     // got to logic of game
     let passFails = getPassFails(allOrder);
     let pass = {}
@@ -205,6 +206,7 @@ function resolveGame(game, gameId) {
     roundResultKey = game.turn_status.current_season + game.turn_status.current_year;
     roundResult = { pass: passUsers, fail: failUsers, retreat: retreatUsers };
 
+    // console.log(JSON.stringify(passFails, undefined, 2));
 
     if (game.turn_status.current_phase === 'order') {
         phaseChageOrders(game, roundResult, roundResultKey, gameId);
@@ -412,7 +414,6 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
     let roundsResolution = game.resolution;
     let disband = [];
     let canMove = [];
-
     Object.keys(passFails).forEach(loc => {
         passFails[loc].forEach(PForder => {
             if (PForder.Retreat === 'true') {
@@ -428,7 +429,8 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
 
     })
 
-
+    console.log(JSON.stringify(passFails,undefined,2))
+    
     // Update players
     let fails = game.resolution[roundResultKey].fail;
     let pass = game.resolution[roundResultKey].pass;
@@ -460,7 +462,7 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
 
     let updatedList = updateRetreatPlayers(game, gameId, game.resolution[roundResultKey], roundResultKey);
 
-
+    //console.log(JSON.stringify(updatedList,undefined,2))
     if (game.turn_status.current_season === 'spring') {
         // got to fall and orders
 
@@ -548,7 +550,7 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
 
         if (build === true) {
             // Switch to build
-      
+
             admin.database().ref('/games').child(gameId).child('players').set(
                 updatedList,
                 function (err) {
@@ -574,7 +576,7 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
                 }).catch(error => { console.log(error) });
         } else {
             // No build just change to order spring and increment year stay in order
-            
+
             let newYeay = parseInt(game.turn_status.current_year, 10) + 1;
             admin.database().ref('/games').child(gameId).child('turn_status').child('current_season').set(
                 'spring', function (err) {
@@ -629,15 +631,17 @@ function updateRetreatPlayers(game, gameId, roundResult, roundResultKey) {
         temp.forEach(location => {
             if (location.MoveType === 'M') {
 
-                allPlayers[passedPlayers[i]].territories[location.MoveZone] = allPlayers[passedPlayers[i]].territories[location.CurrentZone]
-                delete allPlayers[passedPlayers[i]].territories[location.CurrentZone]
+                if (allPlayers[passedPlayers[i]].territories[location.CurrentZone] !== undefined) {
+                    allPlayers[passedPlayers[i]].territories[location.MoveZone] = allPlayers[passedPlayers[i]].territories[location.CurrentZone]
+                    delete allPlayers[passedPlayers[i]].territories[location.CurrentZone]
+                }
 
             }
         })
     }
 
 
-
+    // console.log(JSON.stringify(allPlayers, undefined, 2))
     admin.database().ref('/games').child(gameId).child('players').set(
         allPlayers,
         function (err) {
@@ -646,6 +650,7 @@ function updateRetreatPlayers(game, gameId, roundResult, roundResultKey) {
             }
 
         }).catch(error => { console.log(error) });
+    console.log("Upfated?")
 
     return allPlayers;
 
