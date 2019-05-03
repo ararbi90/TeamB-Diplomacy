@@ -220,37 +220,37 @@ var JQVMap = function (params) {
             
                 //document.getElementById('armySelected').innerHTML = code;
 
-                let win = new BrowserWindow({ width: 800, height: 800 });
-                //let win = new BrowserWindow({ width: 500, height: 400 });
+                //let win = new BrowserWindow({ width: 800, height: 800 });
 
-                gameRef.child(gameID).child("turn_status").child("current_phase").on("value", function (snapshot) {
+                gameRef.child(gameID).child("turn_status").child("current_phase").once("value").then(function (snapshot) {
                   var phase = snapshot.val();
+                  let win;
           
                   if (phase === "order")
                   {
+                      win = new BrowserWindow({ width: 550, height: 305 });
                       win.loadURL(`file://${__dirname}/../html/build.html`);
                   }
                   else if (phase === "retreat")
                   {
+                      win = new BrowserWindow({ width: 500, height: 400 });
                       win.loadURL(`file://${__dirname}/../html/retreatDisband.html`);
                   }
                   else if (phase === "build")
                   {
+                      win = new BrowserWindow({ width: 500, height: 290 });
                       win.loadURL(`file://${__dirname}/../html/addRemove.html`);
                   }
-                })
-
-                win.webContents.openDevTools();
-
-                win.webContents.on('did-finish-load', () => {
+                  win.webContents.on('did-finish-load', () => {
                     win.webContents.send('message', code + ' ' + username + ' ' + gameID);
-                });
-                windowOpen = true;
+                  });
+                  windowOpen = true;
 
-                win.on('closed', () => {
-                    map.deselect(code, targetPath);
-                    win = null;
-                    windowOpen = false;
+                  win.on('closed', () => {
+                      map.deselect(code, targetPath);
+                      win = null;
+                      windowOpen = false;
+                  })
                 })
             }
         }

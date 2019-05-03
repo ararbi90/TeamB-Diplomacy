@@ -388,8 +388,12 @@ function remove(res)
 
 function submitOrders(res)
 {
+    var keys = new Array();
     var buildOrders = res.players[username].build_orders_temp;
-    var keys = Object.keys(buildOrders);
+    if (buildOrders !== undefined)
+    {
+        keys = Object.keys(buildOrders);
+    }
 
     var submission = {};
 
@@ -413,6 +417,15 @@ function submitOrders(res)
         submission.orders.push(order);
     }
 
+    if (submission.orders.length === 0)
+    {
+        var order = {};
+
+        order.command = "NONE";
+
+        submission.orders.push(order);
+    }
+
     return submission;
 }
 
@@ -420,23 +433,23 @@ function submitOrders(res)
 $("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
 
-    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
+    $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/info", { gameId: gameID }, function (res) {
         mapsLogic(res);
         addTitle(res);
 
         $("#roundSubmissionForm").submit(function () {
 
-            $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2) {
+            $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/info", { gameId: gameID }, function (res2) {
                 remove(res2);
-                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res3) {
+                $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/info", { gameId: gameID }, function (res3) {
 
                     var submission = submitOrders(res3);
                     console.log(submission);
-                    // $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res4) {
-                    //     console.log(res4);
-                    // }).fail(function (err) {
-                    //     console.log(err);
-                    // })
+                    $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/submitbuildorder", { submission }, function (res4) {
+                        console.log(res4);
+                    }).fail(function (err) {
+                        console.log(err);
+                    })
                 }).fail(function (err) {
                     console.log(err);
                 })

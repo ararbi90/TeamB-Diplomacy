@@ -117,33 +117,77 @@ router.post('/submitretreatorder', function (req, res, next) {
     return true;
 });
 
+
+router.post('/submitbuildorder', function (req, res, next) {
+    // This post handles all the 
+    let data = req.body.submission;
+    let gameId = data.gameId;
+    let username = data.username;
+    let order = data.orders;
+    // Get gameinfo
+    admin.database().ref('/games').child(gameId).once('value').then(game => {
+        let gameInfo = game.val();
+        let roundName = gameInfo.turn_status.current_season + gameInfo.turn_status.current_year;
+        // Submit game
+        admin.database().ref('/games').child(gameId).child('buildOrder').child(roundName).child(username).set(
+            order,
+            function (err) {
+                if (err) {
+                    console.log("Error");
+                }
+                admin.database().ref('/games').child(gameId).once('value').then(updatedGame => {
+                    let updated = updatedGame.val();
+                    let numberOfPlayers = Object.keys(updated.players).length;
+                    let numberOfSubmits = Object.keys(updated.buildOrder[roundName]).length;
+                    if (numberOfPlayers === numberOfSubmits) {
+                        completeBuild(updated, gameId);
+                        res.send("Resolve");
+                    } else {
+                        res.send("Submitted");
+                    }
+                    return true;
+                }).catch(error => { console.log(error) });
+
+            }
+
+        ).catch(error => { console.log(error) });
+        return true;
+    }).catch(error => { console.log(error) });
+
+
+
+    return true;
+});
+
+
 function resolveGame(game, gameId) {
     let orders = game.order;
 
     if (game.turn_status.current_phase === 'retreat') {
         orders = game.retreatOrder;
     }
-
+    let roundName = game.turn_status.current_season + game.turn_status.current_year;
+    // console.log(JSON.stringify(orders[roundName], undefined, 2));
     let allOrder = [];
-    Object.keys(orders).forEach(function (seasonYear, index) {
-        Object.keys(orders[seasonYear]).forEach(function (playerId, index) {
-            Object.keys(orders[seasonYear][playerId]).forEach(function (eachOrder) {
-                let temp = orders[seasonYear][playerId][eachOrder];
-                temp.playerId = playerId;
-                temp.resolved = false;
-                temp.visited = false;
-                temp.outcome = 'na';
-                allOrder.push(temp);
-            })
+
+    Object.keys(orders[roundName]).forEach(function (playerId, index) {
+        Object.keys(orders[roundName][playerId]).forEach(function (eachOrder) {
+            let temp = orders[roundName][playerId][eachOrder];
+            temp.playerId = playerId;
+            temp.resolved = false;
+            temp.visited = false;
+            temp.outcome = 'na';
+            allOrder.push(temp);
         })
     })
+
     // got to logic of game
     let passFails = getPassFails(allOrder);
     let pass = {}
     let retreat = {}
     let fail = {}
 
-
+    // console.log(JSON.stringify(passFails, undefined, 2));
     Object.keys(passFails).forEach(locationKey => {
         // Test retreat
 
@@ -205,6 +249,7 @@ function resolveGame(game, gameId) {
     roundResultKey = game.turn_status.current_season + game.turn_status.current_year;
     roundResult = { pass: passUsers, fail: failUsers, retreat: retreatUsers };
 
+    // console.log(JSON.stringify(passFails, undefined, 2));
 
     if (game.turn_status.current_phase === 'order') {
         phaseChageOrders(game, roundResult, roundResultKey, gameId);
@@ -279,7 +324,7 @@ function phaseChageOrders(game, roundResult, roundResultKey, gameId) {
                             Object.keys(updatedList).forEach(findLooser => {
 
                                 if (updatedList[findLooser].supplyCenters[sc] !== undefined) {
-                                    console.log("Found " + findLooser);
+                                    // console.log("Found " + findLooser);
                                     delete updatedList[findLooser].supplyCenters[sc];
                                 }
                             });
@@ -412,7 +457,6 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
     let roundsResolution = game.resolution;
     let disband = [];
     let canMove = [];
-
     Object.keys(passFails).forEach(loc => {
         passFails[loc].forEach(PForder => {
             if (PForder.Retreat === 'true') {
@@ -428,6 +472,7 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
 
     })
 
+    // console.log(JSON.stringify(passFails, undefined, 2))
 
     // Update players
     let fails = game.resolution[roundResultKey].fail;
@@ -460,7 +505,7 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
 
     let updatedList = updateRetreatPlayers(game, gameId, game.resolution[roundResultKey], roundResultKey);
 
-
+    //console.log(JSON.stringify(updatedList,undefined,2))
     if (game.turn_status.current_season === 'spring') {
         // got to fall and orders
 
@@ -548,7 +593,7 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
 
         if (build === true) {
             // Switch to build
-      
+
             admin.database().ref('/games').child(gameId).child('players').set(
                 updatedList,
                 function (err) {
@@ -574,7 +619,7 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
                 }).catch(error => { console.log(error) });
         } else {
             // No build just change to order spring and increment year stay in order
-            
+
             let newYeay = parseInt(game.turn_status.current_year, 10) + 1;
             admin.database().ref('/games').child(gameId).child('turn_status').child('current_season').set(
                 'spring', function (err) {
@@ -629,15 +674,17 @@ function updateRetreatPlayers(game, gameId, roundResult, roundResultKey) {
         temp.forEach(location => {
             if (location.MoveType === 'M') {
 
-                allPlayers[passedPlayers[i]].territories[location.MoveZone] = allPlayers[passedPlayers[i]].territories[location.CurrentZone]
-                delete allPlayers[passedPlayers[i]].territories[location.CurrentZone]
+                if (allPlayers[passedPlayers[i]].territories[location.CurrentZone] !== undefined) {
+                    allPlayers[passedPlayers[i]].territories[location.MoveZone] = allPlayers[passedPlayers[i]].territories[location.CurrentZone]
+                    delete allPlayers[passedPlayers[i]].territories[location.CurrentZone]
+                }
 
             }
         })
     }
 
 
-
+    // console.log(JSON.stringify(allPlayers, undefined, 2))
     admin.database().ref('/games').child(gameId).child('players').set(
         allPlayers,
         function (err) {
@@ -646,6 +693,7 @@ function updateRetreatPlayers(game, gameId, roundResult, roundResultKey) {
             }
 
         }).catch(error => { console.log(error) });
+    // console.log("Upfated?")
 
     return allPlayers;
 
@@ -684,6 +732,66 @@ function updatePlayers(game, gameId, roundResult, roundResultKey) {
         }).catch(error => { console.log(error) });
 
     return allPlayers;
+
+
+}
+
+function completeBuild(game, gameId) {
+    let roundName = game.turn_status.current_season + game.turn_status.current_year;
+    let orders = game.buildOrder[roundName];
+    let players = game.players;
+
+    Object.keys(orders).forEach(orderPlayer => {
+        // get all orders of player
+        orders[orderPlayer].forEach(ord => {
+            if (ord.command === 'BUILD') {
+                //build
+                players[orderPlayer]['territories'][ord['territory']] = { forceType: ord['buildType'] };
+            } else if (ord.command === 'REMOVE') {
+                //remove
+                delete players[orderPlayer]['territories'][ord['territory']];
+                delete players[orderPlayer]['supplyCenters'][ord['territory']];
+            }
+        })
+    })
+
+
+    //console.log(JSON.stringify(players, undefined, 2));
+
+    //update players for the game
+    admin.database().ref('/games').child(gameId).child('players').set(
+        players,
+        function (err) {
+            if (err) {
+                console.log("Error");
+            }
+
+        }).catch(error => { console.log(error) });
+
+    // update round and year
+    let newYeay = parseInt(game.turn_status.current_year, 10) + 1;
+    admin.database().ref('/games').child(gameId).child('turn_status').child('current_season').set(
+        'spring', function (err) {
+            if (err) {
+                console.log("Error");
+            }
+
+        }).catch(error => { console.log(error) });
+    admin.database().ref('/games').child(gameId).child('turn_status').child('current_year').set(
+        newYeay, function (err) {
+            if (err) {
+                console.log("Error");
+            }
+
+        }).catch(error => { console.log(error) });
+
+    admin.database().ref('/games').child(gameId).child('turn_status').child('current_phase').set(
+        'order', function (err) {
+            if (err) {
+                console.log("Error");
+            }
+
+        }).catch(error => { console.log(error) });
 
 
 }
@@ -840,226 +948,288 @@ function getPassFails(allOrder) {
     let failedMoves = [];
 
     /// This mess
-    for (let i = 0; i < regions.length; i++) {
-        let currentLocation = regionHashTable[regions[i]];
-        let currentLocationAttackers = [];
-        let attackersFailed = false;
-        let locationStrength = {};
-        let locationApposition = {};
-        let strongHold = undefined;
-        currentLocation.forEach(filter => {
-            filter.visited = true;
+    for (let k = 0; k < regions.length; k++) {
+        for (let i = 0; i < regions.length; i++) {
+            let currentLocation = regionHashTable[regions[i]];
+            let currentLocationAttackers = [];
+            let attackersFailed = false;
+            let locationStrength = {};
+            let locationApposition = {};
+            let strongHold = undefined;
+            currentLocation.forEach(filter => {
+                filter.visited = true;
 
-            if (filter.CurrentZone === regions[i]) {
-                strongHold = filter;
-                if (filter.MoveType === 'H') {
-                    // Testing disbanding
-                    if (filter.attackSupportPowerList !== undefined) {
-                        Object.keys(filter.attackSupportPowerList).forEach(supportSource => {
-
-
-                            if (locationApposition[supportSource.supportLocation] === undefined) {
-                                locationApposition[supportSource.supportLocation] = 2;
-                            }
-                            else {
-                                locationApposition[supportSource.supportLocation] += 1;
-                            }
-                        })
-                    }
-
-                } else if (filter.MoveType === 'S') {
-                    // Testing Disbanding
-                    if (filter.attackSupportPowerList !== undefined) {
-                        Object.keys(filter.attackSupportPowerList).forEach(supportSource => {
-
-                            if (locationApposition[supportSource.supportLocation] === undefined) {
-                                locationApposition[supportSource.supportLocation] = 2;
-                            }
-                            else {
-                                locationApposition[supportSource.supportLocation] += 1;
-                            }
-                        })
-                    }
-
-                } else if (filter.MoveType === 'M') {
-                    // Move
-                }
-
-            } else {
-                currentLocationAttackers.push(filter);
-
-            }
-
-        })
+                if (filter.CurrentZone === regions[i]) {
+                    strongHold = filter;
+                    if (filter.MoveType === 'H') {
+                        // Testing disbanding
+                        if (filter.attackSupportPowerList !== undefined) {
+                            Object.keys(filter.attackSupportPowerList).forEach(supportSource => {
 
 
-        // Conditions when no one is present on the location
-        if (strongHold === undefined) {
-            // No one is there only attackers
-            // Repeated code can be moved to a method
-            if (currentLocationAttackers.length === 1) {
-                let winner = currentLocationAttackers[0];
-                currentLocation.forEach(finder => {
-                    if (winner.gameId === finder.gameId) {
-                        finder.resolved = true;
-                        finder.outcome = 'success';
-                    }
-                })
-
-            } else {
-                let highestAttackStrength = 0;
-                let highestAttacker = undefined;
-                let standOff = false;
-                currentLocationAttackers.forEach(att => {
-
-                    if (att.supportPowerList !== undefined) {
-                        if (Object.keys(att.supportPowerList).length === highestAttackStrength) {
-
-                            standOff = true;
+                                if (locationApposition[supportSource.supportLocation] === undefined) {
+                                    locationApposition[supportSource.supportLocation] = 2;
+                                }
+                                else {
+                                    locationApposition[supportSource.supportLocation] += 1;
+                                }
+                            })
                         }
-                        else if (Object.keys(att.supportPowerList).length > highestAttackStrength) {
 
-                            highestAttackStrength = Object.keys(att.supportPowerList).length;
-                            highestAttacker = att;
-                            standOff = false;
+                    } else if (filter.MoveType === 'S') {
+                        // Testing Disbanding
+                        if (filter.attackSupportPowerList !== undefined) {
+                            Object.keys(filter.attackSupportPowerList).forEach(supportSource => {
+
+                                if (locationApposition[supportSource.supportLocation] === undefined) {
+                                    locationApposition[supportSource.supportLocation] = 2;
+                                }
+                                else {
+                                    locationApposition[supportSource.supportLocation] += 1;
+                                }
+                            })
                         }
+
+                    } else if (filter.MoveType === 'M') {
+                        // Move
                     }
-                })
-                if (standOff || highestAttacker === undefined) {
-                    currentLocation.forEach(finder => {
 
-                        finder.resolved = true;
-                        finder.outcome = 'failed';
-
-                    })
                 } else {
-                    currentLocation.forEach(finder => {
-                        if (highestAttacker.CurrentZone === finder.CurrentZone) {
-                            finder.resolved = true;
-                            finder.outcome = 'success';
-                        } else {
-                            finder.resolved = true;
-                            finder.outcome = 'failed';
-                        }
+                    currentLocationAttackers.push(filter);
 
-                    })
                 }
 
-            }
-        } else {
-            // Someone is on that location
-            if (currentLocationAttackers.length === 0) {
-                // There is only one person on that location
-                if (strongHold.MoveType === 'H') {
-                    currentLocation.forEach(finder => {
-                        finder.resolved = true;
-                        finder.outcome = 'success';
+            })
 
-                    })
-                }
 
-            } else {
-                // More than one person is on that location
+            // Conditions when no one is present on the location
+            if (strongHold === undefined) {
+                // No one is there only attackers
                 // Repeated code can be moved to a method
-                // find all the attackers streangth
-                let highestAttackStrength = 0;
-                let highestAttacker = undefined;
-                let standOff = false;
-                // Find strongest attacker or test standoff
-                currentLocationAttackers.forEach(att => {
+                if (currentLocationAttackers.length === 1) {
+                    // console.log("Sinle move")
+                    let winner = currentLocationAttackers[0];
+                    currentLocation.forEach(finder => {
 
-                    if (att.supportPowerList !== undefined) {
-                        if (Object.keys(att.supportPowerList).length === highestAttackStrength) {
+                        finder.resolved = true;
+                        finder.outcome = 'success';
 
-                            standOff = true;
+                    })
+
+                } else {
+                    let highestAttackStrength = 0;
+                    let highestAttacker = undefined;
+                    let standOff = false;
+                    currentLocationAttackers.forEach(att => {
+
+                        if (att.supportPowerList !== undefined) {
+                            if (Object.keys(att.supportPowerList).length === highestAttackStrength) {
+
+                                standOff = true;
+                            }
+                            else if (Object.keys(att.supportPowerList).length > highestAttackStrength) {
+
+                                highestAttackStrength = Object.keys(att.supportPowerList).length;
+                                highestAttacker = att;
+                                standOff = false;
+                            }
                         }
-                        else if (Object.keys(att.supportPowerList).length > highestAttackStrength) {
+                    })
+                    if (standOff || highestAttacker === undefined) {
+                        currentLocation.forEach(finder => {
 
-                            highestAttackStrength = Object.keys(att.supportPowerList).length;
-                            highestAttacker = att;
-                            standOff = false;
-                        }
+                            finder.resolved = true;
+                            finder.outcome = 'failed';
+
+                        })
+                    } else {
+                        currentLocation.forEach(finder => {
+                            if (highestAttacker.CurrentZone === finder.CurrentZone) {
+                                finder.resolved = true;
+                                finder.outcome = 'success';
+                            } else {
+                                finder.resolved = true;
+                                finder.outcome = 'failed';
+                            }
+
+                        })
                     }
-                })
-                if (standOff || highestAttacker === undefined) {
-                    currentLocation.forEach(finder => {
 
-                        if (finder.CurrentZone !== strongHold.CurrentZone) {
-                            finder.resolved = true;
-                            finder.outcome = 'failed';
-                        }
-                        if (finder.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H') {
-                            finder.resolved = true;
-                            finder.outcome = 'success';
-                        }
-
-                    })
-                } else {
-                    currentLocation.forEach(finder => {
-                        if (highestAttacker.CurrentZone === finder.CurrentZone) {
-                            finder.resolved = true;
-                            finder.outcome = 'success';
-                        } else {
-                            finder.resolved = true;
-                            finder.outcome = 'failed';
-                        }
-
-                    })
                 }
-
-                if (standOff) {
-                    // There is a standoff between people moving in
-                    currentLocation.forEach(finder => {
-                        if (finder.CurrentZone !== strongHold.CurrentZone) {
-                            finder.resolved = true;
-                            finder.outcome = 'failed';
-                        }
-                        if (finder.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H') {
+            } else {
+                // Someone is on that location
+                if (currentLocationAttackers.length === 0) {
+                    // There is only one person on that location
+                    if (strongHold.MoveType === 'H') {
+                        currentLocation.forEach(finder => {
                             finder.resolved = true;
                             finder.outcome = 'success';
+
+                        })
+                    }
+
+                } else {
+                    // More than one person is on that location
+                    // Repeated code can be moved to a method
+                    // find all the attackers streangth
+                    let highestAttackStrength = 0;
+                    let highestAttacker = undefined;
+                    let standOff = false;
+                    // Find strongest attacker or test standoff
+                    currentLocationAttackers.forEach(att => {
+
+                        if (att.supportPowerList !== undefined) {
+                            if (Object.keys(att.supportPowerList).length === highestAttackStrength) {
+
+                                standOff = true;
+                            }
+                            else if (Object.keys(att.supportPowerList).length > highestAttackStrength) {
+
+                                highestAttackStrength = Object.keys(att.supportPowerList).length + 1;
+                                highestAttacker = att;
+                                standOff = false;
+                            }
                         }
                     })
-                } else {
 
-                    // No stand off have to check who can move in or if the holder can stay there
+                    // if (standOff || highestAttacker === undefined) {
+                    //     currentLocation.forEach(finder => {
 
-                    if (strongHold.supportPowerList !== undefined) {
+                    //         if (finder.CurrentZone !== strongHold.CurrentZone) {
+                    //             finder.resolved = true;
+                    //             finder.outcome = 'failed';
+                    //         }
+                    //         if (finder.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H') {
+                    //             finder.resolved = true;
+                    //             finder.outcome = 'success';
+                    //         }
 
-                        if (highestAttackStrength > Object.keys(strongHold.supportPowerList).length + 1) {
-                            // Attack worked and disband location
-                            currentLocation.forEach(finder => {
-                                if (highestAttacker.CurrentZone === finder.CurrentZone) {
+                    //     })
+                    // } else {
+                    //     currentLocation.forEach(finder => {
+                    //         if (highestAttacker.CurrentZone === finder.CurrentZone) {
+                    //             finder.resolved = true;
+                    //             finder.outcome = 'success';
+                    //         } else {
+                    //             finder.resolved = true;
+                    //             finder.outcome = 'failed';
+                    //         }
+
+                    //     })
+                    // }
+
+                    if (standOff || highestAttacker === undefined) {
+                        // There is a standoff between people moving in
+                        let attackers = currentLocation.length - 1;
+                        currentLocation.forEach(finder => {
+                            if (finder.CurrentZone !== strongHold.CurrentZone) {
+
+                                if (strongHold.MoveType === 'M' && strongHold.outcome === 'success' && attackers === 1) {
                                     finder.resolved = true;
                                     finder.outcome = 'success';
                                 } else {
                                     finder.resolved = true;
                                     finder.outcome = 'failed';
                                 }
-                            })
+                            }
+                            if (finder.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H') {
+                                finder.resolved = true;
+                                finder.outcome = 'success';
+                            }
+                        })
+                    } else {
 
+                        // No stand off have to check who can move in or if the holder can stay there
+
+                        if (strongHold.supportPowerList !== undefined) {
+
+                            if (highestAttackStrength > (Object.keys(strongHold.supportPowerList).length + 1)) {
+                                // Attack worked and disband location
+                                currentLocation.forEach(finder => {
+                                    // console.log(finder)
+                                    if (highestAttacker.CurrentZone === finder.CurrentZone) {
+                                        finder.resolved = true;
+                                        finder.outcome = 'success';
+                                    } else {
+                                        if (!(finder.CurrentZone === strongHold.CurrentZone && strongHold.outcome === 'success')) {
+                                            finder.resolved = true;
+                                            finder.outcome = 'failed';
+                                        }
+                                    }
+                                })
+
+                            } else {
+                                // Attack did not work
+                                currentLocation.forEach(finder => {
+
+                                    if (strongHold.CurrentZone === finder.CurrentZone && strongHold.MoveType === 'H') {
+
+                                        finder.resolved = true;
+                                        finder.outcome = 'success';
+                                    } else {
+                                        if ((strongHold.MoveType === 'M' && strongHold.outcome === 'success' && finder.CurrentZone === highestAttacker.CurrentZone)) {
+                                            finder.resolved = true;
+                                            finder.outcome = 'success';
+                                        } else {
+                                            finder.resolved = true;
+                                            finder.outcome = 'failed';
+                                        }
+
+                                    }
+                                })
+
+                            }
                         } else {
-                            // Attack did not work
-                            currentLocation.forEach(finder => {
+                            //console.log("Stong hold does not have support");
+                            //console.log(highestAttackStrength);
+                            if (highestAttackStrength > 1) {
+                                // Attack worked and disband location
+                                currentLocation.forEach(finder => {
+                                    if (highestAttacker.CurrentZone === finder.CurrentZone) {
+                                        finder.resolved = true;
+                                        finder.outcome = 'success';
+                                    } else {
+                                        if (!(finder.CurrentZone === strongHold.CurrentZone && strongHold.outcome === 'success')) {
+                                            finder.resolved = true;
+                                            finder.outcome = 'failed';
+                                        }
+                                    }
+                                })
 
-                                if (strongHold.CurrentZone === finder.CurrentZone && strongHold.MoveType === 'H') {
+                            } else {
+                                // Attack did not work
+                                currentLocation.forEach(finder => {
 
-                                    finder.resolved = true;
-                                    finder.outcome = 'success';
-                                } else {
-                                    finder.resolved = true;
-                                    finder.outcome = 'failed';
-                                }
-                            })
 
+                                    if (strongHold.CurrentZone === finder.CurrentZone && strongHold.MoveType === 'H') {
+
+                                        finder.resolved = true;
+                                        finder.outcome = 'success';
+                                    } else {
+                                        if ((strongHold.MoveType === 'M' && strongHold.outcome === 'success' && finder.CurrentZone === highestAttacker.CurrentZone)) {
+                                            // console.log("Rsolving chained moves-----------------------------------------------")
+                                            finder.resolved = true;
+                                            finder.outcome = 'success';
+
+                                        } else {
+                                            finder.resolved = true;
+                                            finder.outcome = 'failed';
+
+                                        }
+                                    }
+                                })
+
+                            }
                         }
                     }
                 }
+
             }
 
         }
-
     }
 
+    //console.log(JSON.stringify(regionHashTable, undefined, 2))
 
     return regionHashTable;
 
