@@ -1,4 +1,7 @@
 $ = require('jquery');
+ // preloading images onto the body so bounding boxes can be correctly calculated
+$('<img />').attr('src','..\\..\\images\\supply-center-2.png').appendTo('body').hide();
+$('<img />').attr('src','..\\..\\images\\tank-2.png').appendTo('body').hide();
 
 var config = {
     apiKey: "AIzaSyBmzv9WLDoGI533rDWZXVATzA8ea9xbteo",
