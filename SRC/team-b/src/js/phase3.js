@@ -29,6 +29,7 @@ function mapsLogic(res) {
     // This is benson's code from game.html
     players = res.players;
     var clickableRegions = [];
+    var allTerritoriesWithUnits = [];
     $.each(players, function (index, player) {
         playerName = index;
         // loop through each supply center the player controls
@@ -43,6 +44,7 @@ function mapsLogic(res) {
         $.each(territories, function (index, territory) {
             defaultcolors[index] = player.color;
             hovercolors[index] = player.hoverColor;
+            allTerritoriesWithUnits.push(index);
         });
     });
 
@@ -134,6 +136,7 @@ function mapsLogic(res) {
     jQuery('#vmap').vectorMap({
         map: 'diplomacy',
         backgroundColor: '#000000',
+        clickableRegions: allTerritoriesWithUnits,
         borderColor: '#000000',
         borderOpacity: .75,
         borderWidth: 2,

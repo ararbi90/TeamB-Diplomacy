@@ -35,6 +35,9 @@ function mapsLogic(res) {
     // This is benson's code from game.html
     players = res.players;
     var clickableRegions = [];
+    var allTerritoriesWithUnits = [];
+
+    
     $.each(players, function (index, player) {
         playerName = index;
         // loop through each supply center the player controls
@@ -48,13 +51,13 @@ function mapsLogic(res) {
         $.each(territories, function (index, territory) {
             defaultcolors[index] = player.color;
             hovercolors[index] = player.hoverColor;
+            allTerritoriesWithUnits.push(index);
             if (username == playerName) {
                 clickableRegions.push(index);
             }
         });
     });
 
-    
     //$('<img />').attr('src',this).appendTo('body').hide();
     var enabledRegions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
     var currentRegion;
@@ -62,6 +65,7 @@ function mapsLogic(res) {
     jQuery('#vmap').vectorMap({
         map: 'diplomacy',
         backgroundColor: '#000000',
+        clickableRegions: allTerritoriesWithUnits, // used to see what territories the player owns
         borderColor: '#000000',
         borderOpacity: .75,
         borderWidth: 2,
