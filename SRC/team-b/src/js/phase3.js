@@ -387,7 +387,7 @@ function submitOrders(res)
 {
     var keys = new Array();
     var buildOrders = res.players[username].build_orders_temp;
-    if (keys !== undefined)
+    if (buildOrders !== undefined)
     {
         keys = Object.keys(buildOrders);
     }
