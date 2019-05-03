@@ -117,6 +117,49 @@ router.post('/submitretreatorder', function (req, res, next) {
     return true;
 });
 
+
+router.post('/submitbuildorder', function (req, res, next) {
+    // This post handles all the 
+    let data = req.body.submission;
+    let gameId = data.gameId;
+    let username = data.username;
+    let order = data.orders;
+    // Get gameinfo
+    admin.database().ref('/games').child(gameId).once('value').then(game => {
+        let gameInfo = game.val();
+        let roundName = gameInfo.turn_status.current_season + gameInfo.turn_status.current_year;
+        // Submit game
+        admin.database().ref('/games').child(gameId).child('buildOrder').child(roundName).child(username).set(
+            order,
+            function (err) {
+                if (err) {
+                    console.log("Error");
+                }
+                admin.database().ref('/games').child(gameId).once('value').then(updatedGame => {
+                    let updated = updatedGame.val();
+                    let numberOfPlayers = Object.keys(updated.players).length;
+                    let numberOfSubmits = Object.keys(updated.buildOrder[roundName]).length;
+                    if (numberOfPlayers === numberOfSubmits) {
+                        completeBuild(updated, gameId);
+                        res.send("Resolve");
+                    } else {
+                        res.send("Submitted");
+                    }
+                    return true;
+                }).catch(error => { console.log(error) });
+
+            }
+
+        ).catch(error => { console.log(error) });
+        return true;
+    }).catch(error => { console.log(error) });
+
+
+
+    return true;
+});
+
+
 function resolveGame(game, gameId) {
     let orders = game.order;
 
@@ -144,7 +187,7 @@ function resolveGame(game, gameId) {
     let retreat = {}
     let fail = {}
 
-
+    // console.log(JSON.stringify(passFails, undefined, 2));
     Object.keys(passFails).forEach(locationKey => {
         // Test retreat
 
@@ -693,6 +736,58 @@ function updatePlayers(game, gameId, roundResult, roundResultKey) {
 
 }
 
+function completeBuild(game, gameId) {
+    let roundName = game.turn_status.current_season + game.turn_status.current_year;
+    let orders = game.buildOrder[roundName];
+    let players = game.players;
+
+    Object.keys(orders).forEach(orderPlayer => {
+        // get all orders of player
+        orders[orderPlayer].forEach(ord => {
+            if (ord.command === 'build') {
+                //build
+                players[orderPlayer]['territories'][ord['territory']] = { forceType: ord['buildType'] };
+            } else {
+                //remove
+                delete players[orderPlayer]['territories'][ord['territory']];
+            }
+        })
+    })
+
+
+    console.log(JSON.stringify(players, undefined, 2));
+
+    //update players for the game
+    // admin.database().ref('/games').child(gameId).child('players').set(
+    //     players,
+    //     function (err) {
+    //         if (err) {
+    //             console.log("Error");
+    //         }
+
+    //     }).catch(error => { console.log(error) });
+
+    // update round and year
+    // let newYeay = parseInt(game.turn_status.current_year, 10) + 1;
+    // admin.database().ref('/games').child(gameId).child('turn_status').child('current_season').set(
+    //     'spring', function (err) {
+    //         if (err) {
+    //             console.log("Error");
+    //         }
+    //         admin.database().ref('/games').child(gameId).child('turn_status').child('current_year').set(
+    //             newYeay, function (err) {
+    //                 if (err) {
+    //                     console.log("Error");
+    //                 }
+
+    //             }).catch(error => { console.log(error) });
+
+
+    //     }).catch(error => { console.log(error) });
+
+
+}
+
 
 
 /* Resolution logic
@@ -1021,12 +1116,12 @@ function getPassFails(allOrder) {
                         currentLocation.forEach(finder => {
                             if (finder.CurrentZone !== strongHold.CurrentZone) {
 
-                                if (strongHold.MoveType === 'M' && strongHold.outcome === 'success' && attackers === 1){
+                                if (strongHold.MoveType === 'M' && strongHold.outcome === 'success' && attackers === 1) {
                                     finder.resolved = true;
                                     finder.outcome = 'success';
                                 } else {
                                     finder.resolved = true;
-                                    finder.outcome = 'fail';
+                                    finder.outcome = 'failed';
                                 }
                             }
                             if (finder.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H') {
@@ -1069,7 +1164,7 @@ function getPassFails(allOrder) {
                                             finder.outcome = 'success';
                                         } else {
                                             finder.resolved = true;
-                                            finder.outcome = 'fail';
+                                            finder.outcome = 'failed';
                                         }
 
                                     }
@@ -1096,10 +1191,7 @@ function getPassFails(allOrder) {
                             } else {
                                 // Attack did not work
                                 currentLocation.forEach(finder => {
-                                    console.log(strongHold.outcome)
-                                    if (strongHold.outcome === 'success') {
-                                        console.log(strongHold.CurrentZone)
-                                    }
+
 
                                     if (strongHold.CurrentZone === finder.CurrentZone && strongHold.MoveType === 'H') {
 
@@ -1107,7 +1199,7 @@ function getPassFails(allOrder) {
                                         finder.outcome = 'success';
                                     } else {
                                         if ((strongHold.MoveType === 'M' && strongHold.outcome === 'success' && finder.CurrentZone === highestAttacker.CurrentZone)) {
-                                            console.log("Rsolving chained moves-----------------------------------------------")
+                                            // console.log("Rsolving chained moves-----------------------------------------------")
                                             finder.resolved = true;
                                             finder.outcome = 'success';
 

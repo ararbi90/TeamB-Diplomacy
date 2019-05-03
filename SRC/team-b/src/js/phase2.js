@@ -559,7 +559,7 @@ function submitOrders(res)
 $("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
 
-    $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/info", { gameId: gameID }, function (res) {
+    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
         mapsLogic(res);
         addResults(res);
         addTitle(res);
@@ -567,14 +567,14 @@ $("document").ready(function () {
 
         $("#roundSubmissionForm").submit(function () {
 
-            $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/info", { gameId: gameID }, function (res2) {
+            $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2) {
                 disband(res2);
 
-                $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/info", { gameId: gameID }, function (res3) {
+                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res3) {
                     var submission = submitOrders(res3);
                     console.log(submission);
 
-                    $.post("http://localhost:5000/cecs-475-team-b/us-central1/teamBackend/game/submitretreatorder", { submission }, function (res4) {
+                    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitretreatorder", { submission }, function (res4) {
                         console.log(res4);
                     }).fail(function (err) {
                         console.log(err);
