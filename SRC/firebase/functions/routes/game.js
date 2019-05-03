@@ -281,7 +281,7 @@ function phaseChageOrders(game, roundResult, roundResultKey, gameId) {
                             Object.keys(updatedList).forEach(findLooser => {
 
                                 if (updatedList[findLooser].supplyCenters[sc] !== undefined) {
-                                    console.log("Found " + findLooser);
+                                    // console.log("Found " + findLooser);
                                     delete updatedList[findLooser].supplyCenters[sc];
                                 }
                             });
@@ -650,7 +650,7 @@ function updateRetreatPlayers(game, gameId, roundResult, roundResultKey) {
             }
 
         }).catch(error => { console.log(error) });
-    console.log("Upfated?")
+    // console.log("Upfated?")
 
     return allPlayers;
 
@@ -845,279 +845,291 @@ function getPassFails(allOrder) {
     let failedMoves = [];
 
     /// This mess
+    for (let k = 0; k < regions.length; k++) {
+        for (let i = 0; i < regions.length; i++) {
+            let currentLocation = regionHashTable[regions[i]];
+            let currentLocationAttackers = [];
+            let attackersFailed = false;
+            let locationStrength = {};
+            let locationApposition = {};
+            let strongHold = undefined;
+            currentLocation.forEach(filter => {
+                filter.visited = true;
 
-    for (let i = 0; i < regions.length; i++) {
-        let currentLocation = regionHashTable[regions[i]];
-        let currentLocationAttackers = [];
-        let attackersFailed = false;
-        let locationStrength = {};
-        let locationApposition = {};
-        let strongHold = undefined;
-        currentLocation.forEach(filter => {
-            filter.visited = true;
-
-            if (filter.CurrentZone === regions[i]) {
-                strongHold = filter;
-                if (filter.MoveType === 'H') {
-                    // Testing disbanding
-                    if (filter.attackSupportPowerList !== undefined) {
-                        Object.keys(filter.attackSupportPowerList).forEach(supportSource => {
-
-
-                            if (locationApposition[supportSource.supportLocation] === undefined) {
-                                locationApposition[supportSource.supportLocation] = 2;
-                            }
-                            else {
-                                locationApposition[supportSource.supportLocation] += 1;
-                            }
-                        })
-                    }
-
-                } else if (filter.MoveType === 'S') {
-                    // Testing Disbanding
-                    if (filter.attackSupportPowerList !== undefined) {
-                        Object.keys(filter.attackSupportPowerList).forEach(supportSource => {
-
-                            if (locationApposition[supportSource.supportLocation] === undefined) {
-                                locationApposition[supportSource.supportLocation] = 2;
-                            }
-                            else {
-                                locationApposition[supportSource.supportLocation] += 1;
-                            }
-                        })
-                    }
-
-                } else if (filter.MoveType === 'M') {
-                    // Move
-                }
-
-            } else {
-                currentLocationAttackers.push(filter);
-
-            }
-
-        })
+                if (filter.CurrentZone === regions[i]) {
+                    strongHold = filter;
+                    if (filter.MoveType === 'H') {
+                        // Testing disbanding
+                        if (filter.attackSupportPowerList !== undefined) {
+                            Object.keys(filter.attackSupportPowerList).forEach(supportSource => {
 
 
-        // Conditions when no one is present on the location
-        if (strongHold === undefined) {
-            // No one is there only attackers
-            // Repeated code can be moved to a method
-            if (currentLocationAttackers.length === 1) {
-                console.log("Sinle move")
-                let winner = currentLocationAttackers[0];
-                currentLocation.forEach(finder => {
-
-                    finder.resolved = true;
-                    finder.outcome = 'success';
-
-                })
-
-            } else {
-                let highestAttackStrength = 0;
-                let highestAttacker = undefined;
-                let standOff = false;
-                currentLocationAttackers.forEach(att => {
-
-                    if (att.supportPowerList !== undefined) {
-                        if (Object.keys(att.supportPowerList).length === highestAttackStrength) {
-
-                            standOff = true;
+                                if (locationApposition[supportSource.supportLocation] === undefined) {
+                                    locationApposition[supportSource.supportLocation] = 2;
+                                }
+                                else {
+                                    locationApposition[supportSource.supportLocation] += 1;
+                                }
+                            })
                         }
-                        else if (Object.keys(att.supportPowerList).length > highestAttackStrength) {
 
-                            highestAttackStrength = Object.keys(att.supportPowerList).length;
-                            highestAttacker = att;
-                            standOff = false;
+                    } else if (filter.MoveType === 'S') {
+                        // Testing Disbanding
+                        if (filter.attackSupportPowerList !== undefined) {
+                            Object.keys(filter.attackSupportPowerList).forEach(supportSource => {
+
+                                if (locationApposition[supportSource.supportLocation] === undefined) {
+                                    locationApposition[supportSource.supportLocation] = 2;
+                                }
+                                else {
+                                    locationApposition[supportSource.supportLocation] += 1;
+                                }
+                            })
                         }
+
+                    } else if (filter.MoveType === 'M') {
+                        // Move
                     }
-                })
-                if (standOff || highestAttacker === undefined) {
-                    currentLocation.forEach(finder => {
 
-                        finder.resolved = true;
-                        finder.outcome = 'failed';
-
-                    })
                 } else {
-                    currentLocation.forEach(finder => {
-                        if (highestAttacker.CurrentZone === finder.CurrentZone) {
-                            finder.resolved = true;
-                            finder.outcome = 'success';
-                        } else {
-                            finder.resolved = true;
-                            finder.outcome = 'failed';
-                        }
+                    currentLocationAttackers.push(filter);
 
-                    })
                 }
 
-            }
-        } else {
-            // Someone is on that location
-            if (currentLocationAttackers.length === 0) {
-                // There is only one person on that location
-                if (strongHold.MoveType === 'H') {
+            })
+
+
+            // Conditions when no one is present on the location
+            if (strongHold === undefined) {
+                // No one is there only attackers
+                // Repeated code can be moved to a method
+                if (currentLocationAttackers.length === 1) {
+                    // console.log("Sinle move")
+                    let winner = currentLocationAttackers[0];
                     currentLocation.forEach(finder => {
+
                         finder.resolved = true;
                         finder.outcome = 'success';
 
                     })
-                }
 
-            } else {
-                // More than one person is on that location
-                // Repeated code can be moved to a method
-                // find all the attackers streangth
-                let highestAttackStrength = 0;
-                let highestAttacker = undefined;
-                let standOff = false;
-                // Find strongest attacker or test standoff
-                currentLocationAttackers.forEach(att => {
+                } else {
+                    let highestAttackStrength = 0;
+                    let highestAttacker = undefined;
+                    let standOff = false;
+                    currentLocationAttackers.forEach(att => {
 
-                    if (att.supportPowerList !== undefined) {
-                        if (Object.keys(att.supportPowerList).length === highestAttackStrength) {
+                        if (att.supportPowerList !== undefined) {
+                            if (Object.keys(att.supportPowerList).length === highestAttackStrength) {
 
-                            standOff = true;
-                        }
-                        else if (Object.keys(att.supportPowerList).length > highestAttackStrength) {
+                                standOff = true;
+                            }
+                            else if (Object.keys(att.supportPowerList).length > highestAttackStrength) {
 
-                            highestAttackStrength = Object.keys(att.supportPowerList).length + 1;
-                            highestAttacker = att;
-                            standOff = false;
-                        }
-                    }
-                })
-
-                // if (standOff || highestAttacker === undefined) {
-                //     currentLocation.forEach(finder => {
-
-                //         if (finder.CurrentZone !== strongHold.CurrentZone) {
-                //             finder.resolved = true;
-                //             finder.outcome = 'failed';
-                //         }
-                //         if (finder.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H') {
-                //             finder.resolved = true;
-                //             finder.outcome = 'success';
-                //         }
-
-                //     })
-                // } else {
-                //     currentLocation.forEach(finder => {
-                //         if (highestAttacker.CurrentZone === finder.CurrentZone) {
-                //             finder.resolved = true;
-                //             finder.outcome = 'success';
-                //         } else {
-                //             finder.resolved = true;
-                //             finder.outcome = 'failed';
-                //         }
-
-                //     })
-                // }
-
-                if (standOff || highestAttacker === undefined) {
-                    // There is a standoff between people moving in
-                    currentLocation.forEach(finder => {
-                        if (finder.CurrentZone !== strongHold.CurrentZone) {
-                            finder.resolved = true;
-                            finder.outcome = 'failed';
-                        }
-                        if (finder.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H') {
-                            finder.resolved = true;
-                            finder.outcome = 'success';
+                                highestAttackStrength = Object.keys(att.supportPowerList).length;
+                                highestAttacker = att;
+                                standOff = false;
+                            }
                         }
                     })
-                } else {
+                    if (standOff || highestAttacker === undefined) {
+                        currentLocation.forEach(finder => {
 
-                    // No stand off have to check who can move in or if the holder can stay there
+                            finder.resolved = true;
+                            finder.outcome = 'failed';
 
-                    if (strongHold.supportPowerList !== undefined) {
-
-                        if (highestAttackStrength > (Object.keys(strongHold.supportPowerList).length + 1)) {
-                            // Attack worked and disband location
-                            currentLocation.forEach(finder => {
-                                console.log(finder)
-                                if (highestAttacker.CurrentZone === finder.CurrentZone) {
-                                    finder.resolved = true;
-                                    finder.outcome = 'success';
-                                } else {
-                                    if (!(finder.CurrentZone === strongHold.CurrentZone && strongHold.outcome === 'success')) {
-                                        finder.resolved = true;
-                                        finder.outcome = 'failed';
-                                    }
-                                }
-                            })
-
-                        } else {
-                            // Attack did not work
-                            currentLocation.forEach(finder => {
-
-                                if (strongHold.CurrentZone === finder.CurrentZone && strongHold.MoveType === 'H') {
-
-                                    finder.resolved = true;
-                                    finder.outcome = 'success';
-                                } else {
-                                    if ((strongHold.MoveType === 'M' && strongHold.outcome !== 'na' && finder.CurrentZone === highestAttacker.CurrentZone)) {
-                                        finder.resolved = true;
-                                        finder.outcome = 'success';
-                                    } else {
-                                        finder.resolved = true;
-                                        finder.outcome = 'fail';
-                                    }
-
-                                }
-                            })
-
-                        }
+                        })
                     } else {
-                        //console.log("Stong hold does not have support");
-                        //console.log(highestAttackStrength);
-                        if (highestAttackStrength > 1) {
-                            // Attack worked and disband location
-                            currentLocation.forEach(finder => {
-                                if (highestAttacker.CurrentZone === finder.CurrentZone) {
+                        currentLocation.forEach(finder => {
+                            if (highestAttacker.CurrentZone === finder.CurrentZone) {
+                                finder.resolved = true;
+                                finder.outcome = 'success';
+                            } else {
+                                finder.resolved = true;
+                                finder.outcome = 'failed';
+                            }
+
+                        })
+                    }
+
+                }
+            } else {
+                // Someone is on that location
+                if (currentLocationAttackers.length === 0) {
+                    // There is only one person on that location
+                    if (strongHold.MoveType === 'H') {
+                        currentLocation.forEach(finder => {
+                            finder.resolved = true;
+                            finder.outcome = 'success';
+
+                        })
+                    }
+
+                } else {
+                    // More than one person is on that location
+                    // Repeated code can be moved to a method
+                    // find all the attackers streangth
+                    let highestAttackStrength = 0;
+                    let highestAttacker = undefined;
+                    let standOff = false;
+                    // Find strongest attacker or test standoff
+                    currentLocationAttackers.forEach(att => {
+
+                        if (att.supportPowerList !== undefined) {
+                            if (Object.keys(att.supportPowerList).length === highestAttackStrength) {
+
+                                standOff = true;
+                            }
+                            else if (Object.keys(att.supportPowerList).length > highestAttackStrength) {
+
+                                highestAttackStrength = Object.keys(att.supportPowerList).length + 1;
+                                highestAttacker = att;
+                                standOff = false;
+                            }
+                        }
+                    })
+
+                    // if (standOff || highestAttacker === undefined) {
+                    //     currentLocation.forEach(finder => {
+
+                    //         if (finder.CurrentZone !== strongHold.CurrentZone) {
+                    //             finder.resolved = true;
+                    //             finder.outcome = 'failed';
+                    //         }
+                    //         if (finder.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H') {
+                    //             finder.resolved = true;
+                    //             finder.outcome = 'success';
+                    //         }
+
+                    //     })
+                    // } else {
+                    //     currentLocation.forEach(finder => {
+                    //         if (highestAttacker.CurrentZone === finder.CurrentZone) {
+                    //             finder.resolved = true;
+                    //             finder.outcome = 'success';
+                    //         } else {
+                    //             finder.resolved = true;
+                    //             finder.outcome = 'failed';
+                    //         }
+
+                    //     })
+                    // }
+
+                    if (standOff || highestAttacker === undefined) {
+                        // There is a standoff between people moving in
+                        let attackers = currentLocation.length - 1;
+                        currentLocation.forEach(finder => {
+                            if (finder.CurrentZone !== strongHold.CurrentZone) {
+
+                                if (strongHold.MoveType === 'M' && strongHold.outcome === 'success' && attackers === 1){
                                     finder.resolved = true;
                                     finder.outcome = 'success';
                                 } else {
-                                    if (!(finder.CurrentZone === strongHold.CurrentZone && strongHold.outcome === 'success')) {
-                                        finder.resolved = true;
-                                        finder.outcome = 'failed';
-                                    }
+                                    finder.resolved = true;
+                                    finder.outcome = 'fail';
                                 }
-                            })
+                            }
+                            if (finder.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H') {
+                                finder.resolved = true;
+                                finder.outcome = 'success';
+                            }
+                        })
+                    } else {
 
-                        } else {
-                            // Attack did not work
-                            currentLocation.forEach(finder => {
+                        // No stand off have to check who can move in or if the holder can stay there
 
-                                if (strongHold.CurrentZone === finder.CurrentZone && strongHold.MoveType === 'H') {
+                        if (strongHold.supportPowerList !== undefined) {
 
-                                    finder.resolved = true;
-                                    finder.outcome = 'success';
-                                } else {
-                                    if ((strongHold.MoveType === 'M' && strongHold.outcome === 'success' && finder.CurrentZone === highestAttacker.CurrentZone)) {
-                                        console.log("Rsolving chained moves-----------------------------------------------")
+                            if (highestAttackStrength > (Object.keys(strongHold.supportPowerList).length + 1)) {
+                                // Attack worked and disband location
+                                currentLocation.forEach(finder => {
+                                    // console.log(finder)
+                                    if (highestAttacker.CurrentZone === finder.CurrentZone) {
                                         finder.resolved = true;
                                         finder.outcome = 'success';
-
                                     } else {
+                                        if (!(finder.CurrentZone === strongHold.CurrentZone && strongHold.outcome === 'success')) {
+                                            finder.resolved = true;
+                                            finder.outcome = 'failed';
+                                        }
+                                    }
+                                })
+
+                            } else {
+                                // Attack did not work
+                                currentLocation.forEach(finder => {
+
+                                    if (strongHold.CurrentZone === finder.CurrentZone && strongHold.MoveType === 'H') {
+
                                         finder.resolved = true;
-                                        finder.outcome = 'failed';
+                                        finder.outcome = 'success';
+                                    } else {
+                                        if ((strongHold.MoveType === 'M' && strongHold.outcome === 'success' && finder.CurrentZone === highestAttacker.CurrentZone)) {
+                                            finder.resolved = true;
+                                            finder.outcome = 'success';
+                                        } else {
+                                            finder.resolved = true;
+                                            finder.outcome = 'fail';
+                                        }
 
                                     }
-                                }
-                            })
+                                })
 
+                            }
+                        } else {
+                            //console.log("Stong hold does not have support");
+                            //console.log(highestAttackStrength);
+                            if (highestAttackStrength > 1) {
+                                // Attack worked and disband location
+                                currentLocation.forEach(finder => {
+                                    if (highestAttacker.CurrentZone === finder.CurrentZone) {
+                                        finder.resolved = true;
+                                        finder.outcome = 'success';
+                                    } else {
+                                        if (!(finder.CurrentZone === strongHold.CurrentZone && strongHold.outcome === 'success')) {
+                                            finder.resolved = true;
+                                            finder.outcome = 'failed';
+                                        }
+                                    }
+                                })
+
+                            } else {
+                                // Attack did not work
+                                currentLocation.forEach(finder => {
+                                    console.log(strongHold.outcome)
+                                    if (strongHold.outcome === 'success') {
+                                        console.log(strongHold.CurrentZone)
+                                    }
+
+                                    if (strongHold.CurrentZone === finder.CurrentZone && strongHold.MoveType === 'H') {
+
+                                        finder.resolved = true;
+                                        finder.outcome = 'success';
+                                    } else {
+                                        if ((strongHold.MoveType === 'M' && strongHold.outcome === 'success' && finder.CurrentZone === highestAttacker.CurrentZone)) {
+                                            console.log("Rsolving chained moves-----------------------------------------------")
+                                            finder.resolved = true;
+                                            finder.outcome = 'success';
+
+                                        } else {
+                                            finder.resolved = true;
+                                            finder.outcome = 'failed';
+
+                                        }
+                                    }
+                                })
+
+                            }
                         }
                     }
                 }
+
             }
 
         }
-
     }
 
-
+    //console.log(JSON.stringify(regionHashTable, undefined, 2))
 
     return regionHashTable;
 
