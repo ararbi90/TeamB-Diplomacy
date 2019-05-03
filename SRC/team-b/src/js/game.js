@@ -94,13 +94,6 @@ function mapsLogic(res) {
     });
 }
 
-function nextPhase()
-{
-    let link = "phase2.html?gameID=" + gameID + "&username=" + username;
-
-    window.location.href = link;
-}
-
 function controllerTimer() {
     let t = $("#timer").html();
     let hr = parseInt(t.substring(0, t.indexOf(":")));
@@ -175,7 +168,7 @@ gameRef.child(gameID).child("turn_status").on("child_changed", function (snapsho
         publicChatRef.child(gameID).remove();
     }
 
-    if (data === "retreat" || data === "build")
+    if (data === "retreat")
     {
         if (data === "retreat")
         {
@@ -204,8 +197,16 @@ gameRef.child(gameID).child("turn_status").on("child_changed", function (snapsho
                 }
             }
 
-            let link = "game.html?gameID=" + gameID + "&username=" + username;
-            window.location.href = link;
+            if (data === "build")
+            {
+                let link = "phase3.html?gameID=" + gameID + "&username=" + username;
+                window.location.href = link;
+            }
+            else
+            {
+                let link = "game.html?gameID=" + gameID + "&username=" + username;
+                window.location.href = link;
+            }
         })
     }
 })
