@@ -75,10 +75,8 @@ var messageColors = new Map([
 ])
 
 // Style the message
-function styleMessage(node, country)
+function styleMessage(node, player)
 {
-    var countries = country.split("_");
-
     node.style.textAlign = "left";
     node.style.padding = "3px";
     node.style.margin = "0 0 5px 0";
@@ -91,22 +89,11 @@ function styleMessage(node, country)
     node.style.maxWidth = "66%";
 
     // Color
-    if (countries.length == 1)
+    gameRef.child(gameID).child("players").child(player).once("value", function (snapshot)
     {
-        node.style.borderBottom = "6px solid " + messageColors.get(countries[0]);
-    }
-    else if (countries.length == 2)
-    {
-        node.style.borderTop = "6px solid " + messageColors.get(countries[0]);
-        node.style.borderBottom = "6px solid " + messageColors.get(countries[1]);
-    }
-    else if (countries.length == 3)
-    {
-        node.style.borderTop = "6px solid " + messageColors.get(countries[0]);
-        node.style.borderBottom = "6px solid " + messageColors.get(countries[1]);
-        node.style.borderLeft = "6px solid " + messageColors.get(countries[2]);
-        node.style.borderRight = "6px solid " + messageColors.get(countries[2]);
-    }
+        console.log(snapshot.val().color);
+        node.style.borderBottom = "6px solid " + snapshot.val().color;
+    })
 
     chatCount++;
 }
@@ -322,7 +309,7 @@ gameRef.child(gameID).child("players").once("value").then(function (snap)
         }
 
         // Style message and append
-        styleMessage(node, players[messageSender].country);
+        styleMessage(node, messageSender);
         document.getElementById("Main").appendChild(node);
 
         // Auto scroll
@@ -416,7 +403,7 @@ gameRef.child(gameID).child("players").once("value").then(function (snap)
                         }
 
                         // Style message and append
-                        styleMessage(node, playerCountry);
+                        styleMessage(node, player);
                         document.getElementById(tablink).appendChild(node);
 
                         // Auto scroll
