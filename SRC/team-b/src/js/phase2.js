@@ -252,16 +252,16 @@ function addRetreats(res)
 
     var key = res.turn_status.current_season + res.turn_status.current_year;
 
-    if (res.resolution[key].fail[username] !== undefined)
+    if (res.resolution[key].retreat[username] !== undefined)
     {
-        var keys = Object.keys(res.resolution[key].fail[username]);
+        var keys = Object.keys(res.resolution[key].retreat[username]);
 
         for (var i = 0; i < keys.length; i++)
         {
             var retreat = "";
-            retreat += res.resolution[key].fail[username][keys[i]].UnitType;
+            retreat += res.resolution[key].retreat[username][keys[i]].UnitType;
             retreat += " ";
-            retreat += res.resolution[key].fail[username][keys[i]].CurrentZone;
+            retreat += res.resolution[key].retreat[username][keys[i]].CurrentZone;
             retreats.push(retreat);
         }
     }
