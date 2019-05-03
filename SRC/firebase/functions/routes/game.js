@@ -747,43 +747,51 @@ function completeBuild(game, gameId) {
             if (ord.command === 'BUILD') {
                 //build
                 players[orderPlayer]['territories'][ord['territory']] = { forceType: ord['buildType'] };
-            } else if(ord.command === 'REMOVE'){
+            } else if (ord.command === 'REMOVE') {
                 //remove
                 delete players[orderPlayer]['territories'][ord['territory']];
+                delete players[orderPlayer]['supplyCenters'][ord['territory']];
             }
         })
     })
 
 
-    console.log(JSON.stringify(players, undefined, 2));
+    //console.log(JSON.stringify(players, undefined, 2));
 
     //update players for the game
-    // admin.database().ref('/games').child(gameId).child('players').set(
-    //     players,
-    //     function (err) {
-    //         if (err) {
-    //             console.log("Error");
-    //         }
+    admin.database().ref('/games').child(gameId).child('players').set(
+        players,
+        function (err) {
+            if (err) {
+                console.log("Error");
+            }
 
-    //     }).catch(error => { console.log(error) });
+        }).catch(error => { console.log(error) });
 
     // update round and year
-    // let newYeay = parseInt(game.turn_status.current_year, 10) + 1;
-    // admin.database().ref('/games').child(gameId).child('turn_status').child('current_season').set(
-    //     'spring', function (err) {
-    //         if (err) {
-    //             console.log("Error");
-    //         }
-    //         admin.database().ref('/games').child(gameId).child('turn_status').child('current_year').set(
-    //             newYeay, function (err) {
-    //                 if (err) {
-    //                     console.log("Error");
-    //                 }
+    let newYeay = parseInt(game.turn_status.current_year, 10) + 1;
+    admin.database().ref('/games').child(gameId).child('turn_status').child('current_season').set(
+        'spring', function (err) {
+            if (err) {
+                console.log("Error");
+            }
 
-    //             }).catch(error => { console.log(error) });
+        }).catch(error => { console.log(error) });
+    admin.database().ref('/games').child(gameId).child('turn_status').child('current_year').set(
+        newYeay, function (err) {
+            if (err) {
+                console.log("Error");
+            }
 
+        }).catch(error => { console.log(error) });
 
-    //     }).catch(error => { console.log(error) });
+    admin.database().ref('/games').child(gameId).child('turn_status').child('current_phase').set(
+        'order', function (err) {
+            if (err) {
+                console.log("Error");
+            }
+
+        }).catch(error => { console.log(error) });
 
 
 }
