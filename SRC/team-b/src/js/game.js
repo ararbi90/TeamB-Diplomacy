@@ -138,6 +138,19 @@ function addTitle(res)
     document.getElementById("seasonTitle").innerHTML = title;
 }
 
+function setColor(res)
+{
+    var color = res.players[username].color;
+
+    var node = document.createElement("LI");
+    var textnode = document.createTextNode("YOUR COLOR");
+    node.appendChild(textnode);
+    node.style.color = color;
+    node.style.fontWeight = "bold";
+    node.style.fontSize = 18;
+    document.getElementById("currentColor").appendChild(node);
+}
+
 // Add moves
 gameRef.child(gameID).child("players").child(username).child("orders_temp").on("value", function (snapshot) {
     $("#orders").empty();
@@ -332,12 +345,14 @@ function submitOrders(res)
 
     return submission;
 }
+
 $("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
 
     $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
         mapsLogic(res);
         addTitle(res);
+        setColor(res);
 
         $("#roundSubmissionForm").submit(function () {
 
