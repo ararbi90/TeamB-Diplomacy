@@ -140,15 +140,17 @@ function addTitle(res)
 
 function setColor(res)
 {
+    
     var color = res.players[username].color;
-
-    var node = document.createElement("LI");
-    var textnode = document.createTextNode("YOUR COLOR");
-    node.appendChild(textnode);
-    node.style.color = color;
-    node.style.fontWeight = "bold";
-    node.style.fontSize = 18;
-    document.getElementById("currentColor").appendChild(node);
+    $("#currentColor").append('<h3 style="text-align: center; font-family:Playball;">Your Color <span style = "color:'+ color + '">\u2588</span></h3>')
+    // var node = document.createElement("LI");
+    // var text = "Your Color: \u2588"
+    // var textnode = document.createTextNode(text);
+    // node.appendChild(textnode);
+    // node.style.color = color;
+    // node.style.fontWeight = "bold";
+    // node.style.fontSize = 18;
+    // document.getElementById("currentColor").appendChild(node);
 }
 
 // Add moves
