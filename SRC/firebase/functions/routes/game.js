@@ -744,10 +744,10 @@ function completeBuild(game, gameId) {
     Object.keys(orders).forEach(orderPlayer => {
         // get all orders of player
         orders[orderPlayer].forEach(ord => {
-            if (ord.command === 'build') {
+            if (ord.command === 'BUILD') {
                 //build
                 players[orderPlayer]['territories'][ord['territory']] = { forceType: ord['buildType'] };
-            } else {
+            } else if(ord.command === 'REMOVE'){
                 //remove
                 delete players[orderPlayer]['territories'][ord['territory']];
             }
