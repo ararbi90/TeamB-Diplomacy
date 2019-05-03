@@ -296,7 +296,7 @@ function setAllInvites() {
                 "<td>" + data.val().name + "</td>" +
                 "<td>" + data.val().days + " </td>" +
                 "<td>" + data.val().dateCreated + "</td>" +
-                "<td><button type='button' class='btn btn-primary' id=" + (data.key + "-accept") + ">Accpet</button></td>" +
+                "<td><button type='button' class='btn btn-primary' id=" + (data.key + "-accept") + ">Accept</button></td>" +
                 "<td><button type='button' class='btn btn-primary' id=" + (data.key + "-decline") + ">Decline</button></td></tr>");
 
             $("#" + (data.key + "-accept") + "").click(accpetGame);
