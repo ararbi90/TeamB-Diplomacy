@@ -429,8 +429,8 @@ function phaseChageRetreat(game, roundResult, roundResultKey, gameId, passFails)
 
     })
 
-    console.log(JSON.stringify(passFails,undefined,2))
-    
+    // console.log(JSON.stringify(passFails, undefined, 2))
+
     // Update players
     let fails = game.resolution[roundResultKey].fail;
     let pass = game.resolution[roundResultKey].pass;
@@ -845,6 +845,7 @@ function getPassFails(allOrder) {
     let failedMoves = [];
 
     /// This mess
+
     for (let i = 0; i < regions.length; i++) {
         let currentLocation = regionHashTable[regions[i]];
         let currentLocationAttackers = [];
@@ -903,12 +904,13 @@ function getPassFails(allOrder) {
             // No one is there only attackers
             // Repeated code can be moved to a method
             if (currentLocationAttackers.length === 1) {
+                console.log("Sinle move")
                 let winner = currentLocationAttackers[0];
                 currentLocation.forEach(finder => {
-                    if (winner.gameId === finder.gameId) {
-                        finder.resolved = true;
-                        finder.outcome = 'success';
-                    }
+
+                    finder.resolved = true;
+                    finder.outcome = 'success';
+
                 })
 
             } else {
@@ -980,39 +982,40 @@ function getPassFails(allOrder) {
                         }
                         else if (Object.keys(att.supportPowerList).length > highestAttackStrength) {
 
-                            highestAttackStrength = Object.keys(att.supportPowerList).length;
+                            highestAttackStrength = Object.keys(att.supportPowerList).length + 1;
                             highestAttacker = att;
                             standOff = false;
                         }
                     }
                 })
+
+                // if (standOff || highestAttacker === undefined) {
+                //     currentLocation.forEach(finder => {
+
+                //         if (finder.CurrentZone !== strongHold.CurrentZone) {
+                //             finder.resolved = true;
+                //             finder.outcome = 'failed';
+                //         }
+                //         if (finder.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H') {
+                //             finder.resolved = true;
+                //             finder.outcome = 'success';
+                //         }
+
+                //     })
+                // } else {
+                //     currentLocation.forEach(finder => {
+                //         if (highestAttacker.CurrentZone === finder.CurrentZone) {
+                //             finder.resolved = true;
+                //             finder.outcome = 'success';
+                //         } else {
+                //             finder.resolved = true;
+                //             finder.outcome = 'failed';
+                //         }
+
+                //     })
+                // }
+
                 if (standOff || highestAttacker === undefined) {
-                    currentLocation.forEach(finder => {
-
-                        if (finder.CurrentZone !== strongHold.CurrentZone) {
-                            finder.resolved = true;
-                            finder.outcome = 'failed';
-                        }
-                        if (finder.CurrentZone === strongHold.CurrentZone && strongHold.MoveType === 'H') {
-                            finder.resolved = true;
-                            finder.outcome = 'success';
-                        }
-
-                    })
-                } else {
-                    currentLocation.forEach(finder => {
-                        if (highestAttacker.CurrentZone === finder.CurrentZone) {
-                            finder.resolved = true;
-                            finder.outcome = 'success';
-                        } else {
-                            finder.resolved = true;
-                            finder.outcome = 'failed';
-                        }
-
-                    })
-                }
-
-                if (standOff) {
                     // There is a standoff between people moving in
                     currentLocation.forEach(finder => {
                         if (finder.CurrentZone !== strongHold.CurrentZone) {
@@ -1030,15 +1033,18 @@ function getPassFails(allOrder) {
 
                     if (strongHold.supportPowerList !== undefined) {
 
-                        if (highestAttackStrength > Object.keys(strongHold.supportPowerList).length + 1) {
+                        if (highestAttackStrength > (Object.keys(strongHold.supportPowerList).length + 1)) {
                             // Attack worked and disband location
                             currentLocation.forEach(finder => {
+                                console.log(finder)
                                 if (highestAttacker.CurrentZone === finder.CurrentZone) {
                                     finder.resolved = true;
                                     finder.outcome = 'success';
                                 } else {
-                                    finder.resolved = true;
-                                    finder.outcome = 'failed';
+                                    if (!(finder.CurrentZone === strongHold.CurrentZone && strongHold.outcome === 'success')) {
+                                        finder.resolved = true;
+                                        finder.outcome = 'failed';
+                                    }
                                 }
                             })
 
@@ -1051,8 +1057,54 @@ function getPassFails(allOrder) {
                                     finder.resolved = true;
                                     finder.outcome = 'success';
                                 } else {
+                                    if ((strongHold.MoveType === 'M' && strongHold.outcome !== 'na' && finder.CurrentZone === highestAttacker.CurrentZone)) {
+                                        finder.resolved = true;
+                                        finder.outcome = 'success';
+                                    } else {
+                                        finder.resolved = true;
+                                        finder.outcome = 'fail';
+                                    }
+
+                                }
+                            })
+
+                        }
+                    } else {
+                        //console.log("Stong hold does not have support");
+                        //console.log(highestAttackStrength);
+                        if (highestAttackStrength > 1) {
+                            // Attack worked and disband location
+                            currentLocation.forEach(finder => {
+                                if (highestAttacker.CurrentZone === finder.CurrentZone) {
                                     finder.resolved = true;
-                                    finder.outcome = 'failed';
+                                    finder.outcome = 'success';
+                                } else {
+                                    if (!(finder.CurrentZone === strongHold.CurrentZone && strongHold.outcome === 'success')) {
+                                        finder.resolved = true;
+                                        finder.outcome = 'failed';
+                                    }
+                                }
+                            })
+
+                        } else {
+                            // Attack did not work
+                            currentLocation.forEach(finder => {
+
+                                if (strongHold.CurrentZone === finder.CurrentZone && strongHold.MoveType === 'H') {
+
+                                    finder.resolved = true;
+                                    finder.outcome = 'success';
+                                } else {
+                                    if ((strongHold.MoveType === 'M' && strongHold.outcome === 'success' && finder.CurrentZone === highestAttacker.CurrentZone)) {
+                                        console.log("Rsolving chained moves-----------------------------------------------")
+                                        finder.resolved = true;
+                                        finder.outcome = 'success';
+
+                                    } else {
+                                        finder.resolved = true;
+                                        finder.outcome = 'failed';
+
+                                    }
                                 }
                             })
 
@@ -1064,6 +1116,7 @@ function getPassFails(allOrder) {
         }
 
     }
+
 
 
     return regionHashTable;
