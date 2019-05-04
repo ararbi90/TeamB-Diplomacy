@@ -5,7 +5,7 @@ const {
 } = require('electron')
 
 const shell = require("electron").shell
-global.sharedObj = {prop1: null};
+global.sharedObj = { prop1: null };
 require('electron-reload')("src");
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -32,39 +32,22 @@ function createWindow() {
     })
 
     var menu = Menu.buildFromTemplate([{
-            label: 'Menu',
-            submenu: [{
-                    label: 'Adjust Notification Value'
-                },
-
-                {
-                    label: 'Coinmarket Cap',
-                    click() {
-                        shell.openExternal("https://console.firebase.google.com");
-                    }
-                },
-                {
-                    type: 'separator'
-                },
-                {
-                    label: 'Exit',
-                    click() {
-                        app.quit();
-                    }
+        label: 'Menu',
+        submenu: [
+            {
+                label: 'Exit',
+                click() {
+                    app.quit();
                 }
-            ]
-        },
-        {
-            label: "second",
-            submenu: [{
-                label: 'one'
-            }]
-        }
+            }
+        ]
+    }
+
     ])
 
     Menu.setApplicationMenu(menu);
 
-    
+
 }
 
 // This method will be called when Electron has finished
