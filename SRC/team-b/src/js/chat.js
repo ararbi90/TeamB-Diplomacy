@@ -1,13 +1,15 @@
-$ = require("jquery");
+// SOURCE CODE CORRESPONDING TO: game.html 
+// -- CHAT FUNCTIONALITY
 
-// Create chats if not already
+$ = require("jquery");
 
 var urlParams = new URLSearchParams(location.search);
 let gameID = urlParams.get("gameID");
 
-var tabs = [];
-let chatCount = 0;
+var tabs = []; // Array of tabs clicked on in this session
 
+// Function executed when a chat tab is clicked on
+// -- Activate and show only the correct tablink/tabcontent
 function openTab(evt, tabName)
 {
     // Get all elements with class="tabcontent" and hide them
@@ -36,7 +38,7 @@ function openTab(evt, tabName)
     tabs.push(tabName);
 }
 
-// Handles message overflow
+// Function for handling message overflow
 function createValidMessage(input)
 {
     var result = "";
@@ -46,56 +48,50 @@ function createValidMessage(input)
     {
         var character = input.charAt(i);
 
+        if (character === " " || character === "\n" || character === "\t")
+        {
+            // Reset if whitespace encounter
+            count = 0;
+        }
+        else
+        {
+            // Increment otherwise
+            count++;
+        }
+
+        // If we reach 30 characters without encountering white space, add a new line.
         if (count > 30)
         {
             count = 0;
             result += "\n";
-            result += character;
         }
 
-        if (character === " " || character === "\n" || character === "\t")
-        {
-            count = 0;
-            result += character;
-        }
-        else
-        {
-            count++;
-            result += character;
-        }
+        result += character;
     }
 
     return result;
 }
 
-// Countries mapped to their corresponding message colors
-var messageColors = new Map([
-    ["France", "#82cacf"], ["Austria-Hungary", "#6c74d5"], ["Russia", "#db878b"],
-    ["England", "#327AB5"], ["Turkey", "#d5cd6c"], ["Germany", "#969696"], ["Italy", "#71b188"]
-])
-
-// Style the message
+// Function to style the message
 function styleMessage(node, player)
 {
-    node.style.textAlign = "left";
-    node.style.padding = "3px";
-    node.style.margin = "0 0 5px 0";
-    node.style.borderRadius = "5px";
-    node.style.listStyleType = "none";
-    node.style.backgroundColor = "#EAEAEA";
-    node.style.color = "black";
-    node.style.clear = "both";
-    node.style.wordWrap = "break-word";
-    node.style.maxWidth = "66%";
+    node.style.textAlign = "left";           // Align text left
+    node.style.padding = "3px";              // Message padding
+    node.style.margin = "0 0 5px 0";         // Message margin
+    node.style.borderRadius = "5px";         // Round edges
+    node.style.listStyleType = "none";       // No bullet points
+    node.style.backgroundColor = "#EAEAEA";  // Message background color
+    node.style.color = "black";              // Text color
+    node.style.clear = "both";               // Can't float both sides
+    node.style.wordWrap = "break-word";      // Message can't push edges
+    node.style.maxWidth = "66%";             // Max witdth of the message
 
-    // Color
+    // Border Color, get from DB
     gameRef.child(gameID).child("players").child(player).once("value", function (snapshot)
     {
         console.log(snapshot.val().color);
         node.style.borderBottom = "6px solid " + snapshot.val().color;
     })
-
-    chatCount++;
 }
 
 // Tab content IDs mapped to their corresponding tablink IDs
@@ -202,6 +198,7 @@ var countryKeys = new Map([
     ]
 ])
 
+// Unique keys from the data structure above
 var uniqueCountryKeys = [
     "FRA_AUS", "FRA_RUS", "FRA_ENG", "FRA_TUR", "FRA_GER", "FRA_ITA",
     "AUS_RUS", "AUS_ENG", "AUS_TUR", "AUS_GER", "AUS_ITA",
@@ -214,6 +211,7 @@ var uniqueCountryKeys = [
     "ATG_EFR"
 ]
 
+// Function executed when the submit message button is clicked
 function sendMessage()
 {
     // Don't send empty message
@@ -226,7 +224,7 @@ function sendMessage()
 
     if (tabs[tabs.length - 1] === "Main")
     {
-        // Log chat in DB
+        // Log chat in DB, public chat
         publicChatRef.child(gameID).push({
             message: message,
             username: username
@@ -235,14 +233,13 @@ function sendMessage()
     else
     {
         var country1 = tabs[tabs.length - 1]; // Opposing player's country
-        var country2 = "";
 
         gameRef.child(gameID).child("players").on("child_added", function (snapshot)
         {
             // Find the current user's country
             if (snapshot.key === username)
             {
-                country2 = snapshot.val().country;
+                var country2 = snapshot.val().country;
 
                 // Get the chat key
                 var privateChatKey = "";
@@ -270,6 +267,7 @@ function sendMessage()
     $('#messageinput').val("");
 }
 
+// Click submit message if enter is pressed in message input
 $("#messageinput").keyup(function (event)
 {
     if (event.keyCode === 13)
@@ -281,6 +279,7 @@ $("#messageinput").keyup(function (event)
 // Public Chat
 gameRef.child(gameID).child("players").once("value").then(function (snap)
 {
+    // All players
     let players = {};
     snap.forEach(element => {
         players[element.key] = element.val();
@@ -293,7 +292,6 @@ gameRef.child(gameID).child("players").once("value").then(function (snap)
         let messageSender = snapshot.val().username;
 
         var node = document.createElement("LI");
-        node.id = "chat-" + chatCount;
         var textnode = document.createTextNode(messageContent);
         node.appendChild(textnode);
 
@@ -338,11 +336,13 @@ gameRef.child(gameID).child("players").on("child_added", function (snapshot)
 // Private chat messages
 gameRef.child(gameID).child("players").once("value").then(function (snap)
 {
+    // All players
     let players = {};
     snap.forEach(element => {
         players[element.key] = element.val();
     });
 
+    // All usernames
     let usernames = [];
     for (var u in players)
     {
@@ -353,6 +353,7 @@ gameRef.child(gameID).child("players").once("value").then(function (snap)
 
     for (var i = 0; i < uniqueCountryKeys.length; ++i)
     {
+        // Get every private chat registered in the DB for this game
         var key = uniqueCountryKeys[i];
 
         privateChatRef.child(gameID).child(key).on("child_added", function (snapshot)
@@ -376,7 +377,6 @@ gameRef.child(gameID).child("players").once("value").then(function (snap)
                     if (player === messageSender)
                     {
                         var node = document.createElement("LI");
-                        node.id = "chat-" + chatCount;
                         var textnode = document.createTextNode(messageContent);
                         node.appendChild(textnode);
 

@@ -1,13 +1,14 @@
+// SOURCE CODE CORRESPONDING TO: phase3.html 
+
 $ = require("jquery");
 
-console.log("phase2");
-
+// Username/gameID information from the link
 var urlParams = new URLSearchParams(location.search);
 let username = urlParams.get("username");
 let gameID = urlParams.get("gameID");
-
 document.getElementById("navbarDropdownMenuLink").innerHTML = username;
 
+// Navbar redirections
 document.getElementById("Dashboard").addEventListener("click", function () {
     let link = "../html/dashboard.html?username=" + username;
     window.location.href = link;
@@ -22,9 +23,6 @@ document.getElementById("logOut").addEventListener("click", function () {
 });
 
 // grab data from firebase about the game/game state
-// var urlParams = new URLSearchParams(location.search);
-// let gameID =urlParams.get("gameID");
-// let username = urlParams.get("username");
 function mapsLogic(res) {
     // This is benson's code from game.html
     players = res.players;
@@ -48,6 +46,7 @@ function mapsLogic(res) {
         });
     });
 
+    // Determine the amount of unitsToAdd and unitsToRemove
     var terrs = Object.keys(res.players[username].territories);
     var supps = Object.keys(res.players[username].supplyCenters);
 
@@ -70,6 +69,7 @@ function mapsLogic(res) {
 
     if (unitsToAdd > 0)
     {
+        // Can only click on supply centers that are unoccupied
         var unitsAdded = 0;
         var supplyCountries = ["ANK", "BEL", "BER", "BRE", "BUD", "BUL", "CON", "DEN", "EDI", "GRE", "HOL", "KIE", "LVP", "LON", "MAR", "MOS", "MUN", "NAP", "NOR", "PAR", "POR", "ROM", "RUM", "SER", "SEV", "SMY", "SPA", "STP", "SWE", "TRI", "TUN", "VEN", "VIE", "WAR"];
 
@@ -78,7 +78,6 @@ function mapsLogic(res) {
             var supplyCountry = supplyCountries[i];
 
             var inSupps = false;
-
             for (var j = 0; j < supps.length; j++)
             {
                 var supp = supps[j];
@@ -90,7 +89,6 @@ function mapsLogic(res) {
             }
 
             var inTerrs = false;
-
             for (var j = 0; j < terrs.length; j++)
             {
                 var terr = terrs[j];
@@ -110,6 +108,7 @@ function mapsLogic(res) {
     }
     else if (unitsToRemove > 0)
     {
+        // Can only click on unitsToRemove amount of units (to remove them)
         var unitsRemoved = 0;
         for (var i = 0; i < terrs.length; i++)
         {
@@ -121,6 +120,7 @@ function mapsLogic(res) {
         }
     }
 
+    // Show the user their clickable areas
     for (var i = 0; i < clickableRegions.length; i++)
     {
         var region = clickableRegions[i];
@@ -131,7 +131,7 @@ function mapsLogic(res) {
     }
 
     var enabledRegions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
-    var currentRegion;
+
     // the initial parameters for the map. Change according to this link to change the look of the map, https://www.10bestdesign.com/jqvmap/documentation/
     jQuery('#vmap').vectorMap({
         map: 'diplomacy',
@@ -203,6 +203,8 @@ function controllerTimer() {
     }
 }
 
+// Function for adding the title to the page
+// -- uses the DB info, "res", to show the current season/year
 function addTitle(res)
 {
     var title = "Gaining And Losing Units Phase - ";
@@ -219,13 +221,14 @@ function addTitle(res)
     document.getElementById("seasonTitle").innerHTML = title;
 }
 
-// Add orders
+// Update the build orders the user has submitted for this phase
 gameRef.child(gameID).child("players").child(username).child("build_orders_temp").on("value", function (snapshot)
 {
     let orders = new Array();
     snapshot.forEach(element =>{
         var order = "";
 
+        // Make the orders English readable.
         if (element.val().command === "BUILD")
         {
             order += "BUILD ";
@@ -242,19 +245,22 @@ gameRef.child(gameID).child("players").child(username).child("build_orders_temp"
         orders.push(order);
     });
 
-    $("#orders").empty();
+    $("#orders").empty(); // Empty the divs
 
     if (orders.length > 0)
     {
+        // Hide the "no_orders" div, unhide the "orders" div.
         document.getElementById("no_orders").hidden = true;
         document.getElementById("orders").hidden = false;
     }
     else
     {
+        // Hide the "orders" div, unhide the "no_orders" div.
         document.getElementById("no_orders").hidden = false;
         document.getElementById("orders").hidden = true;
     }
 
+    // Add all orders to the "orders" div.
     for (var i = 0; i < orders.length; i++)
     {
         var node = document.createElement("LI");
@@ -264,9 +270,10 @@ gameRef.child(gameID).child("players").child(username).child("build_orders_temp"
     }
 })
 
-// Edit status
+// Update the "Unit Status" (units to add/remove) for showing the user how they must take action during this phase.
 gameRef.child(gameID).child("players").child(username).child("territories").on("value", function (snapshot)
 {
+    // All user's territories.
     let terrs = new Array();
     snapshot.forEach(element => {
         terrs.push(element.val().forceType);
@@ -274,12 +281,15 @@ gameRef.child(gameID).child("players").child(username).child("territories").on("
 
     gameRef.child(gameID).child("players").child(username).child("supplyCenters").on("value", function (snapshot)
     {
-        $("#num_units").empty();
+        $("#num_units").empty(); // Empty the div.
+
+        // All user's supply centers.
         let supps = new Array();
         snapshot.forEach(element => {
             supps.push(element.val().forceType);
         });
 
+        // Determine the amount of unitsToAdd and unitsToRemove
         var terrLength = terrs.length;
         var suppLength = supps.length;
 
@@ -297,6 +307,7 @@ gameRef.child(gameID).child("players").child(username).child("territories").on("
             unitsToRemove = 0;
         }
 
+        // Update the "Unit Status" div.
         var node = document.createElement("LI");
         var textnode = document.createTextNode("Num. Units To Add: " + unitsToAdd);
         node.appendChild(textnode);
@@ -309,16 +320,20 @@ gameRef.child(gameID).child("players").child(username).child("territories").on("
     })
 })
 
-// Change phase
-gameRef.child(gameID).child("turn_status").on("child_changed", function (snapshot) {
+// Change phase. Will get executed when a child of the game's "turn_status" is updated.
+gameRef.child(gameID).child("turn_status").on("child_changed", function (snapshot)
+{
     var data = snapshot.val();
 
-    gameRef.child(gameID).child("players").on("value", function (snapshot) {
+    gameRef.child(gameID).child("players").on("value", function (snapshot)
+    {
+        // All players.
         let players = new Array();
         snapshot.forEach(element => {
             players.push(element.key);
         });
 
+        // We must delete "build_orders_temp" for every player if they are not undefined.
         for (var i = 0; i < players.length; i++)
         {
             if (gameRef.child(gameID).child("players").child(players[i]).child("build_orders_temp") != undefined)
@@ -329,6 +344,7 @@ gameRef.child(gameID).child("turn_status").on("child_changed", function (snapsho
 
         if (data === "order")
         {
+            // Go to order phase.
             let link = "game.html?gameID=" + gameID + "&username=" + username;
             window.location.href = link;
         }
@@ -336,8 +352,11 @@ gameRef.child(gameID).child("turn_status").on("child_changed", function (snapsho
 
 })
 
+// Function for removing units if no remove commands were given.
+// -- uses the DB info, "res", to retrieve the current commands.
 function remove(res)
 {
+    // Determine the amount of unitsToAdd and unitsToRemove
     var terrs = Object.keys(res.players[username].territories);
     var supps = Object.keys(res.players[username].supplyCenters);
 
@@ -358,15 +377,16 @@ function remove(res)
         unitsToRemove = 0;
     }
 
+    // Get the build orders
     var builds = new Array();
     if (res.players[username].build_orders_temp !== undefined)
     {
         builds = Object.keys(res.players[username].build_orders_temp);
     }
 
-    // Remove for them
     if (builds.length < unitsToRemove)
     {
+        // Remove for them
         var unitsStillToRemove = unitsToRemove - builds.length;
 
         var index = 0;
@@ -386,18 +406,22 @@ function remove(res)
     }
 }
 
+// Function for creating a submission JSON.
+// -- takes all orders in the DB and creates a JSON for sending to the backend as a POST.
 function submitOrders(res)
 {
     var keys = new Array();
+
+    // Get orders from "build_orders_temp"
     var buildOrders = res.players[username].build_orders_temp;
     if (buildOrders !== undefined)
     {
         keys = Object.keys(buildOrders);
     }
 
+    // Build the submission.
     var submission = {};
 
-    // Build submission for non retreats
     submission.username = username;
     submission.gameId = gameID;
     submission.orders = [];
@@ -417,6 +441,7 @@ function submitOrders(res)
         submission.orders.push(order);
     }
 
+    // submission.orders must contain something: command == "NONE"
     if (submission.orders.length === 0)
     {
         var order = {};
@@ -433,19 +458,25 @@ function submitOrders(res)
 $("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
 
-    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
+    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res)
+    {
+        // Get game data and initialize necessary components.
         mapsLogic(res);
         addTitle(res);
-
-        $("#roundSubmissionForm").submit(function () {
-
-            $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2) {
+        $("#roundSubmissionForm").submit(function ()
+        {
+            // Executed when the user clicks submit in the round submission form.
+            $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2)
+            {
+                // Get a current snapshot of the game and remove the necessary units.
                 remove(res2);
-                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res3) {
-
+                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res3)
+                {
+                    // Get another current snapshot of the game and create the submission.
                     var submission = submitOrders(res3);
-                    console.log(submission);
-                    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitbuildorder", { submission }, function (res4) {
+                    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitbuildorder", { submission }, function (res4)
+                    {
+                        // POST the submission to the backend.
                         console.log(res4);
                     }).fail(function (err) {
                         console.log(err);

@@ -1,12 +1,13 @@
+// SOURCE CODE CORRESPONDING TO: game.html 
+
 $ = require("jquery");
 
-console.log("refresh");
-
+// Username information from the link
 var urlParams = new URLSearchParams(location.search);
 let username = urlParams.get("username");
-
 document.getElementById("navbarDropdownMenuLink").innerHTML = username;
 
+// Navbar redirections
 document.getElementById("Dashboard").addEventListener("click", function () {
     let link = "../html/dashboard.html?username=" + username;
     window.location.href = link;
@@ -20,23 +21,11 @@ document.getElementById("logOut").addEventListener("click", function () {
     window.location.href = link;
 });
 
-// LOGIC NOTES:
-//     - Denmark is adjacent to Kiel.
-//     - Sweden adjacent to Denmark not Helgoland Bight.
-//     - Baltic Sea not adjacent to Helgoland Bight.
-//     - Skaggerak not adjacent to Helgoland Bight.
-//     - Aegean Sea is not adjacent to Black Sea.
-
 // grab data from firebase about the game/game state
-// var urlParams = new URLSearchParams(location.search);
-// let gameID =urlParams.get("gameID");
-// let username = urlParams.get("username");
 function mapsLogic(res) {
-    // This is benson's code from game.html
     players = res.players;
     var clickableRegions = [];
     var allTerritoriesWithUnits = [];
-
     
     $.each(players, function (index, player) {
         playerName = index;
@@ -58,9 +47,8 @@ function mapsLogic(res) {
         });
     });
 
-    //$('<img />').attr('src',this).appendTo('body').hide();
     var enabledRegions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
-    var currentRegion;
+
     // the initial parameters for the map. Change according to this link to change the look of the map, https://www.10bestdesign.com/jqvmap/documentation/
     jQuery('#vmap').vectorMap({
         map: 'diplomacy',
@@ -122,6 +110,8 @@ function controllerTimer() {
     }
 }
 
+// Function for adding the title to the page
+// -- uses the DB info, "res", to show the current season/year
 function addTitle(res)
 {
     var title = "Order Placing Phase - ";
@@ -138,35 +128,35 @@ function addTitle(res)
     document.getElementById("seasonTitle").innerHTML = title;
 }
 
+// Function for showing the user their color on the map
+// -- uses the DB info, "res", to retrieve the color
 function setColor(res)
 {
-    
     var color = res.players[username].color;
     $("#currentColor").append('<h3 style="text-align: center; font-family:Playball;">Your Color <span style = "color:'+ color + '">\u2588</span></h3>')
-    // var node = document.createElement("LI");
-    // var text = "Your Color: \u2588"
-    // var textnode = document.createTextNode(text);
-    // node.appendChild(textnode);
-    // node.style.color = color;
-    // node.style.fontWeight = "bold";
-    // node.style.fontSize = 18;
-    // document.getElementById("currentColor").appendChild(node);
 }
 
-// Add moves
-gameRef.child(gameID).child("players").child(username).child("orders_temp").on("value", function (snapshot) {
-    $("#orders").empty();
+// Add orders to the "Current Orders" section, real-time.
+gameRef.child(gameID).child("players").child(username).child("orders_temp").on("value", function (snapshot)
+{
+    $("#orders").empty(); // Empty the div
+
+    // Get all the orders
     let orders = new Array();
     snapshot.forEach(element => {
         orders.push(element.val().order);
     });
 
-    if (orders.length > 0) {
+    if (orders.length > 0)
+    {
+        // Hide the "no_orders" div, unhide the "orders" div.
         document.getElementById("no_orders").hidden = true;
         document.getElementById("orders").hidden = false;
     }
 
-    for (var i = 0; i < orders.length; i++) {
+    // Add all the orders to the "orders" div
+    for (var i = 0; i < orders.length; i++)
+    {
         var node = document.createElement("LI");
         var textnode = document.createTextNode(orders[i]);
         node.appendChild(textnode);
@@ -174,10 +164,12 @@ gameRef.child(gameID).child("players").child(username).child("orders_temp").on("
     }
 })
 
-// Change phase
-gameRef.child(gameID).child("turn_status").on("child_changed", function (snapshot) {
+// Change phase. Will get executed when a child of the game's "turn_status" is updated.
+gameRef.child(gameID).child("turn_status").on("child_changed", function (snapshot)
+{
     var data = snapshot.val();
 
+    // We must delete the chats after every orders phase.
     if (privateChatRef.child(gameID) !== undefined)
     {
         privateChatRef.child(gameID).remove();
@@ -189,25 +181,21 @@ gameRef.child(gameID).child("turn_status").on("child_changed", function (snapsho
 
     if (data === "retreat")
     {
-        if (data === "retreat")
-        {
-            let link = "phase2.html?gameID=" + gameID + "&username=" + username;
-            window.location.href = link;
-        }
-        else
-        {
-            let link = "phase3.html?gameID=" + gameID + "&username=" + username;
-            window.location.href = link;
-        }
+        // Go to phase 2.
+        let link = "phase2.html?gameID=" + gameID + "&username=" + username;
+        window.location.href = link;
     }
     else
     {
-        gameRef.child(gameID).child("players").on("value", function (snapshot) {
+        gameRef.child(gameID).child("players").on("value", function (snapshot)
+        {
+            // All players.
             let players = new Array();
             snapshot.forEach(element => {
                 players.push(element.key);
             });
             
+            // Me must delete every players "orders_temp" if it is not undefined.
             for (var i = 0; i < players.length; i++)
             {
                 if (gameRef.child(gameID).child("players").child(players[i]).child("orders_temp") !== undefined)
@@ -218,11 +206,13 @@ gameRef.child(gameID).child("turn_status").on("child_changed", function (snapsho
 
             if (data === "build")
             {
+                // Go to phase 3.
                 let link = "phase3.html?gameID=" + gameID + "&username=" + username;
                 window.location.href = link;
             }
             else
             {
+                // Redirect here with updated DB.
                 let link = "game.html?gameID=" + gameID + "&username=" + username;
                 window.location.href = link;
             }
@@ -230,6 +220,8 @@ gameRef.child(gameID).child("turn_status").on("child_changed", function (snapsho
     }
 })
 
+// Function for creating a submission JSON.
+// -- takes all orders in the DB and creates a JSON for sending to the backend as a POST.
 function submitOrders(res)
 {
     var submission = {};
@@ -246,9 +238,9 @@ function submitOrders(res)
         }
     }
 
-    userTerrs = res.players[username].territories;
+    userTerrs = res.players[username].territories; // All the user's territories
 
-    let terrs = new Array();
+    let terrs = new Array(); // 2D array of all the user's unit force type and location
     for (var t in userTerrs)
     {
         terrs.push([res.players[username].territories[t].forceType, t]);
@@ -256,11 +248,12 @@ function submitOrders(res)
 
     for (var i = 0; i < terrs.length; i++)
     {
-        var key = terrs[i][0] + '_' + terrs[i][1];
-        var data = terrs[i][0] + ' ' + terrs[i][1];
+        var key = terrs[i][0] + '_' + terrs[i][1];  // Ex: "A_BUR"
+        var data = terrs[i][0] + ' ' + terrs[i][1]; // Ex: "A BUR"
 
         var inOrders = false
 
+        // Find if the data matches the first 5 characters of any of the orders
         for (var j = 0; j < orders.length; j++)
         {
             if (orders[j].slice(0, 5) === data)
@@ -294,16 +287,19 @@ function submitOrders(res)
         var o = orders[i];
         var data = o.split(" ");
 
+        // Build a JSON for each order
         var order = {};
 
         if (data.length === 2)
         {
+            // The order was either a move or a hold.
             order.UnitType = data[0];
 
             var data2 = data[1].split("-");
 
             order.CurrentZone = data2[0];
 
+            // data2[1] contains a location, the order was a move
             if (data2[1].length === 3)
             {
                 order.MoveType = "M";
@@ -316,6 +312,7 @@ function submitOrders(res)
         }
         else
         {
+            // The order was a support or convoy
             order.UnitType = data[0];
             order.CurrentZone = data[1];
             order.MoveType = data[2];
@@ -324,6 +321,7 @@ function submitOrders(res)
 
             if (data2[1].length === 3)
             {
+                // Second move was a move.
                 if (data[2] === "C")
                 {
                     order.InitialConvoyZone = data2[0];
@@ -337,6 +335,7 @@ function submitOrders(res)
             }
             else
             {
+                // Second move was a hold, only happens with support.
                 order.InitialSupportZone = data2[0];
                 order.FinalSupportZone = data2[0];
             }
@@ -351,17 +350,22 @@ function submitOrders(res)
 $("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
 
-    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
+    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res)
+    {
+        // Get game data and initialize necessary components.
         mapsLogic(res);
         addTitle(res);
         setColor(res);
-
-        $("#roundSubmissionForm").submit(function () {
-
-            $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2) {
+        $("#roundSubmissionForm").submit(function ()
+        {
+            // Executed when the user clicks submit in the round submission form.
+            $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2)
+            {
+                // Get a current snapshot of the game and create the submission.
                 var submission = submitOrders(res2);
-                //console.log(submission);
-                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res3) {
+                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitorder", { submission }, function (res3)
+                {
+                    // POST the submission to the backend.
                     console.log(res3);
                 }).fail(function (err) {
                     console.log(err);

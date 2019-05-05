@@ -1,10 +1,11 @@
+<!-- ORDER PLACING/DIPLOMATIC NEGOTIATIONS PHASE, PHASE 1 -->
+
 <html>
   <head>
       <link href="../css/jqvmap.css" media="screen" rel="stylesheet" type="text/css"/>
       <link href="../../bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
       <link href="../css/game.css" rel="stylesheet" />
       <link href="https://fonts.googleapis.com/css?family=Bad+Script|Playball|Tangerine|Glegoo" rel="stylesheet">
-      <script type="text/javascript" src="../js/logic.js"></script>
     </head>
 
   <body style="background-color: #D9ECF0">
@@ -13,8 +14,8 @@
               font-family: Glegoo;
           }
       </style>
+      <!-- Navigation Dropdown -->
       <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #02355A;">
-          <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
           <img height="100" src="../../images/diplomacy_logo.png" />
           <div class="collapse navbar-collapse" id="navbarNavDropdown" ;>
               <ul class="navbar-nav p-3 ml-auto" style="font-size:20px;margin-right:15px">
@@ -33,6 +34,8 @@
               </ul>
           </div>
       </nav>
+
+      <!-- Page Title -->
       <h2 id="seasonTitle" style="text-align: center; margin: 1%; font-family:Playball;">Order Placing Phase</h2>
       <div id="snackbar"></div>
       <div class="container">
@@ -47,7 +50,9 @@
                   <div id="ChatBox" class="container">
 
                       <div id="t" class="tab">
+                          <!-- Tab buttons for the chat box -->
                           <button id="1" class="tablinks" onclick="openTab(event, 'Main')">Main</button>
+                          <!-- click this tab when the document loads -->
                           <script>
                               document.addEventListener("DOMContentLoaded", function(event) { 
                               document.getElementById('1').click();
@@ -78,6 +83,7 @@
                               France/
                               Russia</button>
                       </div>
+                      <!-- Tab contents for the chat box -->
                       <div id="Main" class="tabcontent" style="background-color:#BEBEBE">
                       </div>
                       <div id="France" class="tabcontent" style="background-color:#BEBEBE" hidden>
@@ -116,15 +122,17 @@
 
               </div>
               <div class="col" style="text-align: center; border:1px solid #ccc">
-                  <!-- <h3 style="text-align: center; font-family:Playball;">Your Color</h3> -->
+                  <!-- For displaying "Your Color" -->
                   <ul id="currentColor" style="list-style-type: none; font-family:Glegoo; text-align: center; padding-left: 0;"></ul>
                   <h3 style="text-align: center; font-family:Playball;">Current Orders</h3>
                   <form id="roundSubmissionForm" style="text-align: justify;">
+                      <!-- Current orders -->
                       <ul id="no_orders" style="list-style-type: none; background-color: #EBF2FA; font-family:Glegoo; text-align: center; padding-left: 0;">
                         <li>NONE</li>
                       </ul>
                       <ul id="orders" style="list-style-type: none; background-color: #EBF2FA; font-family:Glegoo; text-align: center; padding-left: 0;" hidden>
                       </ul>
+                      <!-- Timer and Submit button -->
                       <div style="text-align: center;">
                           <p id="timer">10:23</p>
                           <button id="submit_orders" type="submit" class="btn btn-primary">Submit</button>
@@ -134,14 +142,9 @@
           </div>
       </div>
 
-      <!-- <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"> -->
-      <!-- <script src="../node_modules/jquery/dist/jquery.js"></script> -->
       <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
       <script>
           window.jQuery = window.$ = require('jquery');
-
-          // preloading images onto the body so bounding boxes can be correctly calculated
-          // $('<img />').attr('src','..\\..\\images\\supply-center-2.png').appendTo('body').hide();
       </script>
       <script src="../../node_modules/popper.js/dist/umd/popper.js"></script>
       <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>

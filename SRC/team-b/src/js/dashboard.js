@@ -1,6 +1,6 @@
+// SOURCE CODE CORRESPONDING TO: dashboard.html 
+
 $ = require('jquery');
-
-
 
 // Username information from the link
 var urlParams = new URLSearchParams(location.search);
@@ -8,7 +8,7 @@ let username = urlParams.get("username");
 document.getElementById("welcome").innerHTML = username;
 document.getElementById("navbarDropdownMenuLink").innerHTML = username;
 
-// Dashboard changes
+// Navbar redirections
 document.getElementById("newGame").addEventListener("click", function () {
     let link = "../html/invite.html?username=" + username;
     window.location.href = link;
@@ -174,18 +174,6 @@ function createAndAssignTerrtories(players) {
         Germany: { BER: { forceType: "A" }, MUN: { forceType: "A" }, KIE: { forceType: "F" } },
         Italy: { ROM: { forceType: "A" }, VEN: { forceType: "A" }, NAP: { forceType: "F" } }
     }
-    
-    // **FOR TESTING:
-
-    // let powers = {
-    //     Austria: { BUR: { forceType: "A" }, BUD: { forceType: "A" }, TYR: { forceType: "F" } },
-    //     England: { NTH: { forceType: "F" }, EDI: { forceType: "A" }, LON: { forceType: "A" }, ENG: { forceType: "F" } },
-    //     France: { PAR: { forceType: "A" }, MUN: { forceType: "A" }, MID: { forceType: "F" } },
-    //     Russia: { GAL: { forceType: "A" }, SEV: { forceType: "F" }, TRI: { forceType: "A" }, STP: { forceType: "F" } },
-    //     Turkey: { ANK: { forceType: "F" }, CON: { forceType: "A" }, SMY: { forceType: "A" } },
-    //     Germany: { BER: { forceType: "A" }, PRU: { forceType: "A" }, KIE: { forceType: "F" } },
-    //     Italy: { ROM: { forceType: "A" }, VEN: { forceType: "A" }, NAP: { forceType: "F" } }
-    // }
 
     let order = getArrayOfRandomNumbers(players.length);
 

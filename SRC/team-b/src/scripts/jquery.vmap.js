@@ -217,15 +217,14 @@ var JQVMap = function (params) {
                 map.deselect(code, targetPath);
             } else {
                 map.select(code, targetPath);
-            
-                //document.getElementById('armySelected').innerHTML = code;
 
-                //let win = new BrowserWindow({ width: 800, height: 800 });
-
-                gameRef.child(gameID).child("turn_status").child("current_phase").once("value").then(function (snapshot) {
+                // Get the current phase
+                gameRef.child(gameID).child("turn_status").child("current_phase").once("value").then(function (snapshot)
+                {
                   var phase = snapshot.val();
-                  let win;
+                  let win; // New window (pop up)
           
+                  // Open a new BrowserWindow with unique dimensions and URL corresponding to the current phase.
                   if (phase === "order")
                   {
                       win = new BrowserWindow({ width: 550, height: 305 });
@@ -241,6 +240,8 @@ var JQVMap = function (params) {
                       win = new BrowserWindow({ width: 500, height: 290 });
                       win.loadURL(`file://${__dirname}/../html/addRemove.html`);
                   }
+
+                  // Send the information to the popup window
                   win.webContents.on('did-finish-load', () => {
                     win.webContents.send('message', code + ' ' + username + ' ' + gameID);
                   });

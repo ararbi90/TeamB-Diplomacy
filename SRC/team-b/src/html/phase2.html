@@ -1,15 +1,16 @@
+<!-- ADDING/REMOVING UNITS PHASE, PHASE 2 (OPTIONAL) -->
+
 <html>
     <head>
         <link href="../css/jqvmap.css" media="screen" rel="stylesheet" type="text/css"/>
         <link href="../../bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
         <link href="../css/game.css" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css?family=Bad+Script|Playball|Tangerine|Glegoo" rel="stylesheet">
-        <script type="text/javascript" src="../js/logic.js"></script>
     </head>
 
     <body style="background-color: #D9ECF0">
+        <!-- Navigation Dropdown -->
         <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #02355A;">
-            <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
             <img height="100" src="../../images/diplomacy_logo.png" />
             <div class="collapse navbar-collapse" id="navbarNavDropdown" ;>
                 <ul class="navbar-nav p-3 ml-auto" style="font-size:20px;margin-right:15px">
@@ -28,6 +29,8 @@
                 </ul>
             </div>
         </nav>
+
+        <!-- Page Title -->
         <h2 id="seasonTitle" style="text-align: center; margin: 1%; font-family:Playball;">Retreat And Disband Phase</h2>
         <div id="snackbar"></div>
         <div class="container">
@@ -38,6 +41,7 @@
         </div>
 
         <div class="row" style="padding-top: 10px; padding-bottom: 10px">
+            <!-- Results of order phase, color coded -->
             <div class="col" style="text-align: center; border:1px solid #ccc">
                 <h3 style="text-align: center; font-family:Playball;">Last Phase Results</h3>
                 <form id="prevRoundResults" style="text-align: justify;">
@@ -45,6 +49,7 @@
                     </ul>
                 </form>
             </div>
+            <!-- Units to take action on -->
             <div class="col" style="text-align: center; border:1px solid #ccc">
                 <h3 style="text-align: center; font-family:Playball;">Units To Retreat Or Disband</h3>
                 <form style="text-align: justify;">
@@ -55,6 +60,7 @@
                     </ul>
                 </form>
             </div>
+            <!-- User's orders, dynamic -->
             <div class="col" style="text-align: center; border:1px solid #ccc">
                 <h3 style="text-align: center; font-family:Playball;">Orders</h3>
                 <form id="roundSubmissionForm" style="text-align: justify;">
@@ -71,8 +77,6 @@
             </div>
         </div>
 
-        <!-- <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"> -->
-        <!-- <script src="../node_modules/jquery/dist/jquery.js"></script> -->
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
         <script>
             window.jQuery = window.$ = require('jquery');

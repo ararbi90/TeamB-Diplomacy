@@ -1,34 +1,29 @@
+// SOURCE CODE CORRESPONDING TO: build.html
+
 $ = require('jquery');
 
-//const electron = require('electron');
+const ipc = require('electron').ipcRenderer; // ipc for getting the message sent to this pop up
 
-const ipc = require('electron').ipcRenderer;
+// GLOBAL VARIABLES
+let moves = new Array("Choose...","Holds", "Move"); // Array of valid moves
+let supportUnits = new Array("Choose...");          // Array of supportable units
+let moveLocations = new Array("Choose...");         // Array of valid move locations
+let convoyLocations = new Array("Choose...");       // Array of convoy locations
+let coastalConvoyTerrs = {};                        // Every coastal territory mapped to the fleets that can convoy it
+let gameID = "";                                    // gameID for the game this popup came from
+let username = "";                                  // username for the user who clicked on the map
+let code = "";                                      // three letter code for the territory that was clicked on
 
-// Array of moves
-let moves = new Array("Choose...","Holds", "Move");
-// Array of units
-let supporUnits = new Array("Choose...");
-// Array of locations
-let moveLocations = new Array("Choose...");
-let convoyLocations = new Array("Choose...");
-//let secondaryLocations = new Array("Choose...","ADR","AEG","ALB","ANK","APU","ARM","BAL","BAR","BEL","BER","BLA","BOH","BRE","BUD","BUL","BUR","CLY","CON","DEN","EAS","EDI","ENG","FIN","GAL","GAS","GRE","LYO","BOT","HEL","HOL","ION","IRE","IRI","KIE","LVP","LVN","LON","MAR","MAO","MOS","MUN","NAP","NAO","NAF","NTH","NOR","NWG","PAR","PIC","PIE","POR","PRU","ROM","RUH","RUM","SER","SEV","SIL","SKA","SMY","SPA","STP","SWE","SWI","SYR","TRI","TUN","TUS","TYR","TYS","UKR","VEN","VIE","WAL","WAR","WES","YOR");
-
-let secondaryLocations = new Array('Choose...', 'ADR', 'AEG', 'ALB', 'ANK', 'APU', 'ARM', 'BAL', 'BAR', 'BEL', 'BER', 'BLA', 'BOH', 'BOT', 'BRE', 'BUD', 'BUL', 'BUR', 'CLY', 'CON', 'DEN', 'EAS', 'EDI', 'ENG', 'FIN', 'GAL', 'GAS', 'GOL', 'GRE', 'HEL', 'HOL', 'ION', 'IRI', 'KIE', 'LON', 'LVN', 'LVP', 'MAR', 'MID', 'MOS', 'MUN', 'NAF', 'NAP', 'NAT', 'NRG', 'NTH', 'NWY', 'PAR', 'PIC', 'PIE', 'POR', 'PRU', 'ROM', 'RUH', 'RUM', 'SER', 'SEV', 'SIL', 'SKA', 'SMY', 'SPA', 'STP', 'SWE', 'SYR', 'TRI', 'TUN', 'TUS', 'TYN', 'TYR', 'UKR', 'VEN', 'VIE', 'WAL', 'WAR', 'WES', 'YOR');
-
-let coastalConvoyTerrs = {};
-
-let gameID = "";
-let username = "";
-
+// Get the message
 ipc.on('message', (event, message) => {
     var data = message.split(" ");
-    var code = data[0];
+
+    // Assign the message data to the global variables
+    code = data[0];
     username = data[1];
     gameID = data[2];
-
-    document.getElementById("gameID").innerHTML = gameID;
-    document.getElementById("username").innerHTML = username;
     
+    // For getting all players in the game
     gameRef.child(gameID).child("players").once("value").then(function (snap)
     {
         let players = {};
@@ -36,152 +31,133 @@ ipc.on('message', (event, message) => {
             players[element.key] = element.val();
         });
 
+        // Force type {'A', 'F'} of the unit on this territory
         let forceType = players[username].territories[code].forceType;
 
         var firstMoveDropdown = document.getElementById("firstMoveSelect");
 
         for (var i = 0; i < moves.length; i++)
         {
-            // Append the element to the end of Array list for the first move
+            // Append the element to the end of Array list.
             firstMoveDropdown[firstMoveDropdown.length] = new Option(moves[i], moves[i]);
         }
-        firstMoveDropdown.options[0].hidden = "true";
+        firstMoveDropdown.options[0].hidden = "true"; // Hide the first dropdown element ("Choose...")
 
+        // Set the label.
         document.getElementById("label").innerHTML = forceType + ' ' + code;
 
-        $.getJSON("map.json", function(json) {
-            var adjs = json[code]["adjacencies"];
-            var supportable = false;
+        // Note about "map.json": This file contains a JSON with every territory code as a key and the name of this
+        // territory, its type, and its adjacencies (codes) as the value.
+        $.getJSON("map.json", function(json)
+        {
+            var adjs = json[code]["adjacencies"]; // Adjacencies of this territory
+            var supportable = false;              // For determining if this unit can support any other units
 
-            // All terrs except for this one
+            // Find supportable units
             for (var user in players)
             {
                 for (var terr in players[user].territories)
                 {
-                    var terrType = players[user].territories[terr].forceType;
                     if (terr !== code)
                     {
-                        if (forceType === "F")
+                        // Retrieve all territories with units, except for this one.
+                        var terrType = players[user].territories[terr].forceType;
+
+                        // Find common adjacencies
+                        var commonAdjs = new Array();
+                        var adjs2 = json[terr]["adjacencies"];
+                        adjs2.push(terr); // Can support this terr as well
+
+                        for (var i = 0; i < adjs.length; i++)
                         {
-                            // Find common adjacencies
-                            var adjs2 = json[terr]["adjacencies"];
-                            adjs2.push(terr); // Can support this terr as well
+                            var adj1 = adjs[i];
 
-                            var commonAdjs = new Array();
-
-                            for (var i = 0; i < adjs.length; i++)
+                            for (var j = 0; j < adjs2.length; j++)
                             {
-                                var adj1 = adjs[i];
+                                var adj2 = adjs2[j];
 
-                                for (var j = 0; j < adjs2.length; j++)
+                                if (adj1 === adj2)
                                 {
-                                    var adj2 = adjs2[j];
-
-                                    if (adj1 === adj2)
-                                    {
-                                        commonAdjs.push(adj1);
-                                    }
+                                    commonAdjs.push(adj1);
                                 }
                             }
+                        }
 
-                            if (commonAdjs.length > 0)
+                        if (forceType === "F")
+                        {
+                            // Supportable if both units can move there
+                            var movable = false;
+                            for (var i = 0; i < commonAdjs.length; i++)
                             {
-                                // Movable if we can move there
-                                var movable = false;
-                                for (var i = 0; i < commonAdjs.length; i++)
+                                if (json[commonAdjs[i]]["type"] === "SEA")
                                 {
-                                    if (json[commonAdjs[i]]["type"] === "SEA")
-                                    {
-                                        if (terrType === "F")
-                                        {
-                                            movable = true;
-                                        }
-                                    }
-                                    else if (json[commonAdjs[i]]["type"] === "COASTAL")
+                                    // Both must be fleets
+                                    if (terrType === "F")
                                     {
                                         movable = true;
                                     }
                                 }
-
-                                if (movable)
+                                else if (json[commonAdjs[i]]["type"] === "COASTAL")
                                 {
-                                    supporUnits.push(terrType + ' ' + terr);
-                                    supportable = true;
+                                    movable = true;
                                 }
+                            }
+
+                            if (movable)
+                            {
+                                supportUnits.push(terrType + ' ' + terr);
+                                supportable = true;
                             }
                         }
                         else
                         {
-                            // Find common adjacencies
-                            var adjs2 = json[terr]["adjacencies"];
-                            adjs2.push(terr);
-
-                            var commonAdjs = new Array();
-
-                            for (var i = 0; i < adjs.length; i++)
+                            var movable = false;
+                            for (var i = 0; i < commonAdjs.length; i++)
                             {
-                                var adj1 = adjs[i];
-
-                                for (var j = 0; j < adjs2.length; j++)
+                                if (json[commonAdjs[i]]["type"] === "INLAND")
                                 {
-                                    var adj2 = adjs2[j];
-
-                                    if (adj1 === adj2)
-                                    {
-                                        commonAdjs.push(adj1);
-                                    }
-                                }
-                            }
-
-                            if (commonAdjs.length > 0)
-                            {
-                                // Movable if we can move there
-                                var movable = false;
-                                for (var i = 0; i < commonAdjs.length; i++)
-                                {
-                                    if (json[commonAdjs[i]]["type"] === "INLAND")
-                                    {
-                                        if (terrType === "A")
-                                        {
-                                            movable = true;
-                                        }
-                                    }
-                                    else if (json[commonAdjs[i]]["type"] === "COASTAL")
+                                    // Both must be armies
+                                    if (terrType === "A")
                                     {
                                         movable = true;
                                     }
                                 }
-
-                                if (movable)
+                                else if (json[commonAdjs[i]]["type"] === "COASTAL")
                                 {
-                                    supporUnits.push(terrType + ' ' + terr);
-                                    supportable = true;
+                                    movable = true;
                                 }
+                            }
+
+                            if (movable)
+                            {
+                                supportUnits.push(terrType + ' ' + terr);
+                                supportable = true;
                             }
                         }
                     }
                 }
             }
 
-            // Move logic
+            // Add support option if we added a supportable unit
             if (supportable)
             {
                 firstMoveDropdown[firstMoveDropdown.length] = new Option("Support", "Support");
                 moves.push("Support");
             }
         
+            // Find move locations
             for (var i = 0; i < adjs.length; i++)
             {
                 var a = adjs[i];
 
-                if (forceType === "F")
+                if (forceType === "F") // Fleet can move to an adjacent coast or sea
                 {
                     if (json[a]["type"] === "COASTAL" || json[a]["type"] === "SEA")
                     {
                         moveLocations.push(a);
                     }
                 }
-                else
+                else // Army can move to an adjacent inland or coast
                 {
                     if (json[a]["type"] === "INLAND" || json[a]["type"] === "COASTAL")
                     {
@@ -190,7 +166,7 @@ ipc.on('message', (event, message) => {
                 }
             }
 
-            // Get coastal convoy terrs
+            // Get coastal convoy terrs: every army on the coast and the fleets that convoy them.
             for (var user in players)
             {
                 var territories = players[user].territories;
@@ -201,28 +177,32 @@ ipc.on('message', (event, message) => {
 
                     if (tType === "COASTAL" && uType === "A") // All armies on coasts
                     {
-                        var convoyTerrs = new Array();
-                        var terrsToCheck = new Array(t);
+                        var convoyTerrs = new Array();   // Keeps track of the fleets that can convoy this army
+                        var terrsToCheck = new Array(t); // Start checking the coastal army
+
                         while (true)
                         {
-                            var newTerrsToCheck = new Array();
+                            var newTerrsToCheck = new Array(); // Every loop, determine the new terrs to check
+
                             for (var i = 0; i < terrsToCheck.length; i++)
                             {
-                                var c = terrsToCheck[i];
-                                adjs = json[c]["adjacencies"];
+                                var check = terrsToCheck[i];       // Territory we're checking
+                                adjs = json[check]["adjacencies"]; // Adjacencies of the territory to check
 
                                 for (var user in players)
                                 {
                                     for (var terr in players[user].territories)
                                     {
-                                        var unitType = players[user].territories[terr].forceType;
-                                        var terrType = json[terr]["type"];
-                                        if (terr !== c)
+                                        if (terr !== check)
                                         {
+                                            // Get every territory in the game that's not the one we're checking
+                                            var unitType = players[user].territories[terr].forceType;
+                                            var terrType = json[terr]["type"];
+
                                             if (terrType === "SEA" && unitType === "F") // All fleets on water
                                             {
+                                                // Determine if it is in the adjacencies of the territory we're checking
                                                 var inAdjs = false;
-
                                                 for (var j = 0; j < adjs.length; j++)
                                                 {
                                                     if (adjs[j] === terr)
@@ -231,12 +211,12 @@ ipc.on('message', (event, message) => {
                                                     }
                                                 }
 
-                                                if (inAdjs) // Fleet can convoy the army
+                                                // Fleet can convoy the army
+                                                if (inAdjs)
                                                 {
-                                                    var adjs2 = json[terr]["adjacencies"];
-
+                                                    // Determine if it is already in the array of convoy territories,
+                                                    // add if it is not.
                                                     var inArray = false;
-
                                                     for (var j = 0; j < convoyTerrs.length; j++)
                                                     {
                                                         if (convoyTerrs[j] === terr)
@@ -256,31 +236,32 @@ ipc.on('message', (event, message) => {
                                     }
                                 }
                             }
+                            // Assign new territories to check, break the while loop if it is empty.
                             terrsToCheck = newTerrsToCheck;
                             if (terrsToCheck.length === 0)
                             {
                                 break;
                             }
                         }
+                        // Create the map entry.
                         coastalConvoyTerrs[t] = convoyTerrs;
                     }
                     
                 }
             }
 
-            // Can only convoy if in coastalConvoyTerrs
+            // Can only convoy if fleet in an ocean and in coastalConvoyTerrs.
             if (forceType === "F" && json[code]["type"] === "SEA")
             {
-                var keys = Object.keys(coastalConvoyTerrs);
+                var keys = Object.keys(coastalConvoyTerrs); // All armies on coasts
 
                 var inCCT = false;
         
                 for (var i = 0; i < keys.length; i++)
                 {
-                    var data = coastalConvoyTerrs[keys[i]];
+                    var data = coastalConvoyTerrs[keys[i]]; // Fleets that can convoy the army
 
                     var inData = false;
-
                     for (var j = 0; j < data.length; j++)
                     {
                         if (data[j] === code)
@@ -302,23 +283,24 @@ ipc.on('message', (event, message) => {
                 }
             }
             
-            // If army on the coast
+            // If army on the coast, add more move locations.
             if (json[code]["type"] === "COASTAL" && forceType === "A")
             {
-                var convoyTerrs = coastalConvoyTerrs[code];
+                var convoyTerrs = coastalConvoyTerrs[code]; // Fleets that can convoy this army
                 
                 for (var i = 0; i < convoyTerrs.length; i++)
                 {
-                    var convoyAdjs = json[convoyTerrs[i]]["adjacencies"];
+                    var convoyAdjs = json[convoyTerrs[i]]["adjacencies"]; // Adjacencies for the fleet
 
                     for (var j = 0; j < convoyAdjs.length; j++)
                     {
                         if (convoyAdjs[j] !== code)
                         {
+                            // Find coastal adjacencies that are not this territory
                             if (json[convoyAdjs[j]][["type"]] === "COASTAL")
                             {
+                                // Determine if the adjacency is already in the moves, add it if it is not.
                                 var inMoves = false;
-
                                 for (var k = 0; k < moveLocations.length; k++)
                                 {
                                     if (moveLocations[k] === convoyAdjs[j])
@@ -351,23 +333,25 @@ function removeOptions(selectbox)
     }
 }
 
+// Function for units to the "unitDropdown" based on the first "move" selected.
 function addUnitsToDropdown(move, unitDropdown)
 {
-    unitDropdown[unitDropdown.length] = new Option(supporUnits[0], supporUnits[0]);
+    unitDropdown[unitDropdown.length] = new Option(supportUnits[0], supportUnits[0]);
 
     if (move == "Convoy")
     {
         var label = document.getElementById("label");
-        var thisUnit = label.innerHTML.split(" ");
+        var thisUnit = label.innerHTML.split(" ");  // Arrays of this unit with unit type in the first position
+                                                    // and unit location in the second position.
 
-        var keys = Object.keys(coastalConvoyTerrs);
+        var keys = Object.keys(coastalConvoyTerrs); // All coastal armies
         
         for (var i = 0; i < keys.length; i++)
         {
-            var data = coastalConvoyTerrs[keys[i]];
+            var data = coastalConvoyTerrs[keys[i]]; // Fleets that can convoy the army
 
+            // Determine if this fleet can convoy the army
             var inData = false;
-
             for (var j = 0; j < data.length; j++)
             {
                 if (data[j] === thisUnit[1])
@@ -378,6 +362,7 @@ function addUnitsToDropdown(move, unitDropdown)
 
             if (inData)
             {
+                // Add to the unitDropdown if it can
                 var unit = "A " + keys[i];
                 unitDropdown[unitDropdown.length] = new Option(unit, unit);
             }
@@ -386,19 +371,20 @@ function addUnitsToDropdown(move, unitDropdown)
     else
     {
         // Otherwise add all support units
-        for (var j = 1; j < supporUnits.length; ++j)
+        for (var j = 1; j < supportUnits.length; ++j)
         {
-            // Append the element to the end of the Array list
-            unitDropdown[unitDropdown.length] = new Option(supporUnits[j], supporUnits[j]);
+            unitDropdown[unitDropdown.length] = new Option(supportUnits[j], supportUnits[j]);
         }
     }
 
     unitDropdown.options[0].hidden = "true";
 }
 
+// Function for adding second move locations to the "secondMoveDropdown" given the "unit" and the first "move".
 function addSecondMovesToDropdown(unit, move, secondMoveDropdown)
 {
     var label = document.getElementById("label");
+
     if (move == "Convoy")
     {
         for (var i = 0; i < moves.length; ++i)
@@ -406,7 +392,6 @@ function addSecondMovesToDropdown(unit, move, secondMoveDropdown)
             // Only valid second move for "Convoy" is "Move"
             if (moves[i] === "Move" || moves[i] === "Choose...")
             {
-                // Append the element to the end of Array list for the second move
                 secondMoveDropdown[secondMoveDropdown.length] = new Option(moves[i], moves[i]);
             }
         }
@@ -415,14 +400,18 @@ function addSecondMovesToDropdown(unit, move, secondMoveDropdown)
     {
         secondMoveDropdown[secondMoveDropdown.length] = new Option(moves[0], moves[0]);
 
+        // Arrays of the two units involved in the order with unit type in the first position
+        // and unit location in the second position.
         var thisUnit = label.innerHTML.split(" ");
         var thatUnit = unit.split(" ");
 
         var holdSupportable = false;
 
-        $.getJSON("map.json", function(json) {
+        $.getJSON("map.json", function(json)
+        {
             var adjs = json[thisUnit[1]]["adjacencies"];
 
+            // thatUnit must be in thisUnit's adjacencies for hold to be supportable
             for (var i = 0; i < adjs.length; i++)
             {
                 if (adjs[i] === thatUnit[1])
@@ -451,116 +440,92 @@ function addSecondMovesToDropdown(unit, move, secondMoveDropdown)
     secondMoveDropdown.options[0].hidden = "true";
 }
 
-function addLocationsToDropdown(move, locationDropdown)
+// Function for adding move locations to the "locationDropdown".
+function addMoveLocationsToDropdown(locationDropdown)
 {
     locationDropdown = document.getElementById("locationSelect");
-    if (move === "Move")
+
+    for (var i = 0; i < moveLocations.length; ++i)
     {
-        for (var i = 0; i < moveLocations.length; ++i)
-        {
-            // Append the element to the end of Array list
-            locationDropdown[locationDropdown.length] = new Option(moveLocations[i], moveLocations[i]);
-        }
-    }
-    else
-    {
-        for (var i = 0; i < secondaryLocations.length; ++i)
-        {
-            // Append the element to the end of Array list
-            locationDropdown[locationDropdown.length] = new Option(secondaryLocations[i], secondaryLocations[i]);
-        }
+        locationDropdown[locationDropdown.length] = new Option(moveLocations[i], moveLocations[i]);
     }
 
     locationDropdown.options[0].hidden = "true";
 }
 
+// Function for adding support locations of the "unit" to the "locationDropdown".
 function addSupportLocationsToDropdown(unit, locationDropdown)
 {
-    locationDropdown = document.getElementById("locationSelect");
     var label = document.getElementById("label");
 
-    locationDropdown[locationDropdown.length] = new Option(secondaryLocations[0], secondaryLocations[0]);
+    // Add the "Choose..." option to the location dropdown
+    locationDropdown[locationDropdown.length] = new Option(moveLocations[0], moveLocations[0]);
 
+    // Arrays of the two units involved in the order with unit type in the first position
+    // and unit location in the second position.
     var thisUnit = label.innerHTML.split(" ");
     var thatUnit = unit.split(" ");
 
-    $.getJSON("map.json", function(json) {
+    $.getJSON("map.json", function(json)
+    {
         var adjs = json[thisUnit[1]]["adjacencies"];
         var adjs2 = json[thatUnit[1]]["adjacencies"];
 
-        var forceType = thisUnit[0];
-        var terrType = thatUnit[0];
-
+        // Find common adjacencies
         var commonAdjs = new Array();
-        var commonMovableAdjs = new Array();
-
-        if (forceType === "F")
+        for (var i = 0; i < adjs.length; i++)
         {
-            for (var i = 0; i < adjs.length; i++)
+            var adj1 = adjs[i];
+
+            for (var j = 0; j < adjs2.length; j++)
             {
-                var adj1 = adjs[i];
+                var adj2 = adjs2[j];
 
-                for (var j = 0; j < adjs2.length; j++)
+                if (adj1 === adj2)
                 {
-                    var adj2 = adjs2[j];
-
-                    if (adj1 === adj2)
-                    {
-                        commonAdjs.push(adj1);
-                    }
+                    commonAdjs.push(adj1);
                 }
             }
+        }
 
-            if (commonAdjs.length > 0)
+        // Find common movable adjacencies, these are the locations to add.
+        var commonMovableAdjs = new Array();
+        var thisType = thisUnit[0];
+        var thatType = thatUnit[0];
+
+        if (thisType === "F")
+        {
+            for (var i = 0; i < commonAdjs.length; i++)
             {
-                for (var i = 0; i < commonAdjs.length; i++)
+                if (json[commonAdjs[i]]["type"] === "SEA")
                 {
-                    if (json[commonAdjs[i]]["type"] === "SEA")
-                    {
-                        if (terrType === "F")
-                        {
-                            commonMovableAdjs.push(commonAdjs[i]);
-                        }
-                    }
-                    else if (json[commonAdjs[i]]["type"] === "COASTAL")
+                    // Both must be fleets
+                    if (thatType === "F")
                     {
                         commonMovableAdjs.push(commonAdjs[i]);
                     }
+                }
+                else if (json[commonAdjs[i]]["type"] === "COASTAL")
+                {
+                    commonMovableAdjs.push(commonAdjs[i]);
                 }
             }
         }
         else
         {
-            for (var i = 0; i < adjs.length; i++)
+            for (var i = 0; i < commonAdjs.length; i++)
             {
-                var adj1 = adjs[i];
-
-                for (var j = 0; j < adjs2.length; j++)
+                if (json[commonAdjs[i]]["type"] === "INLAND")
                 {
-                    var adj2 = adjs2[j];
-
-                    if (adj1 === adj2)
-                    {
-                        commonAdjs.push(adj1);
-                    }
-                }
-            }
-
-            if (commonAdjs.length > 0)
-            {
-                for (var i = 0; i < commonAdjs.length; i++)
-                {
-                    if (json[commonAdjs[i]]["type"] === "INLAND")
-                    {
-                        if (terrType === "A")
-                        {
-                            commonMovableAdjs.push(commonAdjs[i]);
-                        }
-                    }
-                    else if (json[commonAdjs[i]]["type"] === "COASTAL")
+                    // Both must be armies
+                    if (thatType === "A")
                     {
                         commonMovableAdjs.push(commonAdjs[i]);
                     }
+                }
+                else if (json[commonAdjs[i]]["type"] === "COASTAL")
+                {
+                    commonMovableAdjs.push(commonAdjs[i]);
                 }
             }
         }
@@ -574,24 +539,22 @@ function addSupportLocationsToDropdown(unit, locationDropdown)
     locationDropdown.options[0].hidden = "true";
 }
 
+// Function for adding convoy locations to the "locationDropdown".
 function addConvoyLocationsToDropdown(locationDropdown)
 {
     var unitDropdown = document.getElementById("unitSelect");
-    var label = document.getElementById("label");
-    var army = unitDropdown.value.split(" ")[1];
-    var fleet = label.innerHTML.split(" ")[1];
 
-    var convoys = coastalConvoyTerrs[army];
+    var army = unitDropdown.value.split(" ")[1]; // Location of the army that was selected
+    var convoys = coastalConvoyTerrs[army];      // Fleets that can convoy this army
+    convoyLocations = ["Choose..."];             // Reset convoy locations
 
-    var adjsToAdd = new Array();
-
-
-    $.getJSON("map.json", function(json) {
-        // Add all convoy adjacencies except for army
+    $.getJSON("map.json", function(json)
+    {
+        // Add all convoy adjacencies except for army territory
         for (var i = 0; i < convoys.length; i++)
         {
-            terr = convoys[i];
-            terrAdjs = json[terr]["adjacencies"];
+            var terrAdjs = json[convoys[i]]["adjacencies"]; // Adjacencies of this fleet
+
             for (var j = 0; j < terrAdjs.length; j++)
             {
                 if (json[terrAdjs[j]]["type"] === "COASTAL" && terrAdjs[j] !== army)
@@ -607,132 +570,97 @@ function addConvoyLocationsToDropdown(locationDropdown)
         }
 
         locationDropdown.options[0].hidden = "true";
-
-        // var branches = new Array();
-
-        // var adjs = json[army]["adjacencies"];
-        
-        // var inAdjs = false;
-
-        // // Checks adjacencies, finds territories that are in convoys
-        // for (var i = 0; i < adjs.length; i++)
-        // {
-        //     var terr = adjs[i];
-
-        //     var inConvoys = false;
-
-        //     for (var j = 0; j < convoys.length; j++)
-        //     {
-        //         if (convoys[j] === terr)
-        //         {
-        //             inConvoys = true;
-        //         }
-        //     }
-
-        //     if (inConvoys)
-        //     {
-        //         if (terr === fleet)
-        //         {
-        //             inAdjs = true;
-        //             var newConvoys = new Array();
-        //             for (var j = 0; j < convoys.length; j++)
-        //             {
-        //                 if (convoys[j] !== terr)
-        //                 {
-        //                     newConvoys.push(convoys[j]);
-        //                 }
-        //             }
-        //             convoys = newConvoys;
-        //             break;
-        //         }
-        //         else
-        //         {
-        //             var newConvoys = new Array();
-        //             for (var j = 0; j < convoys.length; j++)
-        //             {
-        //                 if (convoys[j] !== terr)
-        //                 {
-        //                     newConvoys.push(convoys[j]);
-        //                 }
-        //             }
-        //             convoys = newConvoys;
-        //         }
-        //     }
-        // }
-
-        // console.log(convoys);
     })
 }
 
-function firstMoveChoice(move) {
+// Function executed on the first move choice.
+// -- Determines what dropdowns to hide/unhide, adds move locations and units to the dropdowns
+// -- as these may have been unhidden.
+function firstMoveChoice(move)
+{
     var unitDropdown = document.getElementById("unitSelect");
     var secondMoveDropdown = document.getElementById("secondMoveSelect");
     var locationDropdown = document.getElementById("locationSelect");
 
-    if (move === "Holds"){
+    if (move === "Holds")
+    {
         // Hide all other dropdowns
         unitDropdown.hidden = true;
         secondMoveDropdown.hidden =  true;
         locationDropdown.hidden = true;
-    } else if (move === "Move"){
+    }
+    else if (move === "Move")
+    {
         // Show only location dropdown
         unitDropdown.hidden = true;
         secondMoveDropdown.hidden =  true;
         locationDropdown.hidden = false;
-    } else if (move === "Convoy"){
+    }
+    else if (move === "Convoy")
+    {
         // Show all dropdowns
         unitDropdown.hidden = false;
         locationDropdown.hidden = true;
         secondMoveDropdown.hidden =  true;
-    } else if (move === "Support"){
+    }
+    else if (move === "Support")
+    {
         // Show all dropdowns except for location
         unitDropdown.hidden = false;
         locationDropdown.hidden = true;
         secondMoveDropdown.hidden =  true;
     }
 
+    // Before adding options to a dropdown, we must remove the options already in the dropdown.
     removeOptions(unitDropdown);
     removeOptions(locationDropdown);
     addUnitsToDropdown(move, unitDropdown);
-    addLocationsToDropdown(move, locationDropdown);
+    addMoveLocationsToDropdown(locationDropdown);
 }
 
+// Function executed on the second move choice.
+// -- Determines what locations to add to the location dropdown based on the
+// -- first and second move choices.
 function secondMoveChoice(move)
 {
     var locationDropdown = document.getElementById("locationSelect");
     var unitDropdown = document.getElementById("unitSelect");
     var firstMoveDropdown = document.getElementById("firstMoveSelect");
+
     removeOptions(locationDropdown);
 
     if (move == "Holds")
     {
         // Hide location dropdown
         locationDropdown.hidden = true;
-        addLocationsToDropdown(locationDropdown);
+
+        addMoveLocationsToDropdown(locationDropdown);
     } 
     else if (move == "Move")
     {
         // Show location dropdown
+        locationDropdown.hidden = false;
+
         if (firstMoveDropdown.value === "Convoy")
         {
-            locationDropdown.hidden = false;
-            //addLocationsToDropdown(locationDropdown);
             addConvoyLocationsToDropdown(locationDropdown);
         }
         else
         {
-            locationDropdown.hidden = false;
             addSupportLocationsToDropdown(unitDropdown.value, locationDropdown);
         }
     }
 }
 
+// Function acitvated on the unit choice when convoying or supporting.
+// -- Unhides second move dropdown and adds moves to it.
 function unitChoice(unit)
 {
     var secondMoveDropdown = document.getElementById("secondMoveSelect");
     var firstMoveDropdown = document.getElementById("firstMoveSelect");
     var locationDropdown = document.getElementById("locationSelect");
 
+    // Show the second move dropdown. Hide the location dropdown.
     secondMoveDropdown.hidden = false;
     locationDropdown.hidden = true;
 
@@ -740,6 +668,7 @@ function unitChoice(unit)
     addSecondMovesToDropdown(unit, firstMoveDropdown.value, secondMoveDropdown);
 }
 
+// Function for creating a toast/temporary message lasting 1.5 seconds.
 function makeToast(data)
 {
     var x = document.getElementById("snackbar");
@@ -751,20 +680,26 @@ function makeToast(data)
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 1500);
 }
 
+// Function executed when the user clicks submit.
+// -- Takes the data in the dropdown(s) and adds the resulting order into the DB ("orders_temp").
 function submitOrder()
 {
-    var label = document.getElementById("label");
+    // All dropdowns.
     var firstMove = document.getElementById("firstMoveSelect");
     var unit = document.getElementById("unitSelect");
     var secondMove = document.getElementById("secondMoveSelect");
     var location = document.getElementById("locationSelect");
 
+    // Use the label to get information on this territory.
+    var label = document.getElementById("label");
     var x = label.innerHTML.split(" ");
-    var thisUnit = x[0] + "_" + x[1];
-    var order = label.innerHTML;
+    var thisUnit = x[0] + "_" + x[1]; // Key for this unit in the DB.
+    var order = label.innerHTML;      // Order we will be building, same as game rules, starting value = label.
 
     var validOrder = false;
 
+    // If any of the dropdowns have the value "Choose...", the order is not valid. Displays a message
+    // informing the user of this fact.
     if (firstMove.value === "Choose...")
     {
         makeToast("Choose a move")
@@ -774,7 +709,7 @@ function submitOrder()
         if (firstMove.value == "Holds")
         {
             order += "-HOLDS";
-            validOrder = true;
+            validOrder = true; // Other dropdowns are hidden
         }
         else if (firstMove.value == "Move")
         {
@@ -785,7 +720,7 @@ function submitOrder()
             else
             {
                 order += "-" + location.value;
-                validOrder = true;
+                validOrder = true; // Other dropdowns are hidden
             }
         }
         else if (firstMove.value == "Support")
@@ -805,7 +740,7 @@ function submitOrder()
                     if (secondMove.value === "Holds")
                     {
                         order += " S " + unit.value + "-HOLDS";
-                        validOrder = true;
+                        validOrder = true; // Other dropdowns are hidden
                     }
                     else if (secondMove.value === "Move")
                     {

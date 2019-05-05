@@ -1,23 +1,24 @@
+<!-- POP UP WINDOW FOR MAP CLICKING ON RETREAT/DISBAND PHASE, PHASE 2 -->
+
 <html>
 
 <head>
     <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <!-- <script src="../../node_modules/jquery/dist/jquery.js"></script> -->
     <link href="../css/game.css" rel="stylesheet" />
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #273c75;">
-        <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
         <img height="50" src="../../images/diplomacy_logo.png" />
     </nav>
+    <!-- Retreat section, dropdowns only for moves to locations -->
     <div class="col" style="text-align: center; border:1px solid #ccc; padding-top: 10px; padding-bottom: 10px;">
         <h4 style="text-align: center;">Retreat</h4>
         <form style="text-align: justify;">
             <div class="p-3">
                 <label class="p-1" id="label">
                 </label>
-                <select class="firstMoveSelect" id="firstMoveSelect" onchange="firstMoveChoice(this.value)">
+                <select class="firstMoveSelect" id="firstMoveSelect" onchange="firstMoveChoice()">
                 </select>
                 <select class="locationSelect" id="locationSelect" hidden>
                 </select>
@@ -27,6 +28,7 @@
             <button type="submit" class="btn btn-primary" style="display: block; margin: 0 auto;" id="submit" onClick="submitOrder()">Retreat</button>
         </div>
     </div>
+    <!-- Disband Option, simple button click -->
     <div class="col" style="text-align: center; border:1px solid #ccc; padding-top: 10px; padding-bottom: 10px;">
         <h4 style="text-align: center;">Or Disband</h4>
         <div>
@@ -34,8 +36,6 @@
         </div>
     </div>
     <div id="snackbar"></div>
-    <div id="gameID" hidden></div>
-    <div id="username" hidden></div>
 
     <script>
         window.jQuery = window.$ = require('jquery');

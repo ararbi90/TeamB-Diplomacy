@@ -1,13 +1,13 @@
-$ = require('jquery');
-//var msg = require('add.js');
+// SOURCE CODE CORRESPONDING TO: rules.html 
 
-//console.log(msg);
+$ = require('jquery');
+
 // Username information from the link
 var urlParams = new URLSearchParams(location.search);
 let username = urlParams.get("username");
 document.getElementById("navbarDropdownMenuLink").innerHTML = username;
 
-// Dashboard changes
+// Navbar redirections
 document.getElementById("Dashboard").addEventListener("click", function () {
     let link = "../html/dashboard.html?username=" + username;
     window.location.href = link;

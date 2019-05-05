@@ -1,16 +1,17 @@
+<!-- POP UP WINDOW FOR MAP CLICKING ON ADD/REMOVE PHASE, PHASE 3 -->
+
 <html>
 
 <head>
     <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <!-- <script src="../../node_modules/jquery/dist/jquery.js"></script> -->
     <link href="../css/game.css" rel="stylesheet" />
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #273c75;">
-        <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
         <img height="50" src="../../images/diplomacy_logo.png" />
     </nav>
+    <!-- this will be displayed if there is no unit on this territory (ADD) -->
     <div id="add_unit" class="col" style="text-align: center; border:1px solid #ccc; padding-top: 10px; padding-bottom: 10px;">
         <h4 style="text-align: center;">Add Unit</h4>
         <form style="text-align: justify;">
@@ -23,6 +24,7 @@
             <button type="submit" class="btn btn-primary" style="display: block; margin: 0 auto;" id="add" onClick="add()">Add</button>
         </div>
     </div>
+    <!-- this will be displayed if there is a unit on this territory (REMOVE) -->
     <div id="remove_unit" class="col" style="text-align: center; border:1px solid #ccc; padding-top: 10px; padding-bottom: 10px;" hidden>
         <h4 style="text-align: center;">Remove Unit</h4>
         <div>

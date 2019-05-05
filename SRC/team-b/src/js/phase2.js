@@ -1,13 +1,14 @@
+// SOURCE CODE CORRESPONDING TO: phase2.html 
+
 $ = require("jquery");
 
-//console.log("phase2");
-
+// Username/gameID information from the link
 var urlParams = new URLSearchParams(location.search);
 let username = urlParams.get("username");
 let gameID = urlParams.get("gameID");
-
 document.getElementById("navbarDropdownMenuLink").innerHTML = username;
 
+// Navbar redirections
 document.getElementById("Dashboard").addEventListener("click", function () {
     let link = "../html/dashboard.html?username=" + username;
     window.location.href = link;
@@ -22,9 +23,6 @@ document.getElementById("logOut").addEventListener("click", function () {
 });
 
 // grab data from firebase about the game/game state
-// var urlParams = new URLSearchParams(location.search);
-// let gameID =urlParams.get("gameID");
-// let username = urlParams.get("username");
 function mapsLogic(res) {
     // This is benson's code from game.html
     players = res.players;
@@ -51,6 +49,7 @@ function mapsLogic(res) {
 
     if (res.resolution[key].retreat[username] !== undefined)
     {
+        // Can only click on territories that have to retreat or disband.
         var retreat = res.resolution[key].retreat[username];
         var keys = Object.keys(res.resolution[key].retreat[username]);
 
@@ -60,10 +59,8 @@ function mapsLogic(res) {
         }
     }
 
-    console.log(clickableRegions);
-
     var enabledRegions = ["ADR", "AEG", "BAL", "BAR", "BLA", "EAS", "ENG", "BOT", "GOL", "HEL", "ION", "IRI", "MID", "NAT", "NTH", "NRG", "SKA", "TYN", "WES", "CLY", "EDI", "LVP", "YOR", "WAL", "LON", "PIC", "BRE", "PAR", "BUR", "GAS", "MAR", "PIE", "VEN", "TUS", "ROM", "APU", "NAP", "TYR", "BOH", "VIE", "GAL", "BUD", "TRI", "CON", "ANK", "ARM", "SMY", "SYR", "FIN", "STP", "LVN", "MOS", "WAR", "UKR", "SEV", "RUH", "KIE", "BER", "PRU", "MUN", "SIL", "NWY", "SWE", "DEN", "HOL", "BEL", "POR", "SPA", "NAF", "TUN", "RUM", "SER", "BUL", "ALB", "GRE"];
-    var currentRegion;
+
     // the initial parameters for the map. Change according to this link to change the look of the map, https://www.10bestdesign.com/jqvmap/documentation/
     jQuery('#vmap').vectorMap({
         map: 'diplomacy',
@@ -135,6 +132,8 @@ function controllerTimer() {
     }
 }
 
+// Function for adding the title to the page
+// -- uses the DB info, "res", to show the current season/year
 function addTitle(res)
 {
     var title = "Retreat And Disband Phase - ";
@@ -151,16 +150,21 @@ function addTitle(res)
     document.getElementById("seasonTitle").innerHTML = title;
 }
 
-// Change phase
-gameRef.child(gameID).child("turn_status").on("child_changed", function (snapshot) {
+// Change phase. Will get executed when a child of the game's "turn_status" is updated.
+gameRef.child(gameID).child("turn_status").on("child_changed", function (snapshot)
+{
     var data = snapshot.val();
 
-    gameRef.child(gameID).child("players").on("value", function (snapshot) {
+    gameRef.child(gameID).child("players").on("value", function (snapshot)
+    {
+        // All players.
         let players = new Array();
         snapshot.forEach(element => {
             players.push(element.key);
         });
         
+        // We must delete "orders_temp", "retreat_units_temp", and "retreat_orders_temp" for every player if they
+        // are not undefined.
         for (var i = 0; i < players.length; i++)
         {
             if (gameRef.child(gameID).child("players").child(players[i]).child("orders_temp") !== undefined)
@@ -179,40 +183,47 @@ gameRef.child(gameID).child("turn_status").on("child_changed", function (snapsho
 
         if (data === "order")
         {
+            // Go to order phase.
             let link = "game.html?gameID=" + gameID + "&username=" + username;
             window.location.href = link;
         }
         else if (data === "build")
-        {   
+        {
+            // Go to phase 3.
             let link = "phase3.html?gameID=" + gameID + "&username=" + username;
             window.location.href = link;
         }
     })
 })
 
-// Add orders
+// Add retreat orders to the "Orders" display.
 gameRef.child(gameID).child("players").child(username).child("retreat_orders_temp").on("value", function (snapshot)
 {
+    // All retreat orders.
     let orders = new Array();
     snapshot.forEach(element => {
         orders.push(element.val().order);
     });
 
-    gameRef.child(gameID).child("players").child(username).child("orders_temp").on("value", function (snapshot) {
+    gameRef.child(gameID).child("players").child(username).child("orders_temp").on("value", function (snapshot)
+    {
+        // All temp orders.
         let ordersTemp = new Array();
         snapshot.forEach(element => {
             ordersTemp.push(element.val().order);
         });
 
-        $("#orders").empty();
+        $("#orders").empty(); // Empty the div.
 
         if (orders.length > 0)
         {
+            // Hide the "no_orders" div, unhide the "orders" div.
             document.getElementById("no_orders").hidden = true;
             document.getElementById("orders").hidden = false;
         }
         else
         {
+            // Hide the "orders" div, unhide the "no_orders" div.
             document.getElementById("no_orders").hidden = false;
             document.getElementById("orders").hidden = true;
         }
@@ -227,17 +238,20 @@ gameRef.child(gameID).child("players").child(username).child("retreat_orders_tem
                 {
                     if (ordersTemp[j] === orders[i])
                     {
+                        // If it is the same order as last time, the unit is disbanding.
                         order += orders[i].slice(0, 5);
                         order += " DISBANDS"
                     }
                     else
                     {
+                        // Otherwise, the unit is attempting a retreat.
                         order += orders[i];
                         order += " (RETREAT)"
                     }
                 }
             }
 
+            // Add the order to the "orders" div.
             var node = document.createElement("LI");
             var textnode = document.createTextNode(order);
             node.appendChild(textnode);
@@ -246,15 +260,17 @@ gameRef.child(gameID).child("players").child(username).child("retreat_orders_tem
     })
 })
 
-
-// Add retreat/disband
+// Function for units that must retreat/disband to the proper div
+// -- uses the DB info, "res", to retrieve the units
 function addRetreats(res)
 {
-    $("#retreats").empty();
+    $("#retreats").empty(); // empty the div
+
     let retreats = new Array();
 
     var key = res.turn_status.current_season + res.turn_status.current_year;
 
+    // Get all units that must retreat/disband
     if (res.resolution[key].retreat[username] !== undefined)
     {
         var keys = Object.keys(res.resolution[key].retreat[username]);
@@ -271,15 +287,18 @@ function addRetreats(res)
 
     if (retreats.length > 0)
     {
+        // Hide the "no_retreats" div, unhide the "retreats" div.
         document.getElementById("no_retreats").hidden = true;
         document.getElementById("retreats").hidden = false;
     }
     else
     {
+        // Hide the "retreats" div, unhide the "no_retreats" div.
         document.getElementById("no_retreats").hidden = false;
         document.getElementById("retreats").hidden = true;
     }
 
+    // Add all the units to the "retreats" div.
     for (var i = 0; i < retreats.length; i++)
     {
         var node = document.createElement("LI");
@@ -289,14 +308,17 @@ function addRetreats(res)
     }
 }
 
-// Add results
+// Function for adding the results of the previous round, color coded.
+// -- uses the DB info, "res", to retrieve the results
 function addResults(res)
 {
     var key = res.turn_status.current_season + res.turn_status.current_year;
 
+    // Failed/Passed orders
     var fail = res.resolution[key].fail[username];
     var pass = res.resolution[key].pass[username];
 
+    // User's orders_temp from the previous round.
     var ordersTemp = res.players[username].orders_temp;
 
     if (fail !== undefined)
@@ -307,7 +329,7 @@ function addResults(res)
 
             var key = order.UnitType + "_" + order.CurrentZone;
 
-            // Keep track of units still needing orders
+            // Keep track of units needing retreat/disband orders
             var ref = gameRef.child(gameID).child("players").child(username).child("retreat_units_temp");
 
             if (res.players[username].retreat_orders_temp === undefined)
@@ -323,9 +345,9 @@ function addResults(res)
                 })
             }
 
-            //console.log(key);
             var output = ordersTemp[key].order;
 
+            // Failed orders shown in red.
             var node = document.createElement("LI");
             var textnode = document.createTextNode(output);
             node.appendChild(textnode);
@@ -343,6 +365,7 @@ function addResults(res)
 
             var output = ordersTemp[key].order;
 
+            // Successful orders shown in green.
             var node = document.createElement("LI");
             var textnode = document.createTextNode(output);
             node.appendChild(textnode);
@@ -352,7 +375,8 @@ function addResults(res)
     }
 }
 
-// Disband if no orders
+// Function for disbanding units if no retreat or disband commands were given.
+// -- uses the DB info, "res", to retrieve the current commands.
 function disband(res)
 {
     // Get all orders in orders_temp
@@ -366,6 +390,7 @@ function disband(res)
     
     var retreatUnits = res.players[username].retreat_units_temp;
 
+    // IF retreat units is not undefined, we must submit the same order for them as last time to disband them/
     if (retreatUnits !== undefined)
     {
         var retreatKeys = Object.keys(retreatUnits);
@@ -383,6 +408,8 @@ function disband(res)
     }
 }
 
+// Function for creating a submission JSON.
+// -- takes all orders in the DB and creates a JSON for sending to the backend as a POST.
 function submitOrders(res)
 {
     var submission = {};
@@ -399,8 +426,8 @@ function submitOrders(res)
     var key = res.turn_status.current_season + res.turn_status.current_year;
     var fail = res.resolution[key].fail[username];
     
+    // Get failed orders: unit_terr
     var failedOrders = new Array();
-
     if (fail !== undefined)
     {
         for (var i = 0; i < fail.length; i++)
@@ -410,7 +437,6 @@ function submitOrders(res)
         }
     }
 
-    // Build submission for non retreats
     submission.username = username;
     submission.gameId = gameID;
     submission.orders = [];
@@ -421,8 +447,8 @@ function submitOrders(res)
         var o = orders[key];
         var data = o.split(" ");
 
+        // Get the orderKey: unit_terr
         var orderKey = data[0] + "_";
-
         if (data.length == 2)
         {
             var data2 = data[1].split("-");
@@ -433,20 +459,19 @@ function submitOrders(res)
             orderKey += data[1];
         }
 
+        // Find out if it failed.
         var failed = false;
-
-
         for (var j = 0; j < failedOrders.length; j++)
         {
             if (failedOrders[j] === orderKey)
             {
                 failed = true;
             }
-
         }
 
         if (!failed)
         {
+            // If it didn't, submit it again (same as game.js) with order.Retreat == "false"
             var order = {};
 
             if (data.length === 2)
@@ -501,6 +526,7 @@ function submitOrders(res)
         }
         else
         {
+            // Otherwise, submit it from "retreat_orders_temp" with order.Retreat == "true"
             var order = {};
             data = res.players[username].retreat_orders_temp[orderKey].order.split(" ");
 
@@ -562,22 +588,27 @@ function submitOrders(res)
 $("document").ready(function () {
     let timerController = setInterval(controllerTimer, 1000);
 
-    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res) {
+    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res)
+    {
+        // Get game data and initialize necessary components.
         mapsLogic(res);
         addResults(res);
         addTitle(res);
         addRetreats(res);
-
-        $("#roundSubmissionForm").submit(function () {
-
-            $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2) {
+        $("#roundSubmissionForm").submit(function ()
+        {
+            // Executed when the user clicks submit in the round submission form.
+            $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res2)
+            {
+                // Get a current snapshot of the game and disband necessary units.
                 disband(res2);
-
-                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res3) {
+                $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/info", { gameId: gameID }, function (res3)
+                {
+                    // Get another current snapshot of the game and create the submission.
                     var submission = submitOrders(res3);
-                    console.log(submission);
-
-                    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitretreatorder", { submission }, function (res4) {
+                    $.post("https://us-central1-cecs-475-team-b.cloudfunctions.net/teamBackend/game/submitretreatorder", { submission }, function (res4)
+                    {
+                        // POST the submission to the backend.
                         console.log(res4);
                     }).fail(function (err) {
                         console.log(err);

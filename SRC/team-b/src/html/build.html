@@ -1,16 +1,17 @@
+<!-- POP UP WINDOW FOR MAP CLICKING ON ORDER PLACING PHASE -->
+
 <html>
 
 <head>
     <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <!-- <script src="../../node_modules/jquery/dist/jquery.js"></script> -->
     <link href="../css/game.css" rel="stylesheet" />
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-fixed-top" style="background-color: #273c75;">
-        <!-- <a class="navbar-brand" href="#">Diplomacy</a> -->
         <img height="50" src="../../images/diplomacy_logo.png" />
     </nav>
+    <!-- Dropdowns: -->
     <div class="col" style="text-align: center; border:1px solid #ccc; padding-top: 10px; padding-bottom: 10px;">
         <h4 style="text-align: center;">Build Your Move</h4>
         <form style="text-align: justify;">
@@ -32,8 +33,6 @@
         </div>
     </div>
     <div id="snackbar"></div>
-    <div id="gameID" hidden></div>
-    <div id="username" hidden></div>
 
     <script>
         window.jQuery = window.$ = require('jquery');

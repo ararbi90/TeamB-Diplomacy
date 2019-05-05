@@ -1,5 +1,8 @@
-// Initialize Firebase
+// SOURCE CODE CORRESPONDING TO: index.html 
+
 var $ = require("jquery");
+
+// Initialize Firebase
 var config = {
     apiKey: "AIzaSyBmzv9WLDoGI533rDWZXVATzA8ea9xbteo",
     authDomain: "cecs-475-team-b.firebaseapp.com",

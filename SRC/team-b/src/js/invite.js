@@ -1,9 +1,13 @@
+// SOURCE CODE CORRESPONDING TO: invite.html 
+
 $ = require('jquery');
 
 // Get username from URL
 var urlParams = new URLSearchParams(location.search);
 let username = urlParams.get("username");
 document.getElementById("navbarDropdownMenuLink").innerHTML = username;
+
+// Navbar redirections
 document.getElementById("Dashboard").addEventListener("click", function () {
     let link = "../html/dashboard.html?username=" + username;
     window.location.href = link;
