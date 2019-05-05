@@ -100,8 +100,9 @@ var JQVMap = function (params) {
   this.hoverColors = params.hoverColors;
   this.hoverOpacity = params.hoverOpacity;
   this.setBackgroundColor(params.backgroundColor);
-  // for setting unit pins on the map
-  this.clickableRegions = params.clickableRegions;
+  // for setting unit pins on the map, obtained prior to calling this function by a firebase read
+  // must be after the firebase read because a read isn't as fast as a function's run
+  this.clickableRegions = params.clickableRegions; 
 
   this.width = params.container.width();
   this.height = params.container.height();
@@ -394,7 +395,7 @@ JQVMap.maps = {};
       color: '#f4f3f0',
       hoverColor: '#c9dfaf',
       hoverColors: {},
-      clickableRegions: [],
+      clickableRegions: [], // initialize variable for storing territories that have units
       selectedColor: '#c9dfaf',
       selectedColors: {},
       scaleColors: ['#b6d6ff', '#005ace'],
@@ -845,20 +846,22 @@ var supplyCountries = ["ANK", "BEL", "BER", "BRE", "BUD", "BUL", "CON", "DEN", "
 "LON", "MAR", "MOS", "MUN", "NAP", "NOR", "PAR", "POR", "ROM",
 "RUM", "SER", "SEV", "SMY", "SPA", "STP", "SWE", "TRI", "TUN", "VEN",
 "VIE", "WAR", ];
-// places supply centers in addition to the label for countries with a supply center
-JQVMap.prototype.placeSupplyCenters = function(pinIndex, index, pin) {
+
+// places a supply center pin
+JQVMap.prototype.placeSupplyCenter = function(pinIndex, index, pin) {
   var map = this;
   map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin ' + index + '" ' + 'style="position:absolute">' + 
   '<img src="..\\..\\images\\supply-center-2.png">' + '</div>');
 };
 
-JQVMap.prototype.placeUnits = function(pinIndex, index, pin) {
+// places a unit pin
+JQVMap.prototype.placeUnit = function(pinIndex, index, pin) {
   var map = this;
   map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin unit ' + index + '" ' + 'style="position:absolute">' + 
   '<img src="..\\..\\images\\tank-2.png">' + '</div>');
 };
 
-// places only labels for countries that don't have a supply center
+// places a label pin
 JQVMap.prototype.placePin = function(pinIndex, index, pin) {
   var map = this;
   map.container.append('<div id="' + pinIndex + '" for="' + index + '" class="jqvmap-pin label" style="position:absolute; font-weight:bold; font-size: .75rem;">' + pin + '</div>');
@@ -882,11 +885,13 @@ JQVMap.prototype.placePins = function(pins, pinMode){
         $pin.remove();
       }
 
-      map.placePin(pinIndex, index, pin);
-      if (supplyCountries.includes(index))
-         map.placeSupplyCenters(pinIndex, index, pin);
-      if (map.clickableRegions.includes(index))
-         map.placeUnits(pinIndex, index, pin);
+      map.placePin(pinIndex, index, pin); // places the label pin for all countries
+      if (supplyCountries.includes(index)) // if the country has a supply center then place the supply center pin
+         map.placeSupplyCenter(pinIndex, index, pin);
+    // if the country has a unit then place the unit pin, 
+    // clickable pin should be territories with units just didn't change the variable name yet
+      if (map.clickableRegions.includes(index)) 
+         map.placeUnit(pinIndex, index, pin);
     });
   } else { //treat pin as id of an html content
     jQuery.each(pins, function(index, pin){

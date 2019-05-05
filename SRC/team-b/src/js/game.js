@@ -40,7 +40,7 @@ function mapsLogic(res) {
         $.each(territories, function (index, territory) {
             defaultcolors[index] = player.color;
             hovercolors[index] = player.hoverColor;
-            allTerritoriesWithUnits.push(index);
+            allTerritoriesWithUnits.push(index); // push indices of countries that have units so that pins can be made
             if (username == playerName) {
                 clickableRegions.push(index);
             }
